@@ -6,6 +6,7 @@ import { CreateProviderDto } from './dto/create-provider.dto';
 import { compareHash, hash } from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { JwtPayload } from '../types';
 
 @Injectable()
 export class ProviderService {
@@ -33,13 +34,10 @@ export class ProviderService {
     await this.providerRepository.save(provider);
   }
 
-  async login(providerLogin: LoginProviderDto) {
-    const provider = await this.providerRepository
-      .createQueryBuilder()
-      .where('email = :email', {
-        email: providerLogin.email,
-      })
-      .getOne();
+  async login(providerLogin: LoginProviderDto): Promise<JwtPayload> {
+    const provider = await this.providerRepository.findOne({
+      email: providerLogin.email,
+    });
 
     if (
       !provider ||
@@ -56,6 +54,10 @@ export class ProviderService {
       );
     }
 
-    console.log(provider);
+    return {
+      email: provider.email,
+      sub: provider.id,
+      type: 'provider',
+    };
   }
 }
