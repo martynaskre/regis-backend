@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('clients')
-export class User {
+@Entity('providers')
+export class ProviderEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,14 +17,34 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
   password: string;
 
+  @Column({
+    unique: true,
+  })
+  phoneNumber: string;
+
   @Column()
-  phoneNumber: number;
+  isLegalEntity: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  companyName!: string;
+
+  @Column()
+  code: string;
+
+  @Column({
+    nullable: true,
+  })
+  vatCode!: string;
 
   @CreateDateColumn({
     type: 'timestamp',
