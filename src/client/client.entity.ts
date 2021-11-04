@@ -8,10 +8,10 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class Client {
   @PrimaryGeneratedColumn()
   id: number;
-  
+
   @Column()
   firstName: string;
 
@@ -33,13 +33,15 @@ export class User {
   phoneNumber: number;
 
   @CreateDateColumn({
-    default: new Date(),
+    type: 'timestamp',
+    default: () => 'NOW()'
   })
   public createdAt: Date;
 
   @UpdateDateColumn({
-    default: new Date(),
-    onUpdate: 'new Date()',
+    type: 'timestamp',
+    default: () => 'NOW()',
+    onUpdate: 'NOW()'
   })
   public updatedAt: Date;
 }

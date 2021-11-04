@@ -1,10 +1,8 @@
 import {
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  MinLength,
 } from 'class-validator';
 import { LogInClientDto } from './LogInClient.dto';
 
@@ -19,5 +17,5 @@ export class CreateClientDto extends LogInClientDto {
 
   @IsOptional()
   @IsPhoneNumber()
-  phoneNumber: string;
+  phoneNumber: number;
 }
