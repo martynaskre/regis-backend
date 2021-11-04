@@ -23,7 +23,7 @@ export class ValidationPipe implements PipeTransform<any> {
     if (errors.length > 0) {
       throw new HttpException(
         {
-          message: 'Validation failed.',
+          message: 'The given data was invalid.',
           errors: this.buildErrors(errors),
         },
         HttpStatus.UNPROCESSABLE_ENTITY,

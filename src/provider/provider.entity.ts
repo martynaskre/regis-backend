@@ -28,7 +28,7 @@ export class ProviderEntity {
   @Column({
     unique: true,
   })
-  phoneNumber: number;
+  phoneNumber: string;
 
   @Column()
   isLegalEntity: boolean;
