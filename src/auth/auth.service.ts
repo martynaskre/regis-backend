@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { from, Observable } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from '../types';
 
 @Injectable()
 export class AuthService {
-  hashPassword(password: string): Observable<string> {
-    return from<string>(bcrypt.hash(password, 12));
-  }
+  constructor(private jwtService: JwtService) {}
 
-  comparePassword(
-    password: string,
-    storedPasswordHash: string,
-  ): Observable<any> {
-    return from(bcrypt.compare(password, storedPasswordHash));
+  async login(payload: JwtPayload) {
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

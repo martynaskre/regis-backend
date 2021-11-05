@@ -1,8 +1,4 @@
 import {
-<<<<<<< HEAD
-  BeforeInsert,
-=======
->>>>>>> 2b47ee5704da42f0aca7526b3f13962e7a99ff2f
   Column,
   CreateDateColumn,
   Entity,
@@ -10,8 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('clients')
-export class User {
+@Entity('providers')
+export class ProviderEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,14 +17,34 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
   password: string;
 
+  @Column({
+    unique: true,
+  })
+  phoneNumber: string;
+
   @Column()
-  phoneNumber: number;
+  isLegalEntity: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  companyName!: string;
+
+  @Column()
+  code: string;
+
+  @Column({
+    nullable: true,
+  })
+  vatCode!: string;
 
   @CreateDateColumn({
     type: 'timestamp',
