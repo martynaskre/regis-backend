@@ -14,14 +14,14 @@ import { LoginProviderDto } from './dto/login-provider.dto';
 import { AuthService } from '../auth/auth.service';
 import { ProviderGuard } from '../auth/guards/provider.guard';
 
-@Controller()
+@Controller('providers')
 export class ProviderController {
   constructor(
     private readonly providerService: ProviderService,
     private readonly authService: AuthService,
   ) {}
 
-  @Get('providers/signup')
+  @Post('signup')
   @UsePipes(new ValidationPipe())
   async signup(@Body() providerData: CreateProviderDto) {
     await this.providerService.create(providerData);
@@ -29,7 +29,7 @@ export class ProviderController {
     return formatResponse('Provider created.');
   }
 
-  @Get('providers/login')
+  @Post('login')
   @UsePipes(new ValidationPipe())
   async login(@Body() loginProvider: LoginProviderDto) {
     const data = await this.authService.login(
@@ -40,7 +40,7 @@ export class ProviderController {
   }
 
   @UseGuards(ProviderGuard)
-  @Get('providers/user')
+  @Get('user')
   async user(@Request() req) {
     return formatResponse('User data.', req.user);
   }

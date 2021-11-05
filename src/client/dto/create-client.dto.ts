@@ -39,6 +39,12 @@ export class CreateClientDto{
   })
   readonly email: string;
 
+  @IsString()
+  @MaxLength(20)
+  @MinLength(4)
+  @IsNotEmpty()
+  readonly password: string;
+
   @IsNotEmpty()
   @Match('password')
   readonly password_confirmation: string;

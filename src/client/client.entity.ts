@@ -23,8 +23,10 @@ export class Client {
   @Column()
   password: string;
 
-  @Column()
-  phoneNumber: number;
+  @Column({
+    unique: true,
+  })
+  phoneNumber: string;
 
   @CreateDateColumn({
     type: 'timestamp',
