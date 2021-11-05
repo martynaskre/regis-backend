@@ -6,8 +6,6 @@ import { CreateClientDto } from './dto/create-client.dto';
 export class ClientController {
   constructor(private clientService: ClientService) {}
 
-  @Post()
-  create(@Body() createClientBody: CreateClientDto) {
-    return this.clientService.create(createClientBody);
+ 
   }
 }
