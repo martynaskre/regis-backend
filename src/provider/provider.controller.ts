@@ -5,6 +5,7 @@ import {
   UseGuards,
   UsePipes,
   Request,
+  Post,
 } from '@nestjs/common';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
