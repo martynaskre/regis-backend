@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProviderStrategy } from './strategies/provider.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
+import { ClientStrategy } from './strategies/client.strategy';
+import { Client } from '../client/client.entity';
 
 @Module({
   imports: [
@@ -18,9 +20,9 @@ import { ProviderEntity } from '../provider/provider.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([ProviderEntity]),
+    TypeOrmModule.forFeature([ProviderEntity, Client]),
   ],
-  providers: [AuthService, ProviderStrategy],
+  providers: [AuthService, ProviderStrategy, ClientStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
