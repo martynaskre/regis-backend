@@ -11,7 +11,7 @@ interface UniqueOptions extends ValidationOptions {
 }
 
 export function Unique(validationOptions?: UniqueOptions) {
-  return function (object: Object, propertyName: string) {
+  return function (object: any, propertyName: string) {
     registerDecorator({
       name: 'unique',
       target: object.constructor,
@@ -33,9 +33,9 @@ export function Unique(validationOptions?: UniqueOptions) {
 
           return exists == undefined;
         },
-        defaultMessage(validationArguments?: ValidationArguments): string {
+        defaultMessage(): string {
           return '$property should be unique';
-        }
+        },
       },
     });
   };

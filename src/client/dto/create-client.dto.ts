@@ -1,7 +1,6 @@
 import {
   IsEmail,
   IsNotEmpty,
-  IsOptional,
   IsPhoneNumber,
   IsString,
   MaxLength,
@@ -10,7 +9,7 @@ import {
 import { Match } from 'src/shared/validation/Match';
 import { Unique } from 'src/shared/validation/Unique';
 
-export class CreateClientDto{
+export class CreateClientDto {
   @IsString()
   @MaxLength(255)
   @MinLength(1)

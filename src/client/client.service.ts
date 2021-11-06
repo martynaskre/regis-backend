@@ -49,8 +49,7 @@ export class ClientService {
     return {
       email: client.email,
       sub: client.id,
-      type: 'provider',
+      type: 'client',
     };
   }
-
 }

@@ -3,12 +3,10 @@ import {
   Controller,
   Get,
   UseGuards,
-  UsePipes,
   Request,
   Post,
 } from '@nestjs/common';
 import { CreateProviderDto } from './dto/create-provider.dto';
-import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { ProviderService } from './provider.service';
 import { formatResponse } from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
@@ -23,7 +21,6 @@ export class ProviderController {
   ) {}
 
   @Post('signup')
-  @UsePipes(new ValidationPipe())
   async signup(@Body() providerData: CreateProviderDto) {
     await this.providerService.create(providerData);
 
@@ -31,7 +28,6 @@ export class ProviderController {
   }
 
   @Post('login')
-  @UsePipes(new ValidationPipe())
   async login(@Body() loginProvider: LoginProviderDto) {
     const data = await this.authService.login(
       await this.providerService.login(loginProvider),
@@ -42,7 +38,7 @@ export class ProviderController {
 
   @UseGuards(ProviderGuard)
   @Get('user')
-  async user(@Request() req) {
-    return formatResponse('User data.', req.user);
+  async user(@Request() request) {
+    return formatResponse('User data.', request.user);
   }
 }
