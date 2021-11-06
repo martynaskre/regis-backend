@@ -18,6 +18,9 @@ import {
     id: number;
 
     @Column()
+    title: string;
+
+    @Column()
     adressCountry: string;
 
     @Column()
