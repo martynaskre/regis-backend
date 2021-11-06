@@ -1,13 +1,21 @@
+import { Business } from '../business/business.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('providers')
 export class ProviderEntity {
+
+  @OneToOne(() => Business)
+  @JoinColumn()
+  business: Business;
+
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -1,7 +1,9 @@
+import { ProviderEntity } from '../provider/provider.entity';
 import {
     Column,
     CreateDateColumn,
     Entity,
+    OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
   } from 'typeorm';
@@ -9,8 +11,12 @@ import {
   @Entity('businesses')
   export class Business {
 
-    
-  
+    @OneToOne(() => ProviderEntity, (provider: ProviderEntity) => provider.business)
+    provider: ProviderEntity;
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @CreateDateColumn({
       type: 'timestamp',
       default: () => 'NOW()',
