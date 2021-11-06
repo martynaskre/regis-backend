@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity('clients')
-export class User {
+export class Client {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,14 +17,16 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
-  phoneNumber: number;
+  @Column({
+    unique: true,
+  })
+  phoneNumber: string;
 
   @CreateDateColumn({
     type: 'timestamp',

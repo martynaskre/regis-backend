@@ -13,7 +13,7 @@ export async function compareHash(
   return await bcrypt.compare(value, hash);
 }
 
-export function formatResponse(message: string, data?: Object) {
+export function formatResponse(message: string, data?: any) {
   return {
     message,
     data,

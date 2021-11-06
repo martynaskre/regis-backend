@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ClientModule } from './client/client.module';
 import { ProviderModule } from './provider/provider.module';
 import { AuthModule } from './auth/auth.module';
 import * as path from 'path';
@@ -22,6 +23,7 @@ import * as path from 'path';
       entities: [path.join(__dirname, '**/*.entity{.ts,.js}')],
     }),
     AuthModule,
+    ClientModule,
     ProviderModule,
   ],
   controllers: [AppController],
