@@ -11,7 +11,6 @@ import {
 
 @Entity('providers')
 export class ProviderEntity {
-
   @OneToOne(() => Business)
   @JoinColumn()
   business: Business;

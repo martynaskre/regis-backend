@@ -1,57 +1,58 @@
 import { ProviderEntity } from '../provider/provider.entity';
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    OneToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-  } from 'typeorm';
-  
-  @Entity('businesses')
-  export class Business {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-    @OneToOne(() => ProviderEntity, (provider: ProviderEntity) => provider.business)
-    provider: ProviderEntity;
+@Entity('businesses')
+export class Business {
+  @OneToOne(
+    () => ProviderEntity,
+    (provider: ProviderEntity) => provider.business,
+  )
+  provider: ProviderEntity;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    title: string;
+  @Column()
+  title: string;
 
-    @Column()
-    adressCountry: string;
+  @Column()
+  adressCountry: string;
 
-    @Column()
-    adressCity: string;
+  @Column()
+  adressCity: string;
 
-    @Column()
-    adressStreet: string;
+  @Column()
+  adressStreet: string;
 
-    @Column()
-    adressHouseNumber: string;
+  @Column()
+  adressHouseNumber: string;
 
-    @Column()
-    adressPostCode: string;
+  @Column()
+  adressPostCode: string;
 
-    @Column()
-    shortDescription: string;
+  @Column()
+  shortDescription: string;
 
-    @Column()
-    longDescription: string;
+  @Column()
+  longDescription: string;
 
-    @CreateDateColumn({
-      type: 'timestamp',
-      default: () => 'NOW()',
-    })
-    public createdAt: Date;
-  
-    @UpdateDateColumn({
-      type: 'timestamp',
-      default: () => 'NOW()',
-      onUpdate: 'NOW()',
-    })
-    public updatedAt: Date;
-  }
-  
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'NOW()',
+  })
+  public createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'NOW()',
+    onUpdate: 'NOW()',
+  })
+  public updatedAt: Date;
+}
