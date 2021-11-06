@@ -17,6 +17,27 @@ import {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column()
+    adressCountry: string;
+
+    @Column()
+    adressCity: string;
+
+    @Column()
+    adressStreet: string;
+
+    @Column()
+    adressHouseNumber: string;
+
+    @Column()
+    adressPostCode: string;
+
+    @Column()
+    shortDescription: string;
+
+    @Column()
+    longDescription: string;
+
     @CreateDateColumn({
       type: 'timestamp',
       default: () => 'NOW()',
