@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProviderEntity } from 'src/provider/provider.entity';
 import { Repository } from 'typeorm';
 import { Business } from './business.entity';
 import { CreateBussinesDto } from './dto/create-business.dto';
@@ -11,9 +12,10 @@ export class BusinessService {
     private readonly businessRepository: Repository<Business>,
   ) {}
 
-  async create(businessData: CreateBussinesDto) {
+  async create(businessData: CreateBussinesDto, provider: ProviderEntity) {
     const business = new Business();
 
+    business.provider = provider;
     business.title = businessData.title;
     business.adressCountry = businessData.address_country;
     business.adressCity = businessData.address_city;
