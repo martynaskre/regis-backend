@@ -10,11 +10,9 @@ export class BusinessController {
 
   @Post()
   @UseGuards(ProviderGuard)
-  async createBusiness(
-    @Body() business: CreateBussinesDto,
-    @Req() request: RequestWithProvider,
-  ) {
-    return this.bussinesService.create(business, request.provider);
+  async createBusiness(@Body() business: CreateBussinesDto,
+  @Req() request: RequestWithProvider) {
+    return this.bussinesService.createBusiness(business, request.provider);
   }
 
   //@POST(service)
@@ -22,8 +20,8 @@ export class BusinessController {
   //@PUT(:id)
 
   @Get()
-  async getBusinesses() {
-    return this.bussinesService.getBusiness();
+  async getBusinesses(){
+    return this.bussinesService.getBusinesses();
   }
 
   //@GET(:id)

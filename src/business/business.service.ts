@@ -12,7 +12,10 @@ export class BusinessService {
     private readonly businessRepository: Repository<Business>,
   ) {}
 
-  async create(businessData: CreateBussinesDto, provider: ProviderEntity) {
+  async createBusiness(
+    businessData: CreateBussinesDto,
+    provider: ProviderEntity,
+  ) {
     const business = new Business();
 
     business.provider = provider;
@@ -28,5 +31,14 @@ export class BusinessService {
     await this.businessRepository.save(business);
 
     return business;
+  }
+
+  async getBusinesses() {
+    const businesses = await this.businessRepository
+      .createQueryBuilder('business')
+      .orderBy('business.id')
+      .getMany();
+
+    return businesses;
   }
 }
