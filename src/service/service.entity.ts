@@ -14,5 +14,23 @@ import {
 export class Service {
     @ManyToOne(() => Business, (business) => business.services)
     business: Business ;
+
+    @PrimaryGeneratedColumn()
+    id: number;
+  
+    @Column()
+    title: string;
+
+    @Column()
+    description: string;
+
+    @Column()
+    minPrice: number;
+
+    @Column({
+        nullable: true
+    })
+    maxPrice: number;
+
  
 }
