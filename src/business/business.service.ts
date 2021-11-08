@@ -50,4 +50,12 @@ export class BusinessService {
 
     return business;
   }
+
+  async deleteBusinessById(id: number) {
+    const business = await this.businessRepository
+    .createQueryBuilder('business')
+    .delete().where({id: id}).execute();;
+
+    return "business";
+  }
 }
