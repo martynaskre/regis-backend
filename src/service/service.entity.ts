@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('Service')
+@Entity('services')
 export class Service {
   @ManyToOne(() => Business, (business) => business.services)
   business: Business;

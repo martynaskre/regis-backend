@@ -1,4 +1,11 @@
-import { IsNumber, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class UpadateServiceDto {
   @IsString()
@@ -21,4 +28,3 @@ export class UpadateServiceDto {
   @IsNumber()
   readonly maxPrice: number;
 }
-

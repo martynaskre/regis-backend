@@ -27,8 +27,6 @@ export class BusinessController {
     return this.bussinesService.createBusiness(business, request.provider);
   }
 
-  //@POST(service)
-
   @Put(':id')
   async(
     @Param('id') id: string,

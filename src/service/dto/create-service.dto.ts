@@ -1,6 +1,18 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreateServiceDto {
+  @IsNumber()
+  @IsNotEmpty()
+  businessId: number;
+
   @IsString()
   @MaxLength(50)
   @MinLength(1)
@@ -15,10 +27,9 @@ export class CreateServiceDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  readonly minPirce: number;
+  readonly minPrice: number;
 
   @IsOptional()
   @IsNumber()
   readonly maxPrice: number;
 }
-
