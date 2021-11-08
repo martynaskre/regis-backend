@@ -44,18 +44,20 @@ export class BusinessService {
 
   async getBusinessById(id: number) {
     const business = await this.businessRepository
-    .createQueryBuilder('business')
-    .where({ id: id })
-    .getOne();
+      .createQueryBuilder('business')
+      .where({ id: id })
+      .getOne();
 
     return business;
   }
 
   async deleteBusinessById(id: number) {
     const business = await this.businessRepository
-    .createQueryBuilder('business')
-    .delete().where({id: id}).execute();;
+      .createQueryBuilder('business')
+      .delete()
+      .where({ id: id })
+      .execute();
 
-    return "business";
+    return 'business deleted';
   }
 }
