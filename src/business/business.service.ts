@@ -41,4 +41,13 @@ export class BusinessService {
 
     return businesses;
   }
+
+  async getBusinessById(id: number) {
+    const business = await this.businessRepository
+    .createQueryBuilder('business')
+    .where({ id: id })
+    .getOne();
+
+    return business;
+  }
 }

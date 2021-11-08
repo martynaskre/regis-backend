@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ProviderGuard } from '../auth/guards/provider.guard';
 import { RequestWithProvider } from 'src/interfaces/requestWithProvider.interface';
 import { BusinessService } from './business.service';
@@ -24,7 +24,12 @@ export class BusinessController {
     return this.bussinesService.getBusinesses();
   }
 
-  //@GET(:id)
+  @Get(':id')
+  async getBusinessById(@Param('id') id: string){
+    return this.bussinesService.getBusinessById(Number(id));
+
+  }
+
 
   //@GET(user/:id)
 
