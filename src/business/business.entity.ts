@@ -3,10 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Service } from '../service/service.entity';
 
 @Entity('businesses')
 export class Business {
@@ -15,6 +17,9 @@ export class Business {
     (provider: ProviderEntity) => provider.business,
   )
   provider: ProviderEntity;
+
+  @OneToMany(() => Service, (service) => service.business)
+  services: Service[];
 
   @PrimaryGeneratedColumn()
   id: number;
