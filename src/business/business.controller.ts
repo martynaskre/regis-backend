@@ -28,7 +28,7 @@ export class BusinessController {
   }
 
   @Put(':id')
-  async(
+  async updateBusiness(
     @Param('id') id: string,
     @Body() UpdateBusinessBody: UpadateBussinesDto,
   ) {
@@ -45,7 +45,7 @@ export class BusinessController {
     return this.bussinesService.getBusinessById(Number(id));
   }
 
-  //@GET(user/:id)
+  //@GET(provider/:id)
 
   @Delete(':id')
   async deleteBusinessById(@Param('id') id: string) {
