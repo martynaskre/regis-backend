@@ -19,8 +19,8 @@ export class BusinessService {
   ) {
     const business = this.businessRepository.create({
       ...businessData,
-      provider:provider
-    })
+      provider: provider,
+    });
     await this.businessRepository.save(business);
 
     return business;

@@ -1,46 +1,46 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class CreateBussinesDto {
+export class UpadateBussinesDto {
   @IsString()
   @MaxLength(50)
   @MinLength(1)
-  @IsNotEmpty()
+  @IsOptional()
   readonly title: string;
 
   @IsString()
   @MaxLength(255)
   @MinLength(1)
-  @IsNotEmpty()
+  @IsOptional()
   readonly addressCountry: string;
 
   @IsString()
   @MaxLength(255)
   @MinLength(1)
-  @IsNotEmpty()
+  @IsOptional()
   readonly addressCity: string;
 
   @IsString()
   @MaxLength(255)
   @MinLength(1)
-  @IsNotEmpty()
+  @IsOptional()
   readonly addressStreet: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(255)
   @MinLength(1)
   readonly addressHouseNumber: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(255)
   @MinLength(1)
   readonly addressPostCode: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(255)
   @MinLength(1)
   readonly shortDescription: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(255)
   @MinLength(1)
   readonly longDescription: string;

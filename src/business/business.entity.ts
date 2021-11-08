@@ -23,19 +23,19 @@ export class Business {
   title: string;
 
   @Column()
-  adressCountry: string;
+  addressCountry: string;
 
   @Column()
-  adressCity: string;
+  addressCity: string;
 
   @Column()
-  adressStreet: string;
+  addressStreet: string;
 
   @Column()
-  adressHouseNumber: string;
+  addressHouseNumber: string;
 
   @Column()
-  adressPostCode: string;
+  addressPostCode: string;
 
   @Column()
   shortDescription: string;
