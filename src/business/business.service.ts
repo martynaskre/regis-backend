@@ -45,7 +45,7 @@ export class BusinessService {
   }
 
   async deleteBusinessById(id: number) {
-    const business = await this.businessRepository
+    await this.businessRepository
       .createQueryBuilder('business')
       .delete()
       .where({ id: id })

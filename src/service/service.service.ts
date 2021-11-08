@@ -12,18 +12,16 @@ export class ServiceService {
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
     private readonly businessService: BusinessService,
-
   ) {}
 
   async createService(serviceData: CreateServiceDto) {
-
     const business = await this.businessService.getBusinessById(
-        serviceData.businessId
-      );
-    
+      serviceData.businessId,
+    );
+
     const service = this.serviceRepository.create({
       ...serviceData,
-      business
+      business,
     });
     await this.serviceRepository.save(service);
 
@@ -49,7 +47,7 @@ export class ServiceService {
   }
 
   async deleteServiceById(id: number) {
-    const business = await this.serviceRepository
+    await this.serviceRepository
       .createQueryBuilder('service')
       .delete()
       .where({ id: id })

@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpadateServiceDto } from './dto/update-service.dto';
 import { ServiceService } from './service.service';
@@ -36,5 +44,4 @@ export class ServiceController {
   ) {
     return this.serviceService.updateService(Number(id), UpdateServiceBody);
   }
-
 }
