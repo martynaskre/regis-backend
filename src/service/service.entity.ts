@@ -4,33 +4,42 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('Service')
 export class Service {
-    @ManyToOne(() => Business, (business) => business.services)
-    business: Business ;
+  @ManyToOne(() => Business, (business) => business.services)
+  business: Business;
 
-    @PrimaryGeneratedColumn()
-    id: number;
-  
-    @Column()
-    title: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    description: string;
+  @Column()
+  title: string;
 
-    @Column()
-    minPrice: number;
+  @Column()
+  description: string;
 
-    @Column({
-        nullable: true
-    })
-    maxPrice: number;
+  @Column()
+  minPrice: number;
 
- 
+  @Column({
+    nullable: true,
+  })
+  maxPrice: number;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'NOW()',
+  })
+  public createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'NOW()',
+    onUpdate: 'NOW()',
+  })
+  public updatedAt: Date;
 }
