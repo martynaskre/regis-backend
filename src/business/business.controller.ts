@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ProviderGuard } from '../auth/guards/provider.guard';
 import { RequestWithProvider } from 'src/interfaces/requestWithProvider.interface';
 import { BusinessService } from './business.service';
@@ -10,19 +10,25 @@ export class BusinessController {
 
   @Post()
   @UseGuards(ProviderGuard)
-  async createPost(@Body() business: CreateBussinesDto,
-  @Req() request: RequestWithProvider) {
-    console.log(request.provider)
+  async createBusiness(
+    @Body() business: CreateBussinesDto,
+    @Req() request: RequestWithProvider,
+  ) {
     return this.bussinesService.create(business, request.provider);
   }
 
-  //@POST(/service)
+  //@POST(service)
 
   //@PUT(:id)
 
-  //@GET()
+  @Get()
+  async getBusinesses() {
+    return this.bussinesService.getBusiness();
+  }
 
   //@GET(:id)
+
+  //@GET(user/:id)
 
   //@DELETE()
 }
