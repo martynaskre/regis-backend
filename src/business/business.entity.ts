@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -12,10 +13,8 @@ import { Service } from '../service/service.entity';
 
 @Entity('businesses')
 export class Business {
-  @OneToOne(
-    () => ProviderEntity,
-    (provider: ProviderEntity) => provider.business,
-  )
+  @OneToOne(() => ProviderEntity, (provider) => provider.business )
+  @JoinColumn()
   provider: ProviderEntity;
 
   @OneToMany(() => Service, (service) => service.business)
