@@ -46,7 +46,19 @@ export class BusinessService {
     return business;
   }
 
-  async deleteBusinessById(id: number) {
+  async deleteBusinessById(id: number, provider: ProviderEntity) {
+
+    const business = await this.getBusinessById(id);
+
+    if(business.provider.id !== provider.id){
+      throw new HttpException(
+        {
+          message: "The id's dont match.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     await this.businessRepository
       .createQueryBuilder('business')
       .delete()

@@ -50,7 +50,7 @@ export class BusinessController {
   //@GET(provider/:id)
 
   @Delete(':id')
-  async deleteBusinessById(@Param('id') id: string) {
-    return this.bussinesService.deleteBusinessById(Number(id));
+  async deleteBusinessById(@Param('id') id: string, @Request() request,) {
+    return this.bussinesService.deleteBusinessById(Number(id), request.user);
   }
 }
