@@ -15,6 +15,7 @@ import { BusinessService } from './business.service';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
 
+@UseGuards(ProviderGuard)
 @Controller('business')
 export class BusinessController {
   constructor(private readonly bussinesService: BusinessService) {}

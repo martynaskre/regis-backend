@@ -15,7 +15,7 @@ import { Client } from '../client/client.entity';
       useFactory: async (configService: ConfigService) => ({
         secretOrPrivateKey: configService.get('JWT_SECRET'),
         signOptions: {
-          expiresIn: 3600,
+          expiresIn: 2592000,
         },
       }),
       inject: [ConfigService],

@@ -6,11 +6,14 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { ProviderGuard } from 'src/auth/guards/provider.guard';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpadateServiceDto } from './dto/update-service.dto';
 import { ServiceService } from './service.service';
 
+@UseGuards(ProviderGuard)
 @Controller('service')
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
