@@ -31,8 +31,10 @@ export class BusinessController {
   async updateBusiness(
     @Param('id') id: string,
     @Body() UpdateBusinessBody: UpadateBussinesDto,
+    @Request() request,
   ) {
-    return this.bussinesService.updateBusiness(Number(id), UpdateBusinessBody);
+    console.log(request.user)
+    return this.bussinesService.updateBusiness(Number(id), UpdateBusinessBody, request.user);
   }
 
   @Get()

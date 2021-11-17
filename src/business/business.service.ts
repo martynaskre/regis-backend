@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
 import { Repository } from 'typeorm';
 import { Business } from './business.entity';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
+import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import { Console } from 'console';
 
 @Injectable()
 export class BusinessService {
@@ -38,9 +40,9 @@ export class BusinessService {
   async getBusinessById(id: number) {
     const business = await this.businessRepository
       .createQueryBuilder('business')
-      .where({ id: id })
+      .where({ id: id }) 
+      .leftJoinAndSelect("business.provider", "provider")
       .getOne();
-
     return business;
   }
 
@@ -54,7 +56,19 @@ export class BusinessService {
     return 'business deleted';
   }
 
-  async updateBusiness(id: number, UpdateBusinessBody: UpadateBussinesDto) {
+  async updateBusiness(id: number, UpdateBusinessBody: UpadateBussinesDto, provider: ProviderEntity,) {
+
+    const business = await this.getBusinessById(id);
+
+    if(business.provider.id !== provider.id){
+      throw new HttpException(
+        {
+          message: "The id's dont match.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     await this.businessRepository.update(id, UpdateBusinessBody);
 
     return await this.businessRepository.findOne(id);
