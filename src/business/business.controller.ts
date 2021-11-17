@@ -6,11 +6,10 @@ import {
   Param,
   Post,
   Put,
-  Req,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ProviderGuard } from '../auth/guards/provider.guard';
-import { RequestWithProvider } from '../interfaces/requestWithProvider.interface';
 import { BusinessService } from './business.service';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
@@ -23,9 +22,9 @@ export class BusinessController {
   @Post()
   async createBusiness(
     @Body() business: CreateBussinesDto,
-    @Req() request: RequestWithProvider,
+    @Request() request,
   ) {
-    return this.bussinesService.createBusiness(business, request.provider);
+    return this.bussinesService.createBusiness(business, request.user);
   }
 
   @Put(':id')
