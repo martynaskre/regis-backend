@@ -7,12 +7,14 @@ import { compareHash, hash } from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { JwtPayload } from '../types';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ProviderService {
   constructor(
     @InjectRepository(ProviderEntity)
     private readonly providerRepository: Repository<ProviderEntity>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(providerData: CreateProviderDto) {
@@ -30,6 +32,8 @@ export class ProviderService {
       provider.companyName = providerData.company_name;
       provider.vatCode = providerData.vat_code;
     }
+
+    await this.mailService.sendMail(provider.email, 'test', 'provider.welcome');
 
     await this.providerRepository.save(provider);
   }
