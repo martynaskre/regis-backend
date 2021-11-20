@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { ClientModule } from './client/client.module';
 import { ProviderModule } from './provider/provider.module';
 import { AuthModule } from './auth/auth.module';
+import { BusinessModule } from './business/business.module';
+import { ServiceModule } from './service/service.module';
 import * as path from 'path';
 
 @Module({
@@ -25,6 +27,8 @@ import * as path from 'path';
     AuthModule,
     ClientModule,
     ProviderModule,
+    BusinessModule,
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
