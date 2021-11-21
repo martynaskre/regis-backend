@@ -3,54 +3,32 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('providers')
-export class ProviderEntity {
-  @OneToOne(() => Business)
+@Entity('services')
+export class Service {
+  @ManyToOne(() => Business, (business) => business.services)
   business: Business;
 
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  firstName: string;
+  title: string;
 
   @Column()
-  lastName: string;
-
-  @Column({
-    unique: true,
-  })
-  email: string;
+  description: string;
 
   @Column()
-  password: string;
-
-  @Column({
-    unique: true,
-  })
-  phoneNumber: string;
-
-  @Column()
-  isLegalEntity: boolean;
+  minPrice: number;
 
   @Column({
     nullable: true,
   })
-  companyName!: string;
-
-  @Column()
-  code: string;
-
-  @Column({
-    nullable: true,
-  })
-  vatCode!: string;
+  maxPrice: number;
 
   @CreateDateColumn({
     type: 'timestamp',
