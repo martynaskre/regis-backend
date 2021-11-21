@@ -16,13 +16,13 @@ export class CreateProviderDto {
   @MaxLength(255)
   @MinLength(1)
   @IsNotEmpty()
-  readonly first_name: string;
+  readonly firstName: string;
 
   @IsString()
   @MaxLength(255)
   @MinLength(1)
   @IsNotEmpty()
-  readonly last_name: string;
+  readonly lastName: string;
 
   @IsString()
   @MaxLength(255)
@@ -38,7 +38,7 @@ export class CreateProviderDto {
   @IsPhoneNumber()
   @MaxLength(255)
   @MinLength(1)
-  readonly phone_number: string;
+  readonly phoneNumber: string;
 
   @IsString()
   @MaxLength(20)
@@ -48,18 +48,18 @@ export class CreateProviderDto {
 
   @IsNotEmpty()
   @Match('password')
-  readonly password_confirmation: string;
+  readonly passwordConfirmation: string;
 
   @IsNotEmpty()
   @IsIn(['0', '1'])
-  readonly is_legal_entity: string;
+  readonly isLegalEntity: string;
 
   @ValidateIf((object) => object.is_legal_entity == 1)
   @IsString()
   @MaxLength(255)
   @MinLength(1)
   @IsNotEmpty()
-  readonly company_name: string;
+  readonly companyName: string;
 
   @IsString()
   @MaxLength(255)
@@ -72,5 +72,5 @@ export class CreateProviderDto {
   @MaxLength(255)
   @MinLength(1)
   @IsNotEmpty()
-  readonly vat_code: string;
+  readonly vatCode: string;
 }

@@ -19,11 +19,11 @@ export class ClientService {
   async create(clientData: CreateClientDto) {
     const client = new Client();
 
-    client.firstName = clientData.first_name;
-    client.lastName = clientData.last_name;
+    client.firstName = clientData.firstName;
+    client.lastName = clientData.lastName;
     client.email = clientData.email;
     client.password = await hash(clientData.password);
-    client.phoneNumber = clientData.phone_number;
+    client.phoneNumber = clientData.phoneNumber;
 
     await this.clientRepository.save(client);
 
