@@ -20,17 +20,17 @@ export class ProviderService {
   async create(providerData: CreateProviderDto) {
     const provider = new ProviderEntity();
 
-    provider.firstName = providerData.first_name;
-    provider.lastName = providerData.last_name;
+    provider.firstName = providerData.firstName;
+    provider.lastName = providerData.lastName;
     provider.email = providerData.email;
     provider.password = await hash(providerData.password);
-    provider.phoneNumber = providerData.phone_number;
-    provider.isLegalEntity = providerData.is_legal_entity == '1';
+    provider.phoneNumber = providerData.phoneNumber;
+    provider.isLegalEntity = providerData.isLegalEntity == '1';
     provider.code = providerData.code;
 
     if (provider.isLegalEntity) {
-      provider.companyName = providerData.company_name;
-      provider.vatCode = providerData.vat_code;
+      provider.companyName = providerData.companyName;
+      provider.vatCode = providerData.vatCode;
     }
 
     await this.mailService.sendMail(

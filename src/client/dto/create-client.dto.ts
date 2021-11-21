@@ -14,19 +14,19 @@ export class CreateClientDto {
   @MaxLength(255)
   @MinLength(1)
   @IsNotEmpty()
-  readonly first_name: string;
+  readonly firstName: string;
 
   @IsString()
   @MaxLength(255)
   @MinLength(1)
   @IsNotEmpty()
-  readonly last_name: string;
+  readonly lastName: string;
 
   @IsNotEmpty()
   @IsPhoneNumber()
   @MaxLength(255)
   @MinLength(1)
-  readonly phone_number: string;
+  readonly phoneNumber: string;
 
   @IsString()
   @MaxLength(255)
@@ -46,5 +46,5 @@ export class CreateClientDto {
 
   @IsNotEmpty()
   @Match('password')
-  readonly password_confirmation: string;
+  readonly passwordConfirmation: string;
 }
