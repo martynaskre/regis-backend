@@ -33,7 +33,14 @@ export class ProviderService {
       provider.vatCode = providerData.vat_code;
     }
 
-    await this.mailService.sendMail(provider.email, 'test', 'provider.welcome');
+    await this.mailService.sendMail(
+      provider.email,
+      'Sveikiname prisijungus!',
+      'provider.welcome',
+      {
+        provider,
+      },
+    );
 
     await this.providerRepository.save(provider);
   }

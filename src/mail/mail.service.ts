@@ -22,7 +22,7 @@ export class MailService {
         context: data,
       });
     } catch (e) {
-      console.log('Error while sending mail', e);
+      console.log('Error while sending mail.', e);
     }
   }
 }

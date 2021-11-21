@@ -6,12 +6,14 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { compareHash, hash } from '../utils';
 import { LogInClientDto } from './dto/login-client.dto';
 import { JwtPayload } from '../types';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ClientService {
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(clientData: CreateClientDto) {
@@ -24,6 +26,15 @@ export class ClientService {
     client.phoneNumber = clientData.phone_number;
 
     await this.clientRepository.save(client);
+
+    await this.mailService.sendMail(
+      client.email,
+      'Sveikiname prisijungus!',
+      'client.welcome',
+      {
+        client,
+      },
+    );
   }
 
   async login(loginClient: LogInClientDto): Promise<JwtPayload> {
