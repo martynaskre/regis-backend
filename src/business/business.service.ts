@@ -39,17 +39,16 @@ export class BusinessService {
   async getBusinessById(id: number) {
     const business = await this.businessRepository
       .createQueryBuilder('business')
-      .where({ id: id }) 
-      .leftJoinAndSelect("business.provider", "provider")
+      .where({ id: id })
+      .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
     return business;
   }
 
   async deleteBusinessById(id: number, provider: ProviderEntity) {
-
     const business = await this.getBusinessById(id);
 
-    if(business.provider.id !== provider.id){
+    if (business.provider.id !== provider.id) {
       throw new HttpException(
         {
           message: "The id's dont match.",
@@ -67,11 +66,14 @@ export class BusinessService {
     return 'business deleted';
   }
 
-  async updateBusiness(id: number, UpdateBusinessBody: UpadateBussinesDto, provider: ProviderEntity,) {
-
+  async updateBusiness(
+    id: number,
+    UpdateBusinessBody: UpadateBussinesDto,
+    provider: ProviderEntity,
+  ) {
     const business = await this.getBusinessById(id);
 
-    if(business.provider.id !== provider.id){
+    if (business.provider.id !== provider.id) {
       throw new HttpException(
         {
           message: "The id's dont match.",

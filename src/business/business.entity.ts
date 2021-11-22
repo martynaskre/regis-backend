@@ -13,7 +13,7 @@ import { Service } from '../service/service.entity';
 
 @Entity('businesses')
 export class Business {
-  @OneToOne(() => ProviderEntity, (provider) => provider.business )
+  @OneToOne(() => ProviderEntity, (provider) => provider.business)
   @JoinColumn()
   provider: ProviderEntity;
 

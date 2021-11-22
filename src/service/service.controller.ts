@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Request,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -19,8 +20,8 @@ export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post()
-  async createService(@Body() service: CreateServiceDto) {
-    return this.serviceService.createService(service);
+  async createService(@Body() service: CreateServiceDto, @Request() request) {
+    return this.serviceService.createService(service, request.user);
   }
 
   @Get()
@@ -36,15 +37,20 @@ export class ServiceController {
   //@Get(business:id)
 
   @Delete(':id')
-  async deleteServiceById(@Param('id') id: string) {
-    return this.serviceService.deleteServiceById(Number(id));
+  async deleteServiceById(@Param('id') id: string, @Request() request) {
+    return this.serviceService.deleteServiceById(Number(id), request.user);
   }
 
   @Put(':id')
   async updateService(
     @Param('id') id: string,
     @Body() UpdateServiceBody: UpadateServiceDto,
+    @Request() request,
   ) {
-    return this.serviceService.updateService(Number(id), UpdateServiceBody);
+    return this.serviceService.updateService(
+      Number(id),
+      UpdateServiceBody,
+      request.user,
+    );
   }
 }

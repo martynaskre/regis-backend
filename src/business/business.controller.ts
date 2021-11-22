@@ -33,8 +33,12 @@ export class BusinessController {
     @Body() UpdateBusinessBody: UpadateBussinesDto,
     @Request() request,
   ) {
-    console.log(request.user)
-    return this.bussinesService.updateBusiness(Number(id), UpdateBusinessBody, request.user);
+    console.log(request.user);
+    return this.bussinesService.updateBusiness(
+      Number(id),
+      UpdateBusinessBody,
+      request.user,
+    );
   }
 
   @Get()
@@ -50,7 +54,7 @@ export class BusinessController {
   //@GET(provider/:id)
 
   @Delete(':id')
-  async deleteBusinessById(@Param('id') id: string, @Request() request,) {
+  async deleteBusinessById(@Param('id') id: string, @Request() request) {
     return this.bussinesService.deleteBusinessById(Number(id), request.user);
   }
 }
