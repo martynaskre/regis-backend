@@ -1,35 +1,19 @@
-import { Business } from '../business/business.entity';
 import {
-  Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('services')
-export class Service {
-  @ManyToOne(() => Business, (business) => business.services)
-  business: Business;
-
+@Entity('client_bookings')
+export class clientBooking {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
-
-  @Column()
-  description: string;
-
-  @Column()
-  minPrice: number;
-
-  @Column({
-    nullable: true,
+  @CreateDateColumn({
+    type: 'timestamp',
   })
-  maxPrice: number;
+  public reservedTime: Date;
 
   @CreateDateColumn({
     type: 'timestamp',

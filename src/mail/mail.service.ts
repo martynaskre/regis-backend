@@ -4,11 +4,10 @@ import * as path from 'path';
 
 @Injectable()
 export class MailService {
-  private readonly logger = new Logger(MailService.name)
+  private readonly logger = new Logger(MailService.name);
   constructor(private readonly mailer: MailerService) {}
 
   async sendMail(
-    
     to: string,
     subject: string,
     template: string,
