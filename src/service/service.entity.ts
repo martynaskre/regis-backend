@@ -8,11 +8,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ClientBooking } from 'src/booking/clientBooking.entity';
 
 @Entity('services')
 export class Service {
   @ManyToOne(() => Business, (business) => business.services)
   business: Business;
+
+  @OneToMany(() => ClientBooking, (clientBooking) => clientBooking.service)
+  clientBookings: ClientBooking[];
 
   @PrimaryGeneratedColumn()
   id: number;

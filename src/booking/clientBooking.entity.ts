@@ -1,14 +1,23 @@
+import { Client } from 'src/client/client.entity';
+import { Service } from 'src/service/service.entity';
 import {
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('client_bookings')
-export class clientBooking {
+export class ClientBooking {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => Client, (client) => client.clientBookings)
+  client: Client;
+
+  @ManyToOne(() => Service, (service) => service.clientBookings)
+  service: Service;
 
   @CreateDateColumn({
     type: 'timestamp',

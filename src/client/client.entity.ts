@@ -1,7 +1,9 @@
+import { ClientBooking } from 'src/booking/clientBooking.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -10,6 +12,9 @@ import {
 export class Client {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(() => ClientBooking, (clientBooking) => clientBooking.client)
+  clientBookings: ClientBooking[];
 
   @Column()
   firstName: string;
