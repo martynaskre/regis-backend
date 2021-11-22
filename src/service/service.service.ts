@@ -6,6 +6,10 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpadateServiceDto } from './dto/update-service.dto';
 import { Service } from './service.entity';
 import { ProviderEntity } from '../provider/provider.entity';
+import {
+  PaginatedServicesResultDto,
+  PaginationDto,
+} from '../utils/dto/pagination.dto';
 
 @Injectable()
 export class ServiceService {
@@ -38,13 +42,22 @@ export class ServiceService {
     return service;
   }
 
-  async getServices() {
+  async getServices(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedServicesResultDto> {
+    const totalCount = await this.serviceRepository.count();
+
     const services = await this.serviceRepository
       .createQueryBuilder('service')
       .orderBy('service.id')
       .getMany();
 
-    return services;
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: services,
+    };
   }
 
   async getServicesById(id: number) {

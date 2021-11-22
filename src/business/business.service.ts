@@ -6,6 +6,10 @@ import { Business } from './business.entity';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import {
+  PaginatedBusinessesResultDto,
+  PaginationDto,
+} from 'src/utils/dto/pagination.dto';
 
 @Injectable()
 export class BusinessService {
@@ -27,13 +31,22 @@ export class BusinessService {
     return business;
   }
 
-  async getBusinesses() {
+  async getBusinesses(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedBusinessesResultDto> {
+    const totalCount = await this.businessRepository.count();
+
     const businesses = await this.businessRepository
       .createQueryBuilder('business')
       .orderBy('business.id')
       .getMany();
 
-    return businesses;
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: businesses,
+    };
   }
 
   async getBusinessById(id: number) {
