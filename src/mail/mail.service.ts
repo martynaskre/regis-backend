@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Injectable, Logger } from '@nestjs/common';
 import * as path from 'path';
 
 @Injectable()
 export class MailService {
+  private readonly logger = new Logger(MailService.name)
   constructor(private readonly mailer: MailerService) {}
 
   async sendMail(
+    
     to: string,
     subject: string,
     template: string,
@@ -22,7 +24,7 @@ export class MailService {
         context: data,
       });
     } catch (e) {
-      console.log('Error while sending mail.', e);
+      this.logger.warn('Error while sending mail.', e);
     }
   }
 }
