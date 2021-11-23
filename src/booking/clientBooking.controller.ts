@@ -5,12 +5,14 @@ import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
 
 @Controller('clientBooking')
 export class ClientBookingController {
-  constructor(private readonly clientBookingService: ClientBookingService ) {}
-
+  constructor(private readonly clientBookingService: ClientBookingService) {}
 
   @UseGuards(ClientGuard)
   @Post()
-  async createBooking(@Request() request, @Body() booking: CreateClientBookingDto) {
-    return this.clientBookingService.createBooking(booking,request.user);
+  async createBooking(
+    @Request() request,
+    @Body() booking: CreateClientBookingDto,
+  ) {
+    return this.clientBookingService.createBooking(booking, request.user);
   }
 }
