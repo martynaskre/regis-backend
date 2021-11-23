@@ -10,6 +10,7 @@ import { MailModule } from './mail/mail.module';
 import { BusinessModule } from './business/business.module';
 import { ServiceModule } from './service/service.module';
 import * as path from 'path';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import * as path from 'path';
     ProviderModule,
     MailModule,
     BusinessModule,
+    BookingModule,
     ServiceModule,
   ],
   controllers: [AppController],
