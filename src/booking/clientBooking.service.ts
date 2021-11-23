@@ -38,4 +38,16 @@ export class ClientBookingService {
 
     return booking;
   }
+
+  async getBookingById(id: number) {
+    const booking = await this.clientBookingRepository
+      .createQueryBuilder('clientBooking')
+      .where({ id: id })
+      .leftJoinAndSelect('clientBooking.client', 'client')
+      .leftJoinAndSelect('clientBooking.service', 'service')
+      .leftJoinAndSelect('service.business', 'business')
+      .getOne();
+    return booking;
+  }
+
 }

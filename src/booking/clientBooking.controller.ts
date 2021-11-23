@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { ClientGuard } from '../auth/guards/client.guard';
 import { ClientBookingService } from './clientBooking.service';
 import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
@@ -15,4 +15,11 @@ export class ClientBookingController {
   ) {
     return this.clientBookingService.createBooking(booking, request.user);
   }
+
+  //@UseGuards(ClientGuard)
+  @Get(":id")
+  async getBookingById(@Param('id') id: string) {
+    return this.clientBookingService.getBookingById(Number(id));
+  }
+
 }
