@@ -24,7 +24,15 @@ import * as path from 'path';
           from: configService.get('MAIL_FROM'),
         },
         template: {
-          adapter: new HandlebarsAdapter(),
+          adapter: new HandlebarsAdapter({
+            append: (str: any, suffix: any) => {
+              if (typeof str === 'string' && typeof suffix === 'string') {
+                return str + suffix;
+              }
+
+              return str;
+            },
+          }),
           options: {
             strict: true,
           },
@@ -40,6 +48,7 @@ import * as path from 'path';
       }),
       inject: [ConfigService],
     }),
+    ConfigModule,
   ],
   providers: [MailService],
   exports: [MailService],
