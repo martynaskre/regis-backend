@@ -72,4 +72,27 @@ export class ClientBookingService {
     };
   }
 
+  async deleteBookingById(id: number, client: Client) {
+    const booking = await this.getBookingById(id);
+
+    if (booking.client.id !== client.id && !booking) {
+      throw new HttpException(
+        {
+          message: "The id's dont match.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.clientBookingRepository
+      .createQueryBuilder('clientBooking')
+      .delete()
+      .where({ id: id })
+      .execute();
+
+    return 'client Booking deleted';
+  }
+
+
+
 }
