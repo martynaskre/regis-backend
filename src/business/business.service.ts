@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { Business } from './business.entity';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import {
   PaginatedBusinessesResultDto,
   PaginationDto,
