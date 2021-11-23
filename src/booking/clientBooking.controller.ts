@@ -38,7 +38,7 @@ export class ClientBookingController {
 
   @UseGuards(ClientGuard)
   @Get()
-  async getBusinesses(
+  async getBookings(
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
     return this.clientBookingService.getBookings({
@@ -55,4 +55,4 @@ export class ClientBookingController {
       request.user,
     );
   }
-}
+} 
