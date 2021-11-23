@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /var/www/html/dev/api
+            cd /var/www/dev/api
             git pull origin main
             npm install --production
             npm run build
