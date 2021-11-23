@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/client/client.entity';
 import { ServiceService } from 'src/service/service.service';
-import { PaginatedClientBookingsResultDto, PaginationDto } from 'src/utils/dto/pagination.dto';
+import {
+  PaginatedClientBookingsResultDto,
+  PaginationDto,
+} from 'src/utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
@@ -92,7 +95,4 @@ export class ClientBookingService {
 
     return 'client Booking deleted';
   }
-
-
-
 }

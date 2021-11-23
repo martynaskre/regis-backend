@@ -14,9 +14,7 @@ export class PaginatedServicesResultDto extends PaginationDto {
   data: Service[];
   totalCount: number;
 }
-
 export class PaginatedClientBookingsResultDto extends PaginationDto {
   data: ClientBooking[];
   totalCount: number;
 }
-
