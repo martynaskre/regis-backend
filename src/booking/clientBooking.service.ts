@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/client/client.entity';
 import { ServiceService } from 'src/service/service.service';
+import { PaginatedClientBookingsResultDto, PaginationDto } from 'src/utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
@@ -48,6 +49,27 @@ export class ClientBookingService {
       .leftJoinAndSelect('service.business', 'business')
       .getOne();
     return booking;
+  }
+
+  async getBookings(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedClientBookingsResultDto> {
+    const totalCount = await this.clientBookingRepository.count();
+
+    const bookings = await this.clientBookingRepository
+      .createQueryBuilder('clientBooking')
+      .orderBy('clientBooking.id')
+      .leftJoinAndSelect('clientBooking.client', 'client')
+      .leftJoinAndSelect('clientBooking.service', 'service')
+      .leftJoinAndSelect('service.business', 'business')
+      .getMany();
+
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: bookings,
+    };
   }
 
 }

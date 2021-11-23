@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { PaginatedClientBookingsResultDto, PaginationDto } from 'src/utils/dto/pagination.dto';
 import { ClientGuard } from '../auth/guards/client.guard';
 import { ClientBookingService } from './clientBooking.service';
 import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
@@ -20,6 +21,16 @@ export class ClientBookingController {
   @Get(":id")
   async getBookingById(@Param('id') id: string) {
     return this.clientBookingService.getBookingById(Number(id));
+  }
+
+  @Get()
+  async getBusinesses(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedClientBookingsResultDto> {
+    return this.clientBookingService.getBookings({
+      ...paginationDto,
+      limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
+    });
   }
 
 }
