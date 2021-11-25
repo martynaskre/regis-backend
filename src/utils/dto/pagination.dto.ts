@@ -1,4 +1,5 @@
 import { ClientBooking } from 'src/booking/clientBooking.entity';
+import { ProviderBooking } from 'src/booking/providerBooking.entity';
 import { Business } from '../../business/business.entity';
 import { Service } from '../../service/service.entity';
 
@@ -18,3 +19,8 @@ export class PaginatedClientBookingsResultDto extends PaginationDto {
   data: ClientBooking[];
   totalCount: number;
 }
+export class PaginatedProviderBookingsResultDto extends PaginationDto {
+  data: ProviderBooking[];
+  totalCount: number;
+}
+
