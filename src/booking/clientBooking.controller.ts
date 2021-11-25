@@ -15,7 +15,7 @@ import {
 } from 'src/utils/dto/pagination.dto';
 import { ClientGuard } from '../auth/guards/client.guard';
 import { ClientBookingService } from './clientBooking.service';
-import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
+import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 
 @Controller('clientBooking')
 export class ClientBookingController {

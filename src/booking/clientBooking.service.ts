@@ -8,7 +8,7 @@ import {
 } from 'src/utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
-import { CreateClientBookingDto } from './dto/create-client-Booking.dto';
+import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 
 @Injectable()
 export class ClientBookingService {
