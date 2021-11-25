@@ -23,4 +23,3 @@ export class PaginatedProviderBookingsResultDto extends PaginationDto {
   data: ProviderBooking[];
   totalCount: number;
 }
-

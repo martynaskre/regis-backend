@@ -1,6 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ProviderGuard } from 'src/auth/guards/provider.guard';
-import { PaginatedProviderBookingsResultDto, PaginationDto } from 'src/utils/dto/pagination.dto';
+import {
+  PaginatedProviderBookingsResultDto,
+  PaginationDto,
+} from 'src/utils/dto/pagination.dto';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBookingService } from './providerBooking.service';
 

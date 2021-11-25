@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessService } from 'src/business/business.service';
 import { ProviderEntity } from 'src/provider/provider.entity';
-import { PaginatedProviderBookingsResultDto, PaginationDto } from 'src/utils/dto/pagination.dto';
+import {
+  PaginatedProviderBookingsResultDto,
+  PaginationDto,
+} from 'src/utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
