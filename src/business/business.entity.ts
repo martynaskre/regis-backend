@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Service } from '../service/service.entity';
+import { ProviderBooking } from 'src/booking/providerBooking.entity';
 
 @Entity('businesses')
 export class Business {
@@ -19,6 +20,9 @@ export class Business {
 
   @OneToMany(() => Service, (service) => service.business)
   services: Service[];
+
+  @OneToMany(() => ProviderBooking, (providerBooking) => providerBooking.business)
+  providerBookings: ProviderBooking[];
 
   @PrimaryGeneratedColumn()
   id: number;
