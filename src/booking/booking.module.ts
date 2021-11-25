@@ -12,8 +12,20 @@ import { ProviderBooking } from './providerBooking.entity';
 import { ProviderBookingService } from './providerBooking.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ClientBooking, Service, Business, ProviderBooking])],
+  imports: [
+    TypeOrmModule.forFeature([
+      ClientBooking,
+      Service,
+      Business,
+      ProviderBooking,
+    ]),
+  ],
   controllers: [ClientBookingController, ProviderBookingController],
-  providers: [ClientBookingService, ServiceService, BusinessService , ProviderBookingService],
+  providers: [
+    ClientBookingService,
+    ServiceService,
+    BusinessService,
+    ProviderBookingService,
+  ],
 })
 export class BookingModule {}

@@ -21,7 +21,10 @@ export class Business {
   @OneToMany(() => Service, (service) => service.business)
   services: Service[];
 
-  @OneToMany(() => ProviderBooking, (providerBooking) => providerBooking.business)
+  @OneToMany(
+    () => ProviderBooking,
+    (providerBooking) => providerBooking.business,
+  )
   providerBookings: ProviderBooking[];
 
   @PrimaryGeneratedColumn()
