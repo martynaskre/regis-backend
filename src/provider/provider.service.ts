@@ -8,6 +8,9 @@ import { LoginProviderDto } from './dto/login-provider.dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { PasswordResetService } from '../auth/passwordResets/passwordReset.service';
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 
 @Injectable()
 export class ProviderService {
@@ -15,6 +18,7 @@ export class ProviderService {
     @InjectRepository(ProviderEntity)
     private readonly providerRepository: Repository<ProviderEntity>,
     private readonly mailService: MailService,
+    private readonly passwordResetService: PasswordResetService,
   ) {}
 
   async create(providerData: CreateProviderDto) {
@@ -70,5 +74,62 @@ export class ProviderService {
       sub: provider.id,
       type: 'provider',
     };
+  }
+
+  async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    const provider = await this.providerRepository.findOne({
+      email: forgotPassword.email,
+    });
+
+    if (!provider) {
+      throw new HttpException(
+        {
+          message: 'The given data was invalid.',
+          errors: {
+            email: 'Provided email address is invalid.',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const token = await this.passwordResetService.createPasswordReset(provider);
+
+    await this.mailService.sendMail(
+      provider.email,
+      'Slaptažodžio atkūrimo užklausa',
+      'provider.reset-password',
+      {
+        provider,
+        token,
+      },
+    );
+  }
+
+  async resetPassword(resetPassword: ResetPasswordDto) {
+    const passwordReset = await this.passwordResetService.findResetEntity(
+      resetPassword.token,
+    );
+
+    if (!passwordReset || passwordReset.email !== resetPassword.email) {
+      throw new HttpException(
+        {
+          message: 'The given data was invalid.',
+          errors: {
+            email: 'Provided email address is invalid.',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    await this.providerRepository.update(
+      { email: resetPassword.email },
+      {
+        password: await hash(resetPassword.password),
+      },
+    );
+
+    await this.passwordResetService.removeEntity(resetPassword.token);
   }
 }

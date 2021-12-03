@@ -12,6 +12,8 @@ import { formatResponse } from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
 import { AuthService } from '../auth/auth.service';
 import { ProviderGuard } from '../auth/guards/provider.guard';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 
 @Controller('providers')
 export class ProviderController {
@@ -40,5 +42,19 @@ export class ProviderController {
   @Get('user')
   async user(@Request() request) {
     return formatResponse('User data.', request.user);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPassword: ForgotPasswordDto) {
+    const data = await this.providerService.forgotPassword(forgotPassword);
+
+    return formatResponse('Email sent');
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPassword: ResetPasswordDto) {
+    const data = await this.providerService.resetPassword(resetPassword);
+
+    return formatResponse('Password changed');
   }
 }
