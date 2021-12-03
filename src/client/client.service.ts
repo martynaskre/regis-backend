@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from './client.entity';
 import { CreateClientDto } from './dto/create-client.dto';
-import { compareHash, hash } from '../utils';
+import { compareHash, hash, throwValidationException } from '../utils';
 import { LogInClientDto } from './dto/login-client.dto';
 import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
@@ -46,15 +46,9 @@ export class ClientService {
       !client ||
       !(await compareHash(loginClient.password, client.password))
     ) {
-      throw new HttpException(
-        {
-          message: 'The given data was invalid.',
-          errors: {
-            email: 'These credentials do not match our records.',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throwValidationException({
+        email: 'These credentials do not match our records.',
+      });
     }
 
     return {

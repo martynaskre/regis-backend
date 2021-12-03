@@ -1,11 +1,10 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from './provider.entity';
 import { Repository } from 'typeorm';
 import { CreateProviderDto } from './dto/create-provider.dto';
-import { compareHash, hash } from '../utils';
+import { compareHash, hash, throwValidationException } from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -58,15 +57,9 @@ export class ProviderService {
       !provider ||
       !(await compareHash(providerLogin.password, provider.password))
     ) {
-      throw new HttpException(
-        {
-          message: 'The given data was invalid.',
-          errors: {
-            email: 'These credentials do not match our records.',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throwValidationException({
+        email: 'These credentials do not match our records.',
+      });
     }
 
     return {
@@ -82,15 +75,9 @@ export class ProviderService {
     });
 
     if (!provider) {
-      throw new HttpException(
-        {
-          message: 'The given data was invalid.',
-          errors: {
-            email: 'Provided email address is invalid.',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throwValidationException({
+        email: 'Provided email address is invalid.',
+      });
     }
 
     const token = await this.passwordResetService.createPasswordReset(provider);
@@ -112,15 +99,9 @@ export class ProviderService {
     );
 
     if (!passwordReset || passwordReset.email !== resetPassword.email) {
-      throw new HttpException(
-        {
-          message: 'The given data was invalid.',
-          errors: {
-            email: 'Provided email address is invalid.',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throwValidationException({
+        email: 'Provided email address is invalid.',
+      });
     }
 
     await this.providerRepository.update(
