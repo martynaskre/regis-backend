@@ -10,7 +10,7 @@ import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PasswordResetService } from '../auth/passwordResets/passwordReset.service';
-import { ForgotPasswordDto } from "./dto/forgot-password.dto";
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Injectable()
 export class ProviderService {

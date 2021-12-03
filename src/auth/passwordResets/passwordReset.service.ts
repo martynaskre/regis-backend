@@ -19,7 +19,7 @@ export class PasswordResetService {
     const token = await hash(new Date().toDateString() + entity.email);
 
     const expiresAt = new Date();
-    expiresAt.setMinutes(new Date().getMinutes() + 15)
+    expiresAt.setMinutes(new Date().getMinutes() + 15);
 
     passwordReset.type =
       entity instanceof ProviderEntity ? 'provider' : 'client';
