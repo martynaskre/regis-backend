@@ -12,6 +12,8 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { LogInClientDto } from './dto/login-client.dto';
 import { formatResponse } from '../utils';
 import { ClientGuard } from '../auth/guards/client.guard';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('clients')
 export class ClientController {
@@ -40,5 +42,19 @@ export class ClientController {
   @Get('user')
   async user(@Request() request) {
     return formatResponse('User data.', request.user);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPassword: ForgotPasswordDto) {
+    await this.clientService.forgotPassword(forgotPassword);
+
+    return formatResponse('Email sent');
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPassword: ResetPasswordDto) {
+    await this.clientService.resetPassword(resetPassword);
+
+    return formatResponse('Password changed');
   }
 }

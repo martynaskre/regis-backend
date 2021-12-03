@@ -25,12 +25,8 @@ import * as path from 'path';
         },
         template: {
           adapter: new HandlebarsAdapter({
-            append: (str: any, suffix: any) => {
-              if (typeof str === 'string' && typeof suffix === 'string') {
-                return str + suffix;
-              }
-
-              return str;
+            append: (string: string, ...strings: any) => {
+              return string + strings.join('');
             },
           }),
           options: {

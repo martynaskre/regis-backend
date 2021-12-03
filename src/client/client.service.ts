@@ -7,6 +7,9 @@ import { compareHash, hash, throwValidationException } from '../utils';
 import { LogInClientDto } from './dto/login-client.dto';
 import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { PasswordResetService } from '../auth/passwordResets/passwordReset.service';
 
 @Injectable()
 export class ClientService {
@@ -14,6 +17,7 @@ export class ClientService {
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
     private readonly mailService: MailService,
+    private readonly passwordResetService: PasswordResetService,
   ) {}
 
   async create(clientData: CreateClientDto) {
@@ -56,5 +60,50 @@ export class ClientService {
       sub: client.id,
       type: 'client',
     };
+  }
+
+  async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    const client = await this.clientRepository.findOne({
+      email: forgotPassword.email,
+    });
+
+    if (!client) {
+      throwValidationException({
+        email: 'Provided email address is invalid.',
+      });
+    }
+
+    const token = await this.passwordResetService.createPasswordReset(client);
+
+    await this.mailService.sendMail(
+      client.email,
+      'Slaptažodžio atkūrimo užklausa',
+      'client.reset-password',
+      {
+        client,
+        token,
+      },
+    );
+  }
+
+  async resetPassword(resetPassword: ResetPasswordDto) {
+    const passwordReset = await this.passwordResetService.findResetEntity(
+      resetPassword.token,
+    );
+
+    if (!passwordReset || passwordReset.email !== resetPassword.email) {
+      throwValidationException({
+        email: 'Provided email address is invalid.',
+      });
+    }
+
+    await this.clientRepository.update(
+      { email: resetPassword.email },
+      {
+        password: await hash(resetPassword.password),
+      },
+    );
+
+    await this.passwordResetService.removeEntity(resetPassword.token);
   }
 }
