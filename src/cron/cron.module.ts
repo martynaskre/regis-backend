@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PasswordResetEntity } from '../auth/passwordResets/passwordReset.entity';
+import { PasswordResetEntity } from '../auth/passwor-resets/password-reset.entity';
 import { CleanPasswordResetsJob } from './jobs/clean-password-resets.job';
 
 @Module({

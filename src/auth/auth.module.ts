@@ -7,8 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
 import { ClientStrategy } from './strategies/client.strategy';
 import { Client } from '../client/client.entity';
-import { PasswordResetEntity } from './passwordResets/passwordReset.entity';
-import { PasswordResetService } from './passwordResets/passwordReset.service';
+import { PasswordResetEntity } from './passwor-resets/password-reset.entity';
+import { PasswordResetService } from './passwor-resets/password-reset.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PasswordResetService } from './passwordResets/passwordReset.service';
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([ProviderEntity, Client, PasswordResetEntity]),
+    MailModule
   ],
   providers: [
     AuthService,

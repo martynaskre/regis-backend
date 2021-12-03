@@ -9,7 +9,7 @@ import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { PasswordResetService } from '../auth/passwordResets/passwordReset.service';
+import { PasswordResetService } from '../auth/passwor-resets/password-reset.service';
 
 @Injectable()
 export class ClientService {
@@ -63,47 +63,31 @@ export class ClientService {
   }
 
   async forgotPassword(forgotPassword: ForgotPasswordDto) {
-    const client = await this.clientRepository.findOne({
-      email: forgotPassword.email,
-    });
-
-    if (!client) {
-      throwValidationException({
-        email: 'Provided email address is invalid.',
+    await this.passwordResetService.handlePasswordForget(async () => {
+      return await this.clientRepository.findOne({
+        email: forgotPassword.email,
       });
-    }
-
-    const token = await this.passwordResetService.createPasswordReset(client);
-
-    await this.mailService.sendMail(
-      client.email,
-      'Slaptažodžio atkūrimo užklausa',
-      'client.reset-password',
-      {
-        client,
-        token,
-      },
-    );
+    }, 'client.reset-password');
   }
 
   async resetPassword(resetPassword: ResetPasswordDto) {
-    const passwordReset = await this.passwordResetService.findResetEntity(
+    await this.passwordResetService.handlePasswordReset(
+      'client',
       resetPassword.token,
-    );
+      resetPassword.email,
+      async () => {
+        const client = await this.clientRepository.findOne({
+          email: resetPassword.email,
+        });
 
-    if (!passwordReset || passwordReset.email !== resetPassword.email) {
-      throwValidationException({
-        email: 'Provided email address is invalid.',
-      });
-    }
+        await this.clientRepository.save({
+          id: client.id,
+          password: await hash(resetPassword.password),
+        });
 
-    await this.clientRepository.update(
-      { email: resetPassword.email },
-      {
-        password: await hash(resetPassword.password),
+        return client;
       },
+      'client.password-changed',
     );
-
-    await this.passwordResetService.removeEntity(resetPassword.token);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PasswordResetEntity } from '../../auth/passwordResets/passwordReset.entity';
+import { PasswordResetEntity } from '../../auth/passwor-resets/password-reset.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
