@@ -24,7 +24,7 @@ import { MailModule } from '../mail/mail.module';
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([ProviderEntity, Client, PasswordResetEntity]),
-    MailModule
+    MailModule,
   ],
   providers: [
     AuthService,
