@@ -11,9 +11,12 @@ import { BusinessModule } from './business/business.module';
 import { ServiceModule } from './service/service.module';
 import * as path from 'path';
 import { BookingModule } from './booking/booking.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -33,6 +36,7 @@ import { BookingModule } from './booking/booking.module';
     BusinessModule,
     BookingModule,
     ServiceModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
 import { ClientStrategy } from './strategies/client.strategy';
 import { Client } from '../client/client.entity';
+import { PasswordResetEntity } from './passwor-resets/password-reset.entity';
+import { PasswordResetService } from './passwor-resets/password-reset.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -20,9 +23,15 @@ import { Client } from '../client/client.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([ProviderEntity, Client]),
+    TypeOrmModule.forFeature([ProviderEntity, Client, PasswordResetEntity]),
+    MailModule,
   ],
-  providers: [AuthService, ProviderStrategy, ClientStrategy],
-  exports: [AuthService],
+  providers: [
+    AuthService,
+    ProviderStrategy,
+    ClientStrategy,
+    PasswordResetService,
+  ],
+  exports: [AuthService, PasswordResetService],
 })
 export class AuthModule {}

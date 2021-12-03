@@ -25,16 +25,16 @@ import * as path from 'path';
         },
         template: {
           adapter: new HandlebarsAdapter({
-            append: (str: any, suffix: any) => {
-              if (typeof str === 'string' && typeof suffix === 'string') {
-                return str + suffix;
-              }
+            append: (string: string, ...strings: any) => {
+              strings = strings.filter((str) => {
+                return typeof str === 'string';
+              });
 
-              return str;
+              return string + strings.join('');
             },
           }),
           options: {
-            strict: true,
+            strict: false,
           },
         },
         options: {

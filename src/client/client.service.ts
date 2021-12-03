@@ -1,12 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from './client.entity';
 import { CreateClientDto } from './dto/create-client.dto';
-import { compareHash, hash } from '../utils';
+import { compareHash, hash, throwValidationException } from '../utils';
 import { LogInClientDto } from './dto/login-client.dto';
 import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { PasswordResetService } from '../auth/passwor-resets/password-reset.service';
 
 @Injectable()
 export class ClientService {
@@ -14,6 +17,7 @@ export class ClientService {
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
     private readonly mailService: MailService,
+    private readonly passwordResetService: PasswordResetService,
   ) {}
 
   async create(clientData: CreateClientDto) {
@@ -46,15 +50,9 @@ export class ClientService {
       !client ||
       !(await compareHash(loginClient.password, client.password))
     ) {
-      throw new HttpException(
-        {
-          message: 'The given data was invalid.',
-          errors: {
-            email: 'These credentials do not match our records.',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throwValidationException({
+        email: 'These credentials do not match our records.',
+      });
     }
 
     return {
@@ -62,5 +60,34 @@ export class ClientService {
       sub: client.id,
       type: 'client',
     };
+  }
+
+  async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    await this.passwordResetService.handlePasswordForget(async () => {
+      return await this.clientRepository.findOne({
+        email: forgotPassword.email,
+      });
+    }, 'client.reset-password');
+  }
+
+  async resetPassword(resetPassword: ResetPasswordDto) {
+    await this.passwordResetService.handlePasswordReset(
+      'client',
+      resetPassword.token,
+      resetPassword.email,
+      async () => {
+        const client = await this.clientRepository.findOne({
+          email: resetPassword.email,
+        });
+
+        await this.clientRepository.save({
+          id: client.id,
+          password: await hash(resetPassword.password),
+        });
+
+        return client;
+      },
+      'client.password-changed',
+    );
   }
 }

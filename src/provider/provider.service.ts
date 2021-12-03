@@ -1,13 +1,15 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from './provider.entity';
 import { Repository } from 'typeorm';
 import { CreateProviderDto } from './dto/create-provider.dto';
-import { compareHash, hash } from '../utils';
+import { compareHash, hash, throwValidationException } from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { PasswordResetService } from '../auth/passwor-resets/password-reset.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Injectable()
 export class ProviderService {
@@ -15,6 +17,7 @@ export class ProviderService {
     @InjectRepository(ProviderEntity)
     private readonly providerRepository: Repository<ProviderEntity>,
     private readonly mailService: MailService,
+    private readonly passwordResetService: PasswordResetService,
   ) {}
 
   async create(providerData: CreateProviderDto) {
@@ -54,15 +57,9 @@ export class ProviderService {
       !provider ||
       !(await compareHash(providerLogin.password, provider.password))
     ) {
-      throw new HttpException(
-        {
-          message: 'The given data was invalid.',
-          errors: {
-            email: 'These credentials do not match our records.',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throwValidationException({
+        email: 'These credentials do not match our records.',
+      });
     }
 
     return {
@@ -70,5 +67,34 @@ export class ProviderService {
       sub: provider.id,
       type: 'provider',
     };
+  }
+
+  async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    await this.passwordResetService.handlePasswordForget(async () => {
+      return await this.providerRepository.findOne({
+        email: forgotPassword.email,
+      });
+    }, 'provider.reset-password');
+  }
+
+  async resetPassword(resetPassword: ResetPasswordDto) {
+    await this.passwordResetService.handlePasswordReset(
+      'provider',
+      resetPassword.token,
+      resetPassword.email,
+      async () => {
+        const provider = await this.providerRepository.findOne({
+          email: resetPassword.email,
+        });
+
+        await this.providerRepository.save({
+          id: provider.id,
+          password: await hash(resetPassword.password),
+        });
+
+        return provider;
+      },
+      'provider.password-changed',
+    );
   }
 }

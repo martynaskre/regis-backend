@@ -1,4 +1,6 @@
 import * as bcrypt from 'bcrypt';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { HttpStatus } from '@nestjs/common';
 
 const saltRounds = 10;
 
@@ -18,4 +20,17 @@ export function formatResponse(message: string, data?: any) {
     message,
     data,
   };
+}
+
+export function throwValidationException(
+  errors: any,
+  message = 'The given data was invalid.',
+) {
+  throw new HttpException(
+    {
+      message,
+      errors,
+    },
+    HttpStatus.UNPROCESSABLE_ENTITY,
+  );
 }
