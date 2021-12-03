@@ -26,11 +26,15 @@ import * as path from 'path';
         template: {
           adapter: new HandlebarsAdapter({
             append: (string: string, ...strings: any) => {
+              strings = strings.filter((str) => {
+                return typeof str === 'string';
+              });
+
               return string + strings.join('');
             },
           }),
           options: {
-            strict: true,
+            strict: false,
           },
         },
         options: {
