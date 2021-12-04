@@ -18,6 +18,8 @@ import { ProviderGuard } from '../auth/guards/provider.guard';
 import { BusinessService } from './business.service';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
+import { formatResponse } from '../utils';
+import { GetBusinessDto } from './dto/get-business.dto';
 
 @Controller('business')
 export class BusinessController {
@@ -49,11 +51,11 @@ export class BusinessController {
 
   @Get()
   async getBusinesses(
-    @Query() paginationDto: PaginationDto,
+    @Query() getBusinessDto: GetBusinessDto,
   ): Promise<PaginatedBusinessesResultDto> {
     return this.bussinesService.getBusinesses({
-      ...paginationDto,
-      limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
+      ...getBusinessDto,
+      limit: getBusinessDto.limit > 10 ? 10 : getBusinessDto.limit,
     });
   }
 
