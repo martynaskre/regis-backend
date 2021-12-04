@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Service } from '../service/service.entity';
 import { ProviderBooking } from 'src/booking/providerBooking.entity';
+import { CategoryEntity } from '../category/category.entity';
 
 @Entity('businesses')
 export class Business {
@@ -53,6 +54,10 @@ export class Business {
 
   @Column()
   longDescription: string;
+
+  @OneToOne(() => CategoryEntity)
+  @JoinColumn()
+  category: CategoryEntity;
 
   @CreateDateColumn({
     type: 'timestamp',

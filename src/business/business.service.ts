@@ -24,6 +24,9 @@ export class BusinessService {
     const business = this.businessRepository.create({
       ...businessData,
       provider: provider,
+      category: {
+        id: businessData.categoryId,
+      },
     });
     await this.businessRepository.save(business);
 

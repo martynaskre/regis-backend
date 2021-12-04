@@ -13,6 +13,7 @@ import * as path from 'path';
 import { BookingModule } from './booking/booking.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CronModule } from './cron/cron.module';
     BookingModule,
     ServiceModule,
     CronModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
