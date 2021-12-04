@@ -22,4 +22,5 @@ jobs:
             git pull origin main
             npm install --production
             npm run build
+            npm run seed
             pm2 restart regis-dev-api

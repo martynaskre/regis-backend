@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { Exists } from '../../shared/validation/Exists';
 
 export class CreateBussinesDto {
   @IsString()
@@ -44,4 +45,11 @@ export class CreateBussinesDto {
   @MaxLength(255)
   @MinLength(1)
   readonly longDescription: string;
+
+  @IsNotEmpty()
+  @Exists({
+    table: 'categories',
+    column: 'id',
+  })
+  readonly categoryId: number;
 }
