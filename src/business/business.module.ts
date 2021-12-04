@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BusinessController } from './business.controller';
 import { Business } from './business.entity';
 import { BusinessService } from './business.service';
+import { Service } from '../service/service.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Business])],
+  imports: [TypeOrmModule.forFeature([Business, Service])],
   controllers: [BusinessController],
   providers: [BusinessService],
 })

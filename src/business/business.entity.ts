@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -55,7 +56,7 @@ export class Business {
   @Column()
   longDescription: string;
 
-  @OneToOne(() => CategoryEntity)
+  @ManyToOne(() => CategoryEntity)
   @JoinColumn()
   category: CategoryEntity;
 
