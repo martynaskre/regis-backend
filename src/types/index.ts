@@ -3,3 +3,10 @@ export interface JwtPayload {
   sub: number;
   type: 'provider' | 'client';
 }
+
+export enum FrontEndpoint {
+  CLIENT_LOGIN = 'auth/login/client',
+  PROVIDER_LOGIN = 'auth/login/provider',
+  CLIENT_PASSWORD_RESET = 'auth/reset-password/client',
+  PROVIDER_PASSWORD_RESET = 'auth/reset-password/provider',
+}

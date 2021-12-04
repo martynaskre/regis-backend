@@ -18,7 +18,7 @@ export class MailService {
     data: any = {},
   ) {
     try {
-      template = path.join(__dirname, 'templates', ...template.split('.'));
+      template = path.resolve(__dirname, 'templates', ...template.split('.'));
 
       return await this.mailer.sendMail({
         to,

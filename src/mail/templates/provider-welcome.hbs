@@ -1,11 +1,11 @@
 {{#> layout }}
   {{#> heading }}
-    Sveiki, {{ provider.firstName }}!
+    Sveiki, {{ firstName }}!
   {{/heading }}
   {{#> paragraph }}
     Regis sveikina Jus tapus besiplečiančios paslaugų teikėjų bendruomenės dalimi.
   {{/paragraph }}
-  {{#> button link=(append frontUrl "auth/login/provider") }}
+  {{#> button link=actionUrl }}
     Prisijungti
   {{/button }}
 {{/layout }}

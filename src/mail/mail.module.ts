@@ -24,6 +24,7 @@ import * as path from 'path';
           from: configService.get('MAIL_FROM'),
         },
         template: {
+          dir: path.join(__dirname, 'templates'),
           adapter: new HandlebarsAdapter({
             append: (string: string, ...strings: any) => {
               strings = strings.filter((str) => {
@@ -34,12 +35,12 @@ import * as path from 'path';
             },
           }),
           options: {
-            strict: false,
+            strict: true,
           },
         },
         options: {
           partials: {
-            dir: path.join(__dirname, 'templates/partials'),
+            dir: path.join(__dirname, 'partials'),
             options: {
               strict: true,
             },

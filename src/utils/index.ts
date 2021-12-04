@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
+import { FrontEndpoint } from '../types';
 
 const saltRounds = 10;
 
@@ -33,4 +34,16 @@ export function throwValidationException(
     },
     HttpStatus.UNPROCESSABLE_ENTITY,
   );
+}
+
+export function formatFrontUrl(
+  endpoint: FrontEndpoint,
+  parameters: Record<string, string> = {},
+) {
+  const urlParams = new URLSearchParams(parameters);
+  const url = process.env.FRONT_URL + endpoint;
+
+  return Object.keys(parameters).length > 0
+    ? url + '?' + urlParams.toString()
+    : url;
 }

@@ -3,9 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from './provider.entity';
 import { Repository } from 'typeorm';
 import { CreateProviderDto } from './dto/create-provider.dto';
-import { compareHash, hash, throwValidationException } from '../utils';
+import {
+  compareHash,
+  formatFrontUrl,
+  hash,
+  throwValidationException,
+} from '../utils';
 import { LoginProviderDto } from './dto/login-provider.dto';
-import { JwtPayload } from '../types';
+import { FrontEndpoint, JwtPayload } from '../types';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PasswordResetService } from '../auth/passwor-resets/password-reset.service';
@@ -39,9 +44,10 @@ export class ProviderService {
     await this.mailService.sendMail(
       provider.email,
       'Sveikiname prisijungus!',
-      'provider.welcome',
+      'provider-welcome',
       {
-        provider,
+        firstName: provider.firstName,
+        actionUrl: formatFrontUrl(FrontEndpoint.PROVIDER_LOGIN),
       },
     );
 
@@ -74,7 +80,7 @@ export class ProviderService {
       return await this.providerRepository.findOne({
         email: forgotPassword.email,
       });
-    }, 'provider.reset-password');
+    });
   }
 
   async resetPassword(resetPassword: ResetPasswordDto) {
@@ -94,7 +100,6 @@ export class ProviderService {
 
         return provider;
       },
-      'provider.password-changed',
     );
   }
 }

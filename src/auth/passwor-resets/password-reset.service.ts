@@ -4,8 +4,9 @@ import { Repository } from 'typeorm';
 import { PasswordResetEntity } from './password-reset.entity';
 import { ProviderEntity } from '../../provider/provider.entity';
 import { Client } from '../../client/client.entity';
-import { hash, throwValidationException } from '../../utils';
+import { formatFrontUrl, hash, throwValidationException } from '../../utils';
 import { MailService } from '../../mail/mail.service';
+import { FrontEndpoint } from '../../types';
 
 @Injectable()
 export class PasswordResetService {
@@ -36,7 +37,6 @@ export class PasswordResetService {
 
   async handlePasswordForget(
     fetchEntity: () => Promise<ProviderEntity | Client>,
-    emailTemplate: string,
   ) {
     const entity = await fetchEntity();
 
@@ -51,10 +51,19 @@ export class PasswordResetService {
     await this.mailService.sendMail(
       entity.email,
       'Slaptažodžio atkūrimo užklausa',
-      emailTemplate,
+      'reset-password',
       {
         entity,
         token,
+        actionUrl: formatFrontUrl(
+          entity instanceof Client
+            ? FrontEndpoint.CLIENT_PASSWORD_RESET
+            : FrontEndpoint.PROVIDER_PASSWORD_RESET,
+          {
+            token,
+            email: entity.email,
+          },
+        ),
       },
     );
   }
@@ -64,7 +73,6 @@ export class PasswordResetService {
     token: string,
     email: string,
     updateEntity: () => Promise<ProviderEntity | Client>,
-    emailTemplate: string,
   ) {
     const passwordResetEntity = await this.passwordResetRepository.findOne({
       token,
@@ -89,7 +97,7 @@ export class PasswordResetService {
     await this.mailService.sendMail(
       email,
       'Jūsų slaptažodis buvo pakeistas',
-      emailTemplate,
+      'password-changed',
       {
         firstName: entity.firstName,
       },
