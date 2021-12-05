@@ -15,7 +15,6 @@ export class CategoryEntity {
   title: string;
 
   @Column({
-    type: 'text',
     unique: true,
     nullable: true,
   })

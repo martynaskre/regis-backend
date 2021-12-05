@@ -36,7 +36,6 @@ export class Business {
   title: string;
 
   @Column({
-    type: 'text',
     unique: true,
     nullable: true,
   })
