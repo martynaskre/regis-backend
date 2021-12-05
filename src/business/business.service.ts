@@ -1,14 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Business } from './business.entity';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
-import {
-  PaginatedBusinessesResultDto,
-  PaginationDto,
-} from 'src/utils/dto/pagination.dto';
+import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
@@ -125,23 +122,5 @@ export class BusinessService {
     await this.businessRepository.update(id, UpdateBusinessBody);
 
     return await this.businessRepository.findOne(id);
-  }
-
-  async searchBusinesses(
-    paginationDto: PaginationDto,
-  ): Promise<PaginatedBusinessesResultDto> {
-    const totalCount = await this.businessRepository.count();
-
-    const businesses = await this.businessRepository
-      .createQueryBuilder('business')
-      .orderBy('business.id')
-      .getMany();
-
-    return {
-      totalCount,
-      page: paginationDto.page,
-      limit: paginationDto.limit,
-      data: businesses,
-    };
   }
 }

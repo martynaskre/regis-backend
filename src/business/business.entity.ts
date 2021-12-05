@@ -35,6 +35,13 @@ export class Business {
   @Column()
   title: string;
 
+  @Column({
+    type: 'text',
+    unique: true,
+    nullable: true,
+  })
+  slug: string;
+
   @Column()
   addressCountry: string;
 

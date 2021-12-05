@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import { FrontEndpoint } from '../types';
+import slugify from 'slugify';
 
 const saltRounds = 10;
 
@@ -46,4 +47,10 @@ export function formatFrontUrl(
   return Object.keys(parameters).length > 0
     ? url + '?' + urlParams.toString()
     : url;
+}
+
+export function generateSlug(str: string) {
+  return slugify(str, {
+    lower: true,
+  });
 }

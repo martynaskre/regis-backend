@@ -9,4 +9,5 @@ export enum FrontEndpoint {
   PROVIDER_LOGIN = 'auth/login/provider',
   CLIENT_PASSWORD_RESET = 'auth/reset-password/client',
   PROVIDER_PASSWORD_RESET = 'auth/reset-password/provider',
+  CATEGORY_ILLUSTRATIONS = 'assets/img/categories/',
 }

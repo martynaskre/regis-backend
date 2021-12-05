@@ -29,6 +29,7 @@ import { CategoryModule } from './category/category.module';
       autoLoadEntities: true,
       synchronize: true,
       entities: [path.join(__dirname, '**/*.entity{.ts,.js}')],
+      subscribers: [path.join(__dirname, '**/*.subscriber{.ts,.js}')],
     }),
     AuthModule,
     ClientModule,

@@ -16,8 +16,20 @@ export class CategoryEntity {
 
   @Column({
     type: 'longtext',
+    unique: true,
+    nullable: true,
+  })
+  slug: string;
+
+  @Column({
+    type: 'longtext',
   })
   description: string;
+
+  @Column({
+    type: 'text',
+  })
+  illustrationUrl: string;
 
   @CreateDateColumn({
     type: 'timestamp',
