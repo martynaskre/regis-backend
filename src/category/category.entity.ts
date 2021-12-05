@@ -15,7 +15,7 @@ export class CategoryEntity {
   title: string;
 
   @Column({
-    type: 'longtext',
+    type: 'text',
     unique: true,
     nullable: true,
   })
