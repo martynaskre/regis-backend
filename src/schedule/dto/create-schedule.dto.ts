@@ -12,5 +12,5 @@ export class CreateScheduleDto {
   startHours: string;
 
   @IsNotEmpty()
-  finishHours: string;
+  finishHours: string; //int 0-24
 }

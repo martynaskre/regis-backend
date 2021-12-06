@@ -5,7 +5,7 @@ import { Service } from '../service/service.entity';
 import { BusinessService } from '../business/business.service';
 import { ScheduleController } from './schedule.controller';
 import { Schedule } from './schedule.entity';
-import { ScheduleService } from './schedule.service.dto';
+import { ScheduleService } from './schedule.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Schedule, Business, Service])],

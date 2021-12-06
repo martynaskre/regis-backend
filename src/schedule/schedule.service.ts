@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { Schedule } from './schedule.entity';
 import { ProviderEntity } from 'src/provider/provider.entity';
+import { UpadteScheduleDto } from './dto/update-schedule.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -31,14 +32,51 @@ export class ScheduleService {
       );
     }
 
-    // PATIKRINTI AR JAU NERA 7 DIENU IKELTA
-
     const schedule = this.scheduleRepository.create({
       ...scheduleData,
+      business,
     });
 
     await this.scheduleRepository.save(schedule);
 
     return schedule;
+  }
+
+  async getProviderSchedule(businessId: number) {
+    const schedule = await this.scheduleRepository
+      .createQueryBuilder('schedule')
+      .where('schedule.business = :id', { id: businessId })
+      .orderBy('schedule.id')
+      .getMany();
+
+    return schedule;
+  }
+
+  async updateSchedule(
+    id: number,
+    updateSchedule: UpadteScheduleDto,
+    provider: ProviderEntity,
+  ) {
+    const schedule = await this.scheduleRepository
+      .createQueryBuilder('scehdule')
+      .where({ id: id })
+      .leftJoinAndSelect('scehdule.business', 'business')
+      .leftJoinAndSelect('business.provider', 'provider')
+      .getOne();
+
+    console.log(schedule);
+
+    if (schedule.business.provider.id !== provider.id || !schedule) {
+      throw new HttpException(
+        {
+          message: "The id's dont match.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.scheduleRepository.update(id, updateSchedule);
+
+    return await this.scheduleRepository.findOne(id);
   }
 }

@@ -5,7 +5,7 @@ import { ServiceService } from 'src/service/service.service';
 import {
   PaginatedClientBookingsResultDto,
   PaginationDto,
-} from 'src/utils/dto/pagination.dto';
+} from '../utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
@@ -43,8 +43,6 @@ export class ClientBookingService {
     return booking;
   }
 
-  //get all client bookings by business id
-
   async getClientBookings(
     clientId: number,
     paginationDto: PaginationDto,
@@ -58,8 +56,6 @@ export class ClientBookingService {
       .where('clientBooking.client = :id', { id: clientId })
       .orderBy('clientBooking.id')
       .getMany();
-
-    // ar reikia grazinti service, business ir provider
 
     if (!bookings) {
       throw new HttpException(
@@ -87,8 +83,6 @@ export class ClientBookingService {
       .leftJoinAndSelect('service.business', 'business')
       .getOne();
 
-    // ar reikia grazinti service, business ir provider
-
     if (!booking) {
       throw new HttpException(
         {
@@ -113,6 +107,8 @@ export class ClientBookingService {
       .leftJoinAndSelect('clientBooking.service', 'service')
       .leftJoinAndSelect('service.business', 'business')
       .getMany();
+
+    console.log(paginationDto);
 
     // ar reikia grazinti service, business ir provider
 

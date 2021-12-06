@@ -53,8 +53,8 @@ export class ClientBookingController {
   async getBookings(
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
-    //paginationDto.page = Number(paginationDto.page);
-    //paginationDto.limit = Number(paginationDto.limit);
+    paginationDto.page = Number(paginationDto.page);
+    paginationDto.limit = Number(paginationDto.limit);
 
     console.log(paginationDto);
 

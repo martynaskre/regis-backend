@@ -52,8 +52,6 @@ export class ServiceController {
     return this.serviceService.getServicesById(Number(id));
   }
 
-  //@Get(business:id)
-
   @UseGuards(ProviderGuard)
   @Delete(':id')
   async deleteServiceById(@Param('id') id: string, @Request() request) {
