@@ -47,6 +47,4 @@ export class ScheduleController {
       request.user,
     );
   }
-
-  //update
 }

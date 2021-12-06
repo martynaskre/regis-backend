@@ -64,8 +64,6 @@ export class ScheduleService {
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
 
-    console.log(schedule);
-
     if (schedule.business.provider.id !== provider.id || !schedule) {
       throw new HttpException(
         {

@@ -1,4 +1,4 @@
-import { IsDate, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
 import { Days } from 'src/types';
 
 export class CreateScheduleDto {
@@ -11,8 +11,14 @@ export class CreateScheduleDto {
   weekDay: string;
 
   @IsNotEmpty()
-  startHours: string;
+  @Min(0)
+  @Max(24)
+  @IsInt()
+  startHours: number;
 
   @IsNotEmpty()
-  finishHours: string; //int 0-24
+  @Min(0)
+  @Max(24)
+  @IsInt()
+  finishHours: number; //int 0-24
 }

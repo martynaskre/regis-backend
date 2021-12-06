@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { Days } from '../../types';
 
 export class UpadteScheduleDto {
@@ -7,8 +7,14 @@ export class UpadteScheduleDto {
   weekDay: string;
 
   @IsOptional()
-  startHours: string;
+  @Min(0)
+  @Max(24)
+  @IsInt()
+  startHours: number;
 
   @IsOptional()
-  finishHours: string; //int 0-24
+  @Min(0)
+  @Max(24)
+  @IsInt()
+  finishHours: number; 
 }

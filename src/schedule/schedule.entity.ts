@@ -25,10 +25,10 @@ export class Schedule {
   public weekDay: string;
 
   @Column()
-  public startHours: string;
+  public startHours: number;
 
   @Column()
-  public finishHours: string;
+  public finishHours: number;
 
   @CreateDateColumn({
     type: 'timestamp',
