@@ -1,7 +1,9 @@
-import { IsOptional } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
+import { Days } from '../../types';
 
 export class UpadteScheduleDto {
   @IsOptional()
+  @IsEnum(Days)
   weekDay: string;
 
   @IsOptional()

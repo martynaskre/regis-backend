@@ -12,3 +12,12 @@ export enum FrontEndpoint {
   CATEGORY_ILLUSTRATIONS = 'assets/img/categories/',
 }
 
+export enum Days {
+  MONDAY = 'Pirmadienis',
+  TUESDAY = 'Antradienis',
+  WEDNESDAY = 'Trečiadienis',
+  THURSDAY = 'Ketvirtadienis',
+  FRIDAY = 'Penktadinies',
+  SATURDAY = 'Šeštadienis',
+  SUNDAY = 'Sekmadienis',
+}

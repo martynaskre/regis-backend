@@ -1,4 +1,5 @@
 import { Business } from 'src/business/business.entity';
+import { Days } from '../types';
 import {
   Column,
   CreateDateColumn,
@@ -16,7 +17,11 @@ export class Schedule {
   @ManyToOne(() => Business, (business) => business.schedules)
   business: Business;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: Days,
+    nullable: true,
+  })
   public weekDay: string;
 
   @Column()

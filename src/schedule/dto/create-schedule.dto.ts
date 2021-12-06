@@ -1,4 +1,5 @@
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { Days } from 'src/types';
 
 export class CreateScheduleDto {
   @IsNumber()
@@ -6,6 +7,7 @@ export class CreateScheduleDto {
   businessid: number;
 
   @IsNotEmpty()
+  @IsEnum(Days)
   weekDay: string;
 
   @IsNotEmpty()
