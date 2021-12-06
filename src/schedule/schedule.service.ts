@@ -32,15 +32,6 @@ export class ScheduleService {
       );
     }
 
-    if (scheduleData.finishHours < scheduleData.startHours) {
-      throw new HttpException(
-        {
-          message: 'Time is invalid',
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     const schedule = this.scheduleRepository.create({
       ...scheduleData,
       business,

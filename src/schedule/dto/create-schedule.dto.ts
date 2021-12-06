@@ -7,6 +7,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import { HigherThan } from 'src/shared/validation/HigherThan';
+import { LowerThan } from 'src/shared/validation/LowerThan';
 import { Days } from 'src/types';
 
 export class CreateScheduleDto {
@@ -22,11 +24,13 @@ export class CreateScheduleDto {
   @Min(0)
   @Max(24)
   @IsInt()
+  @LowerThan('finishHours')
   startHours: number;
 
   @IsNotEmpty()
   @Min(0)
   @Max(24)
   @IsInt()
-  finishHours: number; //int 0-24
+  @HigherThan('startHours')
+  finishHours: number;
 }
