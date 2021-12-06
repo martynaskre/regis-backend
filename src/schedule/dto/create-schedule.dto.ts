@@ -1,4 +1,12 @@
-import { IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  Max,
+  Min,
+} from 'class-validator';
 import { Days } from 'src/types';
 
 export class CreateScheduleDto {

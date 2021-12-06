@@ -59,12 +59,10 @@ export class ProviderBookingService {
       .orderBy('providerBooking.id')
       .getMany();
 
-    // ar reikia grazinti service, business ir provider
-
     if (!bookings) {
       throw new HttpException(
         {
-          message: 'Bookings ware not found',
+          message: 'Bookings were not found',
         },
         HttpStatus.NOT_FOUND,
       );

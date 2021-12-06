@@ -56,8 +56,6 @@ export class ClientBookingController {
     paginationDto.page = Number(paginationDto.page);
     paginationDto.limit = Number(paginationDto.limit);
 
-    console.log(paginationDto);
-
     return this.clientBookingService.getBookings({
       ...paginationDto,
       limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,

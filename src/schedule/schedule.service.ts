@@ -32,10 +32,10 @@ export class ScheduleService {
       );
     }
 
-    if(scheduleData.finishHours < scheduleData.startHours){
+    if (scheduleData.finishHours < scheduleData.startHours) {
       throw new HttpException(
         {
-          message: "Time is invalid",
+          message: 'Time is invalid',
         },
         HttpStatus.NOT_FOUND,
       );
@@ -82,10 +82,10 @@ export class ScheduleService {
       );
     }
 
-    if(updateSchedule.finishHours < updateSchedule.startHours){
+    if (updateSchedule.finishHours < updateSchedule.startHours) {
       throw new HttpException(
         {
-          message: "Time is invalid",
+          message: 'Time is invalid',
         },
         HttpStatus.NOT_FOUND,
       );

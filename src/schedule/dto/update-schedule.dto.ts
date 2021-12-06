@@ -16,5 +16,5 @@ export class UpadteScheduleDto {
   @Min(0)
   @Max(24)
   @IsInt()
-  finishHours: number; 
+  finishHours: number;
 }
