@@ -33,13 +33,12 @@ export class ServiceController {
   async getServices(
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
-
-    console.log(paginationDto)
+    console.log(paginationDto);
 
     paginationDto.page = Number(paginationDto.page);
     paginationDto.limit = Number(paginationDto.limit);
 
-    console.log(paginationDto)
+    console.log(paginationDto);
 
     return this.serviceService.getServices({
       ...paginationDto,

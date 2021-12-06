@@ -36,7 +36,6 @@ export class ClientBookingController {
     @Param('clientId') clientId: string,
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
-
     return this.clientBookingService.getClientBookings(Number(clientId), {
       ...paginationDto,
       limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
@@ -57,8 +56,8 @@ export class ClientBookingController {
     //paginationDto.page = Number(paginationDto.page);
     //paginationDto.limit = Number(paginationDto.limit);
 
-    console.log(paginationDto)
-    
+    console.log(paginationDto);
+
     return this.clientBookingService.getBookings({
       ...paginationDto,
       limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,

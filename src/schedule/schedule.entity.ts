@@ -1,6 +1,6 @@
 import { Business } from 'src/business/business.entity';
 import {
-    Column,
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -13,7 +13,6 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  //many to one with bussiness
   @ManyToOne(() => Business, (business) => business.schedules)
   business: Business;
 
@@ -25,7 +24,7 @@ export class Schedule {
 
   @Column()
   public finishHours: string;
-  
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'NOW()',

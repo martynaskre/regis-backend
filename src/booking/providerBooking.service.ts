@@ -59,8 +59,7 @@ export class ProviderBookingService {
       .orderBy('providerBooking.id')
       .getMany();
 
-       // ar reikia grazinti service, business ir provider
-
+    // ar reikia grazinti service, business ir provider
 
     if (!bookings) {
       throw new HttpException(
@@ -86,8 +85,7 @@ export class ProviderBookingService {
       .leftJoinAndSelect('providerBooking.business', 'business')
       .getOne();
 
-       // ar reikia grazinti service, business ir provider
-
+    // ar reikia grazinti service, business ir provider
 
     if (!booking) {
       throw new HttpException(
@@ -113,8 +111,7 @@ export class ProviderBookingService {
       .limit(paginationDto.limit)
       .getMany();
 
-       // ar reikia grazinti service, business ir provider
-
+    // ar reikia grazinti service, business ir provider
 
     if (!bookings) {
       throw new HttpException(

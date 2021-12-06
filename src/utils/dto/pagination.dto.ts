@@ -3,7 +3,7 @@ import { ProviderBooking } from '../../booking/providerBooking.entity';
 import { Business } from '../../business/business.entity';
 import { Service } from '../../service/service.entity';
 
-export class PaginationDto{
+export class PaginationDto {
   page = 1;
   limit = 10;
 }

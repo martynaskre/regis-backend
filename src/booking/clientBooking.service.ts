@@ -49,7 +49,6 @@ export class ClientBookingService {
     clientId: number,
     paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
-
     const totalCount = await this.clientBookingRepository.count({
       where: { client: clientId },
     });
@@ -60,7 +59,7 @@ export class ClientBookingService {
       .orderBy('clientBooking.id')
       .getMany();
 
-      // ar reikia grazinti service, business ir provider
+    // ar reikia grazinti service, business ir provider
 
     if (!bookings) {
       throw new HttpException(
@@ -79,7 +78,6 @@ export class ClientBookingService {
     };
   }
 
-
   async getBookingById(id: number) {
     const booking = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
@@ -89,8 +87,7 @@ export class ClientBookingService {
       .leftJoinAndSelect('service.business', 'business')
       .getOne();
 
-            // ar reikia grazinti service, business ir provider
-
+    // ar reikia grazinti service, business ir provider
 
     if (!booking) {
       throw new HttpException(
@@ -117,8 +114,7 @@ export class ClientBookingService {
       .leftJoinAndSelect('service.business', 'business')
       .getMany();
 
-      // ar reikia grazinti service, business ir provider
-
+    // ar reikia grazinti service, business ir provider
 
     if (!bookings) {
       throw new HttpException(
