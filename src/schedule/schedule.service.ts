@@ -32,6 +32,15 @@ export class ScheduleService {
       );
     }
 
+    if(scheduleData.finishHours < scheduleData.startHours){
+      throw new HttpException(
+        {
+          message: "Time is invalid",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const schedule = this.scheduleRepository.create({
       ...scheduleData,
       business,
@@ -68,6 +77,15 @@ export class ScheduleService {
       throw new HttpException(
         {
           message: "The id's dont match.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if(updateSchedule.finishHours < updateSchedule.startHours){
+      throw new HttpException(
+        {
+          message: "Time is invalid",
         },
         HttpStatus.NOT_FOUND,
       );
