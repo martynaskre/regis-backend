@@ -60,7 +60,7 @@ export class ClientBookingService {
     if (!bookings) {
       throw new HttpException(
         {
-          message: 'Bookings ware not found',
+          message: 'Bookings were not found',
         },
         HttpStatus.NOT_FOUND,
       );
