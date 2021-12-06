@@ -110,12 +110,10 @@ export class ClientBookingService {
 
     console.log(paginationDto);
 
-    // ar reikia grazinti service, business ir provider
-
     if (!bookings) {
       throw new HttpException(
         {
-          message: 'Bookings ware not found',
+          message: 'Bookings were not found',
         },
         HttpStatus.NOT_FOUND,
       );
