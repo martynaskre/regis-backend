@@ -47,7 +47,6 @@ export class ClientBookingService {
     clientId: number,
     paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
-
     const totalCount = await this.clientBookingRepository.count({
       where: { client: clientId },
     });
@@ -57,6 +56,15 @@ export class ClientBookingService {
       .where('clientBooking.client = :id', { id: clientId })
       .orderBy('clientBooking.id')
       .getMany();
+
+    if (!bookings) {
+      throw new HttpException(
+        {
+          message: 'Bookings ware not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return {
       totalCount,
@@ -74,6 +82,16 @@ export class ClientBookingService {
       .leftJoinAndSelect('clientBooking.service', 'service')
       .leftJoinAndSelect('service.business', 'business')
       .getOne();
+
+    if (!booking) {
+      throw new HttpException(
+        {
+          message: 'Booking was not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return booking;
   }
 
@@ -90,6 +108,15 @@ export class ClientBookingService {
       .leftJoinAndSelect('service.business', 'business')
       .getMany();
 
+    if (!bookings) {
+      throw new HttpException(
+        {
+          message: 'Bookings ware not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return {
       totalCount,
       page: paginationDto.page,
@@ -101,7 +128,7 @@ export class ClientBookingService {
   async deleteBookingById(id: number, client: Client) {
     const booking = await this.getBookingById(id);
 
-    if (booking.client.id !== client.id && !booking) {
+    if (!booking || booking.client.id !== client.id) {
       throw new HttpException(
         {
           message: "The id's dont match.",

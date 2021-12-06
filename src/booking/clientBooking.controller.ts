@@ -32,9 +32,11 @@ export class ClientBookingController {
 
   @UseGuards(ClientGuard)
   @Get('client/:clientId')
-  async getProviderBookings(@Param('clientId') clientId: string,
-  @Query() paginationDto: PaginationDto): Promise<PaginatedClientBookingsResultDto>{
-    console.log("dsf")
+  async getProviderBookings(
+    @Param('clientId') clientId: string,
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedClientBookingsResultDto> {
+    console.log('dsf');
     return this.clientBookingService.getClientBookings(Number(clientId), {
       ...paginationDto,
       limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
