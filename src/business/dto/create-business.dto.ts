@@ -46,10 +46,10 @@ export class CreateBussinesDto {
   @MinLength(1)
   readonly longDescription: string;
 
-  @IsNotEmpty()
-  @Exists({
-    table: 'categories',
-    column: 'id',
-  })
-  readonly categoryId: number;
+  //@IsNotEmpty()
+  //@Exists({
+  //  table: 'categories',
+  //  column: 'id',
+  //})
+  //readonly categoryId: number;
 }

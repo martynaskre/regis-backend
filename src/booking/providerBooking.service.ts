@@ -45,6 +45,30 @@ export class ProviderBookingService {
     return booking;
   }
 
+  //getProviderBookings
+  async getProviderBookings(
+    businessId: number,
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedProviderBookingsResultDto> {
+
+    const totalCount = await this.providerBookingRepository.count({
+      where: { business: businessId },
+    });
+
+    const bookings = await this.providerBookingRepository
+      .createQueryBuilder('providerBooking')
+      .where('providerBooking.business = :id', { id: businessId })
+      .orderBy('providerBooking.id')
+      .getMany();
+
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: bookings,
+    };
+  }
+
   async getBookingById(id: number) {
     const booking = await this.providerBookingRepository
       .createQueryBuilder('providerBooking')
@@ -63,6 +87,7 @@ export class ProviderBookingService {
       .createQueryBuilder('providerBooking')
       .orderBy('providerBooking.id')
       .leftJoinAndSelect('providerBooking.business', 'business')
+      .limit(paginationDto.limit)
       .getMany();
 
     return {
