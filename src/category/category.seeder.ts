@@ -14,28 +14,28 @@ export class CategorySeeder implements Seeder {
       description: 'Kirpėjai, manikiūristai, masažistai, kitos SPA paslaugos.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}beauty-services.jpeg`,
     },
     {
       title: 'Automechanika',
       description: 'Automechanikų paslaugos.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}mechanical-services.jpeg`,
     },
     {
       title: 'Santechnika',
       description: 'Santechnikų paslaugos.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}plumbing-services.jpeg`,
     },
     {
       title: 'Elektrotechnika',
       description: 'Elektrotechnikos specialistai.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}electrical-services.jpeg`,
     },
     {
       title: 'Renginiai',
@@ -43,7 +43,7 @@ export class CategorySeeder implements Seeder {
         'Renginių organizavimas, muzikantai, vestuvių organizavimas ir pan.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}event-services.jpeg`,
     },
     {
       title: 'Kūrybinės paslaugos',
@@ -51,35 +51,35 @@ export class CategorySeeder implements Seeder {
         'Grafinis dizainas, interjero dizainas, muzikos ir literatūros kūrimo paslaugos.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}creation-services.jpeg`,
     },
     {
       title: 'Konsultantų paslaugos',
       description: 'Finansininkai, teisininkai.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}consulting-services.jpeg`,
     },
     {
       title: 'Ugdymas',
       description: 'Korepetitoriai, mokytojai ir pan.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}educational-services.jpeg`,
     },
     {
       title: 'Fizinis aktyvumas',
       description: 'Trenerių, mitybos specialistai.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}sports-services.jpeg`,
     },
     {
       title: 'Vaikų priežiūra',
       description: 'Auklės, akušerės.',
       illustrationUrl: `${formatFrontUrl(
         FrontEndpoint.CATEGORY_ILLUSTRATIONS,
-      )}test`,
+      )}care-services.jpeg`,
     },
   ];
 
