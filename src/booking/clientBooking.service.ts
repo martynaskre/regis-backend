@@ -43,6 +43,29 @@ export class ClientBookingService {
     return booking;
   }
 
+  async getClientBookings(
+    clientId: number,
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedClientBookingsResultDto> {
+
+    const totalCount = await this.clientBookingRepository.count({
+      where: { client: clientId },
+    });
+
+    const bookings = await this.clientBookingRepository
+      .createQueryBuilder('clientBooking')
+      .where('clientBooking.client = :id', { id: clientId })
+      .orderBy('clientBooking.id')
+      .getMany();
+
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: bookings,
+    };
+  }
+
   async getBookingById(id: number) {
     const booking = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
