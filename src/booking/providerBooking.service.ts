@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BusinessService } from 'src/business/business.service';
-import { ProviderEntity } from 'src/provider/provider.entity';
+import { BusinessService } from '../business/business.service';
+import { ProviderEntity } from '../provider/provider.entity';
 import {
   PaginatedProviderBookingsResultDto,
   PaginationDto,
-} from 'src/utils/dto/pagination.dto';
+} from '../utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
@@ -59,6 +59,9 @@ export class ProviderBookingService {
       .orderBy('providerBooking.id')
       .getMany();
 
+       // ar reikia grazinti service, business ir provider
+
+
     if (!bookings) {
       throw new HttpException(
         {
@@ -83,6 +86,9 @@ export class ProviderBookingService {
       .leftJoinAndSelect('providerBooking.business', 'business')
       .getOne();
 
+       // ar reikia grazinti service, business ir provider
+
+
     if (!booking) {
       throw new HttpException(
         {
@@ -106,6 +112,9 @@ export class ProviderBookingService {
       .leftJoinAndSelect('providerBooking.business', 'business')
       .limit(paginationDto.limit)
       .getMany();
+
+       // ar reikia grazinti service, business ir provider
+
 
     if (!bookings) {
       throw new HttpException(

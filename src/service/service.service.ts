@@ -42,15 +42,21 @@ export class ServiceService {
     return service;
   }
 
+  // get business services
+
   async getServices(
     paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
     const totalCount = await this.serviceRepository.count();
 
+    console.log(paginationDto)
+
     const services = await this.serviceRepository
       .createQueryBuilder('service')
       .orderBy('service.id')
       .getMany();
+
+  // ar reikia grazinti business ir provider
 
     return {
       totalCount,
@@ -67,6 +73,8 @@ export class ServiceService {
       .leftJoinAndSelect('service.business', 'business')
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
+
+  // ar reikia grazinti business ir provider
 
     return service;
   }

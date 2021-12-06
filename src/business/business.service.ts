@@ -65,6 +65,9 @@ export class BusinessService {
     const totalCount = await query.getCount();
     const businesses = await query.orderBy('business.id').getMany();
 
+    // + gal reiktu dar grazinti su services ir provider data
+    // ar grazina visus busines jei i dto nieko nepaduoda,
+
     return {
       totalCount,
       page: getBusinessDto.page,
@@ -79,6 +82,8 @@ export class BusinessService {
       .where({ id: id })
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
+
+      // ar reikia grazinti visus servisus
     return business;
   }
 
@@ -99,6 +104,8 @@ export class BusinessService {
       .delete()
       .where({ id: id })
       .execute();
+    
+      // ar reikia grazinti visus servisus ir provider
 
     return 'business deleted';
   }

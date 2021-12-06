@@ -10,7 +10,7 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { ProviderGuard } from 'src/auth/guards/provider.guard';
+import { ProviderGuard } from '../auth/guards/provider.guard';
 import {
   PaginatedServicesResultDto,
   PaginationDto,
@@ -33,6 +33,14 @@ export class ServiceController {
   async getServices(
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
+
+    console.log(paginationDto)
+
+    paginationDto.page = Number(paginationDto.page);
+    paginationDto.limit = Number(paginationDto.limit);
+
+    console.log(paginationDto)
+
     return this.serviceService.getServices({
       ...paginationDto,
       limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
