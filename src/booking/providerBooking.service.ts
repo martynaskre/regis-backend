@@ -9,6 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
+import { throwNotFound } from '../utils';
 
 @Injectable()
 export class ProviderBookingService {
@@ -27,12 +28,7 @@ export class ProviderBookingService {
     );
 
     if (!business || business.provider.id !== provider.id) {
-      throw new HttpException(
-        {
-          message: 'Business was not found or id do not match',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throwNotFound({business: "The business was not found."});
     }
 
     const booking = this.providerBookingRepository.create({
