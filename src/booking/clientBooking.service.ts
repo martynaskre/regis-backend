@@ -5,10 +5,11 @@ import { ServiceService } from 'src/service/service.service';
 import {
   PaginatedClientBookingsResultDto,
   PaginationDto,
-} from 'src/utils/dto/pagination.dto';
+} from '../utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
+import { throwNotFound } from '../utils';
 
 @Injectable()
 export class ClientBookingService {
@@ -24,12 +25,7 @@ export class ClientBookingService {
     );
 
     if (!service) {
-      throw new HttpException(
-        {
-          message: 'Service was not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throwNotFound({service: "The service was not found."});
     }
 
     const booking = this.clientBookingRepository.create({
@@ -43,6 +39,37 @@ export class ClientBookingService {
     return booking;
   }
 
+  async getClientBookings(
+    clientId: number,
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedClientBookingsResultDto> {
+    const totalCount = await this.clientBookingRepository.count({
+      where: { client: clientId },
+    });
+
+    const bookings = await this.clientBookingRepository
+      .createQueryBuilder('clientBooking')
+      .where('clientBooking.client = :id', { id: clientId })
+      .orderBy('clientBooking.id')
+      .getMany();
+
+    if (!bookings) {
+      throw new HttpException(
+        {
+          message: 'Bookings were not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: bookings,
+    };
+  }
+
   async getBookingById(id: number) {
     const booking = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
@@ -51,6 +78,16 @@ export class ClientBookingService {
       .leftJoinAndSelect('clientBooking.service', 'service')
       .leftJoinAndSelect('service.business', 'business')
       .getOne();
+
+    if (!booking) {
+      throw new HttpException(
+        {
+          message: 'Booking was not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return booking;
   }
 
@@ -67,6 +104,17 @@ export class ClientBookingService {
       .leftJoinAndSelect('service.business', 'business')
       .getMany();
 
+    console.log(paginationDto);
+
+    if (!bookings) {
+      throw new HttpException(
+        {
+          message: 'Bookings were not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return {
       totalCount,
       page: paginationDto.page,
@@ -78,7 +126,7 @@ export class ClientBookingService {
   async deleteBookingById(id: number, client: Client) {
     const booking = await this.getBookingById(id);
 
-    if (booking.client.id !== client.id && !booking) {
+    if (!booking || booking.client.id !== client.id) {
       throw new HttpException(
         {
           message: "The id's dont match.",

@@ -1,14 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BusinessService } from 'src/business/business.service';
-import { ProviderEntity } from 'src/provider/provider.entity';
+import { BusinessService } from '../business/business.service';
+import { ProviderEntity } from '../provider/provider.entity';
 import {
   PaginatedProviderBookingsResultDto,
   PaginationDto,
-} from 'src/utils/dto/pagination.dto';
+} from '../utils/dto/pagination.dto';
 import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
+import { throwNotFound } from '../utils';
 
 @Injectable()
 export class ProviderBookingService {
@@ -27,12 +28,7 @@ export class ProviderBookingService {
     );
 
     if (!business || business.provider.id !== provider.id) {
-      throw new HttpException(
-        {
-          message: 'Service was not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throwNotFound({business: "The business was not found."});
     }
 
     const booking = this.providerBookingRepository.create({
@@ -45,12 +41,55 @@ export class ProviderBookingService {
     return booking;
   }
 
+  async getProviderBookings(
+    businessId: number,
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedProviderBookingsResultDto> {
+    const totalCount = await this.providerBookingRepository.count({
+      where: { business: businessId },
+    });
+
+    const bookings = await this.providerBookingRepository
+      .createQueryBuilder('providerBooking')
+      .where('providerBooking.business = :id', { id: businessId })
+      .orderBy('providerBooking.id')
+      .getMany();
+
+    if (!bookings) {
+      throw new HttpException(
+        {
+          message: 'Bookings were not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      totalCount,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      data: bookings,
+    };
+  }
+
   async getBookingById(id: number) {
     const booking = await this.providerBookingRepository
       .createQueryBuilder('providerBooking')
       .where({ id: id })
       .leftJoinAndSelect('providerBooking.business', 'business')
       .getOne();
+
+    // ar reikia grazinti service, business ir provider
+
+    if (!booking) {
+      throw new HttpException(
+        {
+          message: 'Booking was not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return booking;
   }
 
@@ -63,7 +102,19 @@ export class ProviderBookingService {
       .createQueryBuilder('providerBooking')
       .orderBy('providerBooking.id')
       .leftJoinAndSelect('providerBooking.business', 'business')
+      .limit(paginationDto.limit)
       .getMany();
+
+    // ar reikia grazinti service, business ir provider
+
+    if (!bookings) {
+      throw new HttpException(
+        {
+          message: 'Bookings ware not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return {
       totalCount,
@@ -76,7 +127,7 @@ export class ProviderBookingService {
   async deleteBookingById(id: number, provider: ProviderEntity) {
     const booking = await this.getBookingById(id);
 
-    if (booking.provider.id !== provider.id && !booking) {
+    if (booking.provider.id !== provider.id || !booking) {
       throw new HttpException(
         {
           message: "The id's dont match.",

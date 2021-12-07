@@ -11,3 +11,13 @@ export enum FrontEndpoint {
   PROVIDER_PASSWORD_RESET = 'auth/reset-password/provider',
   CATEGORY_ILLUSTRATIONS = 'assets/img/categories/',
 }
+
+export enum Days {
+  MONDAY = 0,
+  TUESDAY = 1,
+  WEDNESDAY = 2,
+  THURSDAY = 3,
+  FRIDAY = 4,
+  SATURDAY = 5,
+  SUNDAY = 6,
+}
