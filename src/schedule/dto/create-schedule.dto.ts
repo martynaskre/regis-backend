@@ -18,7 +18,7 @@ export class CreateScheduleDto {
 
   @IsNotEmpty()
   @IsEnum(Days)
-  weekDay: string;
+  weekDay: number;
 
   @IsNotEmpty()
   @Min(0)

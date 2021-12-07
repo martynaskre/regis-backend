@@ -13,11 +13,11 @@ export enum FrontEndpoint {
 }
 
 export enum Days {
-  MONDAY = 'Pirmadienis',
-  TUESDAY = 'Antradienis',
-  WEDNESDAY = 'Trečiadienis',
-  THURSDAY = 'Ketvirtadienis',
-  FRIDAY = 'Penktadinies',
-  SATURDAY = 'Šeštadienis',
-  SUNDAY = 'Sekmadienis',
+  MONDAY = 0,
+  TUESDAY = 1,
+  WEDNESDAY = 2,
+  THURSDAY = 3,
+  FRIDAY = 4,
+  SATURDAY = 5,
+  SUNDAY = 6,
 }

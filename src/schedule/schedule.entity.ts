@@ -22,7 +22,7 @@ export class Schedule {
     enum: Days,
     nullable: true,
   })
-  public weekDay: string;
+  public weekDay: number;
 
   @Column()
   public startHours: number;

@@ -4,7 +4,7 @@ import { Days } from '../../types';
 export class UpadteScheduleDto {
   @IsOptional()
   @IsEnum(Days)
-  weekDay: string;
+  weekDay: number;
 
   @IsOptional()
   @Min(0)
