@@ -20,7 +20,7 @@ export class ScheduleService {
     provider: ProviderEntity,
   ) {
     const business = await this.businessService.getBusinessById(
-      scheduleData.businessid,
+      scheduleData.businessId,
     );
 
     if (business.provider.id !== provider.id) {

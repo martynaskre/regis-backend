@@ -34,7 +34,7 @@ export class CreateClientDto {
   @IsNotEmpty()
   @IsEmail()
   @Unique({
-    table: 'clients',
+    table: 'clients'
   })
   readonly email: string;
 

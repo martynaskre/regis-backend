@@ -14,7 +14,7 @@ import { Days } from 'src/types';
 export class CreateScheduleDto {
   @IsNumber()
   @IsNotEmpty()
-  businessid: number;
+  businessId: number;
 
   @IsNotEmpty()
   @IsEnum(Days)

@@ -26,9 +26,9 @@ export class BusinessService {
     const business = this.businessRepository.create({
       ...businessData,
       provider: provider,
-      //category: {
-      //  id: businessData.categoryId,
-      //},
+      category: {
+        id: businessData.categoryId,
+      },
     });
     await this.businessRepository.save(business);
 
@@ -64,9 +64,6 @@ export class BusinessService {
 
     const totalCount = await query.getCount();
     const businesses = await query.orderBy('business.id').getMany();
-
-    // + gal reiktu dar grazinti su services ir provider data
-    // ar grazina visus busines jei i dto nieko nepaduoda,
 
     return {
       totalCount,
