@@ -14,15 +14,15 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Business, (business) => business.schedules)
+  @ManyToOne(() => Business, (business) => business.schedules, {
+    eager: true,
+  })
   business: Business;
 
   @Column({
-    type: 'enum',
-    enum: Days,
-    nullable: true,
+    type: 'smallint',
   })
-  public weekDay: number;
+  public weekDay: Days;
 
   @Column()
   public startHours: number;

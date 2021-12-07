@@ -9,22 +9,24 @@ import {
   Put,
 } from '@nestjs/common';
 import { ProviderGuard } from 'src/auth/guards/provider.guard';
-import { UpadateServiceDto } from 'src/service/dto/update-service.dto';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
-import { UpadteScheduleDto } from './dto/update-schedule.dto';
+import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { ScheduleService } from './schedule.service';
+import { BusinessOwnerGuard } from '../auth/guards/business-owner.guard';
+import { Entity } from '../shared/decorators/entity.decorator';
+import { Schedule } from './schedule.entity';
+import { formatResponse } from '../utils';
 
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
-  @UseGuards(ProviderGuard)
+  @UseGuards(ProviderGuard, BusinessOwnerGuard)
   @Post()
-  async createSchedule(
-    @Body() schedule: CreateScheduleDto,
-    @Request() request,
-  ) {
-    return this.scheduleService.createSchedule(schedule, request.user);
+  async createSchedule(@Body() schedule: CreateScheduleDto) {
+    await this.scheduleService.createSchedule(schedule);
+
+    return formatResponse('Schedule entry created.');
   }
 
   @UseGuards(ProviderGuard)
@@ -37,14 +39,16 @@ export class ScheduleController {
   @UseGuards(ProviderGuard)
   @Put(':id')
   async updateSchedule(
-    @Param('id') id: string,
-    @Body() updateSchedule: UpadteScheduleDto,
+    @Entity(Schedule) schedule: Schedule,
+    @Body() updateSchedule: UpdateScheduleDto,
     @Request() request,
   ) {
-    return this.scheduleService.updateSchedule(
-      Number(id),
+    await this.scheduleService.updateSchedule(
+      schedule,
       updateSchedule,
       request.user,
     );
+
+    return formatResponse('Schedule entry updated.');
   }
 }

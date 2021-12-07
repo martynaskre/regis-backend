@@ -5,32 +5,23 @@ import { Repository } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { Schedule } from './schedule.entity';
 import { ProviderEntity } from 'src/provider/provider.entity';
-import { UpadteScheduleDto } from './dto/update-schedule.dto';
+import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { Business } from "../business/business.entity";
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private readonly scheduleRepository: Repository<Schedule>,
+    @InjectRepository(Business)
+    private readonly businessRepository: Repository<Business>,
     private readonly businessService: BusinessService,
   ) {}
 
-  async createSchedule(
-    scheduleData: CreateScheduleDto,
-    provider: ProviderEntity,
-  ) {
+  async createSchedule(scheduleData: CreateScheduleDto) {
     const business = await this.businessService.getBusinessById(
       scheduleData.businessId,
     );
-
-    if (business.provider.id !== provider.id) {
-      throw new HttpException(
-        {
-          message: "The id's dont match.",
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
 
     const schedule = this.scheduleRepository.create({
       ...scheduleData,
@@ -53,18 +44,11 @@ export class ScheduleService {
   }
 
   async updateSchedule(
-    id: number,
-    updateSchedule: UpadteScheduleDto,
+    schedule: Schedule,
+    updateSchedule: UpdateScheduleDto,
     provider: ProviderEntity,
   ) {
-    const schedule = await this.scheduleRepository
-      .createQueryBuilder('scehdule')
-      .where({ id: id })
-      .leftJoinAndSelect('scehdule.business', 'business')
-      .leftJoinAndSelect('business.provider', 'provider')
-      .getOne();
-
-    if (schedule.business.provider.id !== provider.id || !schedule) {
+    if (schedule.business.provider.id !== provider.id) {
       throw new HttpException(
         {
           message: "The id's dont match.",
@@ -73,17 +57,6 @@ export class ScheduleService {
       );
     }
 
-    if (updateSchedule.finishHours < updateSchedule.startHours) {
-      throw new HttpException(
-        {
-          message: 'Time is invalid',
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    await this.scheduleRepository.update(id, updateSchedule);
-
-    return await this.scheduleRepository.findOne(id);
+    await this.scheduleRepository.update(schedule.id, updateSchedule);
   }
 }

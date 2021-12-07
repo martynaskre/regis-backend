@@ -10,6 +10,7 @@ import {
 import { HigherThan } from 'src/shared/validation/HigherThan';
 import { LowerThan } from 'src/shared/validation/LowerThan';
 import { Days } from 'src/types';
+import { Unique } from '../../shared/validation/Unique';
 
 export class CreateScheduleDto {
   @IsNumber()
@@ -18,6 +19,15 @@ export class CreateScheduleDto {
 
   @IsNotEmpty()
   @IsEnum(Days)
+  @Unique({
+    table: 'schedule',
+    wheres: [
+      {
+        column: 'businessId',
+        formField: 'businessId',
+      },
+    ],
+  })
   weekDay: number;
 
   @IsNotEmpty()

@@ -17,7 +17,9 @@ import { Schedule } from '../schedule/schedule.entity';
 
 @Entity('businesses')
 export class Business {
-  @OneToOne(() => ProviderEntity, (provider) => provider.business)
+  @OneToOne(() => ProviderEntity, (provider) => provider.business, {
+    eager: true,
+  })
   @JoinColumn()
   provider: ProviderEntity;
 
