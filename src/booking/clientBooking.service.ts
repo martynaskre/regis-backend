@@ -9,6 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
+import { throwNotFound } from '../utils';
 
 @Injectable()
 export class ClientBookingService {
@@ -24,12 +25,7 @@ export class ClientBookingService {
     );
 
     if (!service) {
-      throw new HttpException(
-        {
-          message: 'Service was not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throwNotFound({service: "The service was not found."});
     }
 
     const booking = this.clientBookingRepository.create({
