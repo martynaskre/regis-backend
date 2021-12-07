@@ -14,6 +14,7 @@ import { BookingModule } from './booking/booking.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { CategoryModule } from './category/category.module';
+import { StorageModule } from "@squareboat/nest-storage";
 
 @Module({
   imports: [
