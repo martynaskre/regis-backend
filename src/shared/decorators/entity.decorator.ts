@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { getConnection } from 'typeorm';
-import { formatResponse } from "../../utils";
+import { formatResponse } from '../../utils';
 
 export const Entity = createParamDecorator(
   async (type: any, ctx: ExecutionContext) => {

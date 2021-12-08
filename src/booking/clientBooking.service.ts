@@ -25,7 +25,7 @@ export class ClientBookingService {
     );
 
     if (!service) {
-      throwNotFound({service: "The service was not found."});
+      throwNotFound({ service: 'The service was not found.' });
     }
 
     const booking = this.clientBookingRepository.create({

@@ -4,7 +4,10 @@ import {
   ValidationOptions,
 } from 'class-validator';
 
-export function HigherThan(property: string, validationOptions?: ValidationOptions) {
+export function HigherThan(
+  property: string,
+  validationOptions?: ValidationOptions,
+) {
   return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,

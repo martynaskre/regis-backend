@@ -6,7 +6,7 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { Schedule } from './schedule.entity';
 import { ProviderEntity } from 'src/provider/provider.entity';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
-import { Business } from "../business/business.entity";
+import { Business } from '../business/business.entity';
 
 @Injectable()
 export class ScheduleService {

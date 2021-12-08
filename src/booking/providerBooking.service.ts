@@ -28,7 +28,7 @@ export class ProviderBookingService {
     );
 
     if (!business || business.provider.id !== provider.id) {
-      throwNotFound({business: "The business was not found."});
+      throwNotFound({ business: 'The business was not found.' });
     }
 
     const booking = this.providerBookingRepository.create({
