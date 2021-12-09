@@ -9,7 +9,7 @@ import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
-import { getFileUrl, storeFile } from "../utils";
+import { getFileUrl, storeFile } from '../utils';
 
 @Injectable()
 export class BusinessService {
@@ -44,6 +44,7 @@ export class BusinessService {
       category: {
         id: businessData.categoryId,
       },
+      rating: 0,
     });
     await this.businessRepository.save(business);
 
@@ -146,7 +147,8 @@ export class BusinessService {
       );
     }
 
-    await this.businessRepository.update(id, UpdateBusinessBody);
+    // TODO: sutvarkyti update
+    //await this.businessRepository.update(id, UpdateBusinessBody);
 
     return await this.businessRepository.findOne(id);
   }
