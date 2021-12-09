@@ -16,12 +16,14 @@ import { BusinessService } from './business.service';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
+import { FormDataRequest } from 'nestjs-form-data';
 
 @Controller('business')
 export class BusinessController {
   constructor(private readonly bussinesService: BusinessService) {}
 
   @UseGuards(ProviderGuard)
+  @FormDataRequest()
   @Post()
   async createBusiness(
     @Body() business: CreateBussinesDto,
@@ -31,13 +33,13 @@ export class BusinessController {
   }
 
   @UseGuards(ProviderGuard)
+  @FormDataRequest()
   @Put(':id')
   async updateBusiness(
     @Param('id') id: string,
     @Body() UpdateBusinessBody: UpadateBussinesDto,
     @Request() request,
   ) {
-    console.log(request.user);
     return this.bussinesService.updateBusiness(
       Number(id),
       UpdateBusinessBody,

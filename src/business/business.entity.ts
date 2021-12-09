@@ -16,6 +16,8 @@ import { CategoryEntity } from '../category/category.entity';
 
 @Entity('businesses')
 export class Business {
+  static readonly STORAGE_PATH = 'businesses';
+
   @OneToOne(() => ProviderEntity, (provider) => provider.business)
   @JoinColumn()
   provider: ProviderEntity;
@@ -61,6 +63,12 @@ export class Business {
 
   @Column()
   longDescription: string;
+
+  @Column()
+  cover: string;
+
+  @Column()
+  logo: string;
 
   @ManyToOne(() => CategoryEntity)
   @JoinColumn()
