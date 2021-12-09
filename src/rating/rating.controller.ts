@@ -8,7 +8,7 @@ import { RatingService } from './rating.service';
 export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
-  //@UseGuards(ClientGuard)
+  @UseGuards(ClientGuard)
   @Post()
   async rateBusiness(@Body() rating: CreateRatingDto) {
     await this.ratingService.rateBusiness(rating);

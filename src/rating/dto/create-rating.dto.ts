@@ -6,7 +6,7 @@ export class CreateRatingDto {
   businessId: number;
 
   @IsNotEmpty()
-  @Min(0)
+  @Min(1)
   @Max(5)
   @IsInt()
   rating: number;

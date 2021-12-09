@@ -1,12 +1,4 @@
-import {
-  IsDate,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
 import { HigherThan } from 'src/shared/validation/HigherThan';
 import { LowerThan } from 'src/shared/validation/LowerThan';
 import { Days } from 'src/types';
