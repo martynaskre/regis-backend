@@ -11,17 +11,15 @@ import { BusinessModule } from './business/business.module';
 import { ServiceModule } from './service/service.module';
 import * as path from 'path';
 import { BookingModule } from './booking/booking.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { CategoryModule } from './category/category.module';
 import { StorageModule } from '@squareboat/nest-storage';
 import { NestjsFormDataModule } from 'nestjs-form-data';
-
-console.log(process.cwd());
+import { ScheduleModule } from './schedule/schedule.module';
+import { RatingModule } from './rating/rating.module';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -55,6 +53,8 @@ console.log(process.cwd());
     ServiceModule,
     CronModule,
     CategoryModule,
+    ScheduleModule,
+    RatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

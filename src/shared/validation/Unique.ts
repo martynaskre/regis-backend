@@ -5,12 +5,19 @@ import {
 } from 'class-validator';
 import { getConnection } from 'typeorm';
 
+interface Where {
+  column: string;
+  value?: string;
+  formField?: string;
+}
+
 interface UniqueOptions extends ValidationOptions {
   table: string;
   column?: string;
+  wheres?: Where[];
 }
 
-export function Unique(validationOptions?: UniqueOptions) {
+export function Unique(validationOptions: UniqueOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       name: 'unique',
@@ -22,14 +29,29 @@ export function Unique(validationOptions?: UniqueOptions) {
         async validate(value: any, args: ValidationArguments) {
           const column = validationOptions.column ?? args.property;
 
-          const exists = await getConnection()
+          let query = getConnection()
             .createQueryBuilder()
             .select('table')
             .from(validationOptions.table, 'table')
             .where(`table.${column} = :value`, {
-              value: value,
-            })
-            .getOne();
+              value,
+            });
+
+          if (validationOptions.wheres) {
+            for (const where of validationOptions.wheres) {
+              const whereValue =
+                where.value ?? (args.object as any)[where.formField];
+
+              query = query.andWhere(
+                `table.${where.column} = :${where.column}`,
+                {
+                  [where.column]: whereValue,
+                },
+              );
+            }
+          }
+
+          const exists = await query.getOne();
 
           return exists == undefined;
         },

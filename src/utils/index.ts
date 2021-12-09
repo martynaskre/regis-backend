@@ -40,6 +40,16 @@ export function throwValidationException(
   );
 }
 
+export function throwNotFound(errors: any, message = 'Not found.') {
+  throw new HttpException(
+    {
+      message,
+      errors,
+    },
+    HttpStatus.NOT_FOUND,
+  );
+}
+
 export function formatFrontUrl(
   endpoint: FrontEndpoint,
   parameters: Record<string, string> = {},

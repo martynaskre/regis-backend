@@ -13,6 +13,9 @@ import { getFileUrl, storeFile } from '../utils';
 
 @Injectable()
 export class BusinessService {
+  update(businessId: any, arg1: { rating: number }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Business)
     private readonly businessRepository: Repository<Business>,
@@ -99,6 +102,8 @@ export class BusinessService {
       .where({ id: id })
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
+
+    // ar reikia grazinti visus servisus
     return business;
   }
 
@@ -119,6 +124,8 @@ export class BusinessService {
       .delete()
       .where({ id: id })
       .execute();
+
+    // ar reikia grazinti visus servisus ir provider
 
     return 'business deleted';
   }
