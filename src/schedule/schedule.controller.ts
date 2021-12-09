@@ -32,7 +32,6 @@ export class ScheduleController {
   @UseGuards(ProviderGuard)
   @Get(':businessId')
   async getProviderSchedule(@Param('businessId') id: string) {
-    console.log('Working');
     return this.scheduleService.getProviderSchedule(Number(id));
   }
 

@@ -14,6 +14,7 @@ import { Service } from '../service/service.entity';
 import { ProviderBooking } from 'src/booking/providerBooking.entity';
 import { CategoryEntity } from '../category/category.entity';
 import { Schedule } from '../schedule/schedule.entity';
+import { Rating } from '../rating/rating.entity';
 
 @Entity('businesses')
 export class Business {
@@ -28,6 +29,9 @@ export class Business {
 
   @OneToMany(() => Schedule, (schedule) => schedule.business)
   schedules: Schedule[];
+
+  @OneToMany(() => Rating, (rating) => rating.business)
+  ratings: Rating[];
 
   @OneToMany(
     () => ProviderBooking,
@@ -71,6 +75,9 @@ export class Business {
   @ManyToOne(() => CategoryEntity)
   @JoinColumn()
   category: CategoryEntity;
+
+  @Column({ type: 'float' })
+  rating: number;
 
   @CreateDateColumn({
     type: 'timestamp',

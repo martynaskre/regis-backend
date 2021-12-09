@@ -37,7 +37,6 @@ export class BusinessController {
     @Body() UpdateBusinessBody: UpadateBussinesDto,
     @Request() request,
   ) {
-    console.log(request.user);
     return this.bussinesService.updateBusiness(
       Number(id),
       UpdateBusinessBody,

@@ -37,10 +37,7 @@ export function throwValidationException(
   );
 }
 
-export function throwNotFound(
-  errors: any,
-  message = 'Not found.',
-) {
+export function throwNotFound(errors: any, message = 'Not found.') {
   throw new HttpException(
     {
       message,

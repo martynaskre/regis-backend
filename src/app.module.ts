@@ -14,6 +14,7 @@ import { BookingModule } from './booking/booking.module';
 import { CronModule } from './cron/cron.module';
 import { CategoryModule } from './category/category.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { RatingModule } from './rating/rating.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     CronModule,
     CategoryModule,
     ScheduleModule,
+    RatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

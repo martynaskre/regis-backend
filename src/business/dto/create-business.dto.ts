@@ -48,8 +48,8 @@ export class CreateBussinesDto {
 
   @IsNotEmpty()
   @Exists({
-   table: 'categories',
-   column: 'id',
+    table: 'categories',
+    column: 'id',
   })
   readonly categoryId: number;
 }

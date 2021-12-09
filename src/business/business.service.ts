@@ -12,6 +12,9 @@ import '../utils/typeormExtras';
 
 @Injectable()
 export class BusinessService {
+  update(businessId: any, arg1: { rating: number }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Business)
     private readonly businessRepository: Repository<Business>,
