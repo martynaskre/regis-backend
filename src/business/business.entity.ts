@@ -18,6 +18,8 @@ import { Rating } from '../rating/rating.entity';
 
 @Entity('businesses')
 export class Business {
+  static readonly STORAGE_PATH = 'businesses';
+
   @OneToOne(() => ProviderEntity, (provider) => provider.business, {
     eager: true,
   })
@@ -78,6 +80,12 @@ export class Business {
 
   @Column({ type: 'float' })
   rating: number;
+
+  @Column()
+  cover: string;
+
+  @Column()
+  logo: string;
 
   @CreateDateColumn({
     type: 'timestamp',

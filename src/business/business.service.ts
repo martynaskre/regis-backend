@@ -9,6 +9,7 @@ import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
+import { getFileUrl, storeFile } from '../utils';
 
 @Injectable()
 export class BusinessService {
@@ -26,12 +27,24 @@ export class BusinessService {
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
   ) {
+    const {
+      logo: logoFileData,
+      cover: coverFileData,
+      ...dataToStore
+    } = businessData;
+
+    const coverFile = await storeFile(Business.STORAGE_PATH, coverFileData);
+    const logoFile = await storeFile(Business.STORAGE_PATH, logoFileData);
+
     const business = this.businessRepository.create({
-      ...businessData,
+      ...dataToStore,
+      logo: logoFile,
+      cover: coverFile,
       provider: provider,
       category: {
         id: businessData.categoryId,
       },
+      rating: 0,
     });
     await this.businessRepository.save(business);
 
@@ -66,7 +79,15 @@ export class BusinessService {
     }
 
     const totalCount = await query.getCount();
-    const businesses = await query.orderBy('business.id').getMany();
+    let businesses = await query.orderBy('business.id').getMany();
+
+    businesses = businesses.map((business) => {
+      return {
+        ...business,
+        logo: getFileUrl(`${Business.STORAGE_PATH}/${business.logo}`),
+        cover: getFileUrl(`${Business.STORAGE_PATH}/${business.cover}`),
+      };
+    });
 
     return {
       totalCount,
@@ -126,7 +147,8 @@ export class BusinessService {
       );
     }
 
-    await this.businessRepository.update(id, UpdateBusinessBody);
+    // TODO: sutvarkyti update
+    //await this.businessRepository.update(id, UpdateBusinessBody);
 
     return await this.businessRepository.findOne(id);
   }
