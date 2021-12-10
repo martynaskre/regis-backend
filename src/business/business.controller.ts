@@ -23,7 +23,7 @@ export class BusinessController {
   constructor(private readonly bussinesService: BusinessService) {}
 
   @UseGuards(ProviderGuard)
-  @FormDataRequest()
+  // @FormDataRequest()
   @Post()
   async createBusiness(
     @Body() business: CreateBussinesDto,
@@ -33,7 +33,7 @@ export class BusinessController {
   }
 
   @UseGuards(ProviderGuard)
-  @FormDataRequest()
+  // @FormDataRequest()
   @Put(':id')
   async updateBusiness(
     @Param('id') id: string,
