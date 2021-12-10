@@ -34,7 +34,7 @@ import { StorageModule } from '@squareboat/nest-storage';
       subscribers: [path.join(__dirname, '**/*.subscriber{.ts,.js}')],
     }),
     StorageModule.register({
-      default: 'docs',
+      default: 'public',
       disks: {
         public: {
           driver: 'local',

@@ -1,10 +1,10 @@
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import {
-  HasMimeType,
-  IsFile,
-  MaxFileSize,
-  MemoryStoredFile,
-} from 'nestjs-form-data';
+// import {
+//   HasMimeType,
+//   IsFile,
+//   MaxFileSize,
+//   MemoryStoredFile,
+// } from 'nestjs-form-data';
 
 export class UpadateBussinesDto {
   @IsString()
@@ -52,14 +52,14 @@ export class UpadateBussinesDto {
   readonly longDescription: string;
 
   @IsOptional()
-  @IsFile()
-  @MaxFileSize(2e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
-  readonly cover?: MemoryStoredFile;
+  // @IsFile()
+  // @MaxFileSize(2e6)
+  // @HasMimeType(['image/jpeg', 'image/png'])
+  readonly cover?: any;
 
   @IsOptional()
-  @IsFile()
-  @MaxFileSize(2e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
-  readonly logo?: MemoryStoredFile;
+  // @IsFile()
+  // @MaxFileSize(2e6)
+  // @HasMimeType(['image/jpeg', 'image/png'])
+  readonly logo?: any;
 }

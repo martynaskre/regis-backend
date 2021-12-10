@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import { Exists } from '../../shared/validation/Exists';
-import {
-  HasMimeType,
-  IsFile,
-  MaxFileSize,
-  MemoryStoredFile,
-} from 'nestjs-form-data';
+// import {
+//   HasMimeType,
+//   IsFile,
+//   MaxFileSize,
+//   MemoryStoredFile,
+// } from 'nestjs-form-data';
 
 export class CreateBussinesDto {
   @IsString()
@@ -60,14 +60,14 @@ export class CreateBussinesDto {
   readonly categoryId: number;
 
   @IsNotEmpty()
-  @IsFile()
-  @MaxFileSize(2e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
-  readonly cover: MemoryStoredFile;
+  // @IsFile()
+  // @MaxFileSize(2e6)
+  // @HasMimeType(['image/jpeg', 'image/png'])
+  readonly cover: any;
 
   @IsNotEmpty()
-  @IsFile()
-  @MaxFileSize(2e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
-  readonly logo: MemoryStoredFile;
+  // @IsFile()
+  // @MaxFileSize(2e6)
+  // @HasMimeType(['image/jpeg', 'image/png'])
+  readonly logo: any;
 }
