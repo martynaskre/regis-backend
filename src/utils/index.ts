@@ -5,7 +5,7 @@ import { FrontEndpoint } from '../types';
 import slugify from 'slugify';
 import { MemoryStoredFile } from 'nestjs-form-data';
 import * as crypto from 'crypto';
-import { Storage } from '@squareboat/nest-storage';
+// import { Storage } from '@squareboat/nest-storage';
 
 const saltRounds = 10;
 
@@ -80,14 +80,15 @@ export async function storeFile(
       .createHash('md5')
       .update(file.originalName + new Date().getTime().toString())
       .digest('hex') + `.${fileExtension}`;
-
-  await Storage.disk(disk).put(`${path}/${filename}`, file.buffer);
-
+  //
+  // await Storage.disk(disk).put(`${path}/${filename}`, file.buffer);
+  //
   return filename;
 }
 
 export function getFileUrl(path: string, disk = 'public') {
-  const config = Storage.disk(disk).getConfig();
-
-  return config.baseUrl + path;
+  // const config = Storage.disk(disk).getConfig();
+  //
+  // return config.baseUrl + path;
+  return 'sw';
 }
