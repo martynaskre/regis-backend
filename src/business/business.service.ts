@@ -27,19 +27,10 @@ export class BusinessService {
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
   ) {
-    const {
-      logo: logoFileData,
-      cover: coverFileData,
-      ...dataToStore
-    } = businessData;
-
-    const coverFile = await storeFile(Business.STORAGE_PATH, coverFileData);
-    const logoFile = await storeFile(Business.STORAGE_PATH, logoFileData);
+    const { ...dataToStore } = businessData;
 
     const business = this.businessRepository.create({
       ...dataToStore,
-      logo: logoFile,
-      cover: coverFile,
       provider: provider,
       category: {
         id: businessData.categoryId,
@@ -81,13 +72,13 @@ export class BusinessService {
     const totalCount = await query.getCount();
     let businesses = await query.orderBy('business.id').getMany();
 
-    businesses = businesses.map((business) => {
-      return {
-        ...business,
-        logo: getFileUrl(`${Business.STORAGE_PATH}/${business.logo}`),
-        cover: getFileUrl(`${Business.STORAGE_PATH}/${business.cover}`),
-      };
-    });
+    // businesses = businesses.map((business) => {
+    //   return {
+    //     ...business,
+    //     logo: getFileUrl(`${Business.STORAGE_PATH}/${business.logo}`),
+    //     cover: getFileUrl(`${Business.STORAGE_PATH}/${business.cover}`),
+    //   };
+    // });
 
     return {
       totalCount,

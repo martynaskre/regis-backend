@@ -4,13 +4,9 @@ import { BusinessController } from './business.controller';
 import { Business } from './business.entity';
 import { BusinessService } from './business.service';
 import { Service } from '../service/service.entity';
-import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Business, Service]),
-    NestjsFormDataModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Business, Service])],
   controllers: [BusinessController],
   providers: [BusinessService],
 })
