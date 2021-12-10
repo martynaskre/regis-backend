@@ -9,7 +9,7 @@ import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
-import { getFileUrl, storeFile } from '../utils';
+// import { getFileUrl, storeFile } from '../utils';
 
 @Injectable()
 export class BusinessService {
