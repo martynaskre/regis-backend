@@ -26,6 +26,19 @@ export function formatResponse(message: string, data?: any) {
   };
 }
 
+export function throwMoreThanOneBusiness(
+  errors: any,
+  message = 'The given data was invalid.',
+) {
+  throw new HttpException(
+    {
+      message,
+      errors,
+    },
+    HttpStatus.FORBIDDEN,
+  );
+}
+
 export function throwValidationException(
   errors: any,
   message = 'The given data was invalid.',

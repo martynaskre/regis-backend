@@ -10,7 +10,7 @@ import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
 import { StorageService } from '../storage/storage.service';
-import { generateFilename } from '../utils';
+import { generateFilename, throwMoreThanOneBusiness } from '../utils';
 
 @Injectable()
 export class BusinessService {
@@ -24,7 +24,7 @@ export class BusinessService {
     private readonly servicesRepository: Repository<Service>,
     private readonly storageService: StorageService,
   ) {}
-
+  
   async createBusiness(
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
@@ -57,7 +57,13 @@ export class BusinessService {
       },
       rating: 0,
     });
-    await this.businessRepository.save(business);
+
+    try{
+      await this.businessRepository.save(business);
+    }
+    catch{
+      throwMoreThanOneBusiness({ businessId: 'Provider can only have 1 business' });
+    }
 
     return business;
   }
