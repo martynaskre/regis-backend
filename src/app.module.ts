@@ -16,6 +16,7 @@ import { CategoryModule } from './category/category.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { RatingModule } from './rating/rating.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -31,6 +32,15 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
       synchronize: true,
       entities: [path.join(__dirname, '**/*.entity{.ts,.js}')],
       subscribers: [path.join(__dirname, '**/*.subscriber{.ts,.js}')],
+    }),
+    StorageModule.register({
+      disks: {
+        public: {
+          driver: 'local',
+          path: path.join(process.cwd(), 'storage', 'public'),
+          baseUrl: process.env.STORAGE_URL,
+        },
+      },
     }),
     NestjsFormDataModule,
     AuthModule,

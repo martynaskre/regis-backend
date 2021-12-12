@@ -3,9 +3,9 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import { FrontEndpoint } from '../types';
 import slugify from 'slugify';
-// import { MemoryStoredFile } from 'nestjs-form-data';
-// import * as crypto from 'crypto';
-// import { Storage } from '@squareboat/nest-storage';
+import { MemoryStoredFile } from 'nestjs-form-data';
+import * as crypto from 'crypto';
+// import { StorageService } from '../storage/storage.service';
 
 const saltRounds = 10;
 
@@ -81,7 +81,7 @@ export function generateSlug(str: string) {
 //       .update(file.originalName + new Date().getTime().toString())
 //       .digest('hex') + `.${fileExtension}`;
 //
-//   await Storage.disk(disk).put(`${path}/${filename}`, file.buffer);
+//   await StorageService.disk(disk).put(`${path}/${filename}`, file.buffer);
 //
 //   return filename;
 // }
@@ -91,3 +91,14 @@ export function generateSlug(str: string) {
 //
 //   return config.baseUrl + path;
 // }
+
+export function generateFilename(file: MemoryStoredFile) {
+  const fileExtension = file.originalName.split('.')[1];
+
+  return (
+    crypto
+      .createHash('md5')
+      .update(file.originalName + new Date().getTime().toString())
+      .digest('hex') + `.${fileExtension}`
+  );
+}

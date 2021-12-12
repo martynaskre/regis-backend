@@ -81,6 +81,12 @@ export class Business {
   @Column({ type: 'float' })
   rating: number;
 
+  @Column()
+  cover: string;
+
+  @Column()
+  logo: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'NOW()',

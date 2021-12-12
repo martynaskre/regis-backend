@@ -9,7 +9,8 @@ import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
-// import { getFileUrl, storeFile } from '../utils';
+import { StorageService } from '../storage/storage.service';
+import { generateFilename } from '../utils';
 
 @Injectable()
 export class BusinessService {
@@ -21,16 +22,35 @@ export class BusinessService {
     private readonly businessRepository: Repository<Business>,
     @InjectRepository(Service)
     private readonly servicesRepository: Repository<Service>,
+    private readonly storageService: StorageService,
   ) {}
 
   async createBusiness(
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
   ) {
-    const { ...dataToStore } = businessData;
+    const {
+      logo: logoFileData,
+      cover: coverFileData,
+      ...dataToStore
+    } = businessData;
+
+    const coverFile = generateFilename(coverFileData);
+
+    await this.storageService
+      .disk('public')
+      .put(`${Business.STORAGE_PATH}/${coverFile}`, coverFileData.buffer);
+
+    const logoFile = generateFilename(coverFileData);
+
+    await this.storageService
+      .disk('public')
+      .put(`${Business.STORAGE_PATH}/${logoFile}`, logoFileData.buffer);
 
     const business = this.businessRepository.create({
       ...dataToStore,
+      logo: logoFile,
+      cover: coverFile,
       provider: provider,
       category: {
         id: businessData.categoryId,
@@ -72,13 +92,17 @@ export class BusinessService {
     const totalCount = await query.getCount();
     let businesses = await query.orderBy('business.id').getMany();
 
-    // businesses = businesses.map((business) => {
-    //   return {
-    //     ...business,
-    //     logo: getFileUrl(`${Business.STORAGE_PATH}/${business.logo}`),
-    //     cover: getFileUrl(`${Business.STORAGE_PATH}/${business.cover}`),
-    //   };
-    // });
+    businesses = businesses.map((business) => {
+      return {
+        ...business,
+        logo: this.storageService
+          .disk('public')
+          .url(`${Business.STORAGE_PATH}/${business.logo}`),
+        cover: this.storageService
+          .disk('public')
+          .url(`${Business.STORAGE_PATH}/${business.cover}`),
+      };
+    });
 
     return {
       totalCount,
