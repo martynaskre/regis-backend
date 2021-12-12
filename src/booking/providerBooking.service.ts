@@ -43,8 +43,7 @@ export class ProviderBookingService {
 
   async getProviderBookings(
     businessId: number,
-    paginationDto: PaginationDto,
-  ): Promise<PaginatedProviderBookingsResultDto> {
+  ) {
     const totalCount = await this.providerBookingRepository.count({
       where: { business: businessId },
     });
@@ -64,12 +63,7 @@ export class ProviderBookingService {
       );
     }
 
-    return {
-      totalCount,
-      page: paginationDto.page,
-      limit: paginationDto.limit,
-      data: bookings,
-    };
+    return bookings;
   }
 
   async getBookingById(id: number) {
