@@ -9,7 +9,8 @@ import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
-import { getFileUrl, storeFile } from '../utils';
+import { StorageService } from '../storage/storage.service';
+import { generateFilename } from '../utils';
 
 @Injectable()
 export class BusinessService {
@@ -21,6 +22,7 @@ export class BusinessService {
     private readonly businessRepository: Repository<Business>,
     @InjectRepository(Service)
     private readonly servicesRepository: Repository<Service>,
+    private readonly storageService: StorageService,
   ) {}
 
   async createBusiness(
@@ -33,8 +35,17 @@ export class BusinessService {
       ...dataToStore
     } = businessData;
 
-    const coverFile = await storeFile(Business.STORAGE_PATH, coverFileData);
-    const logoFile = await storeFile(Business.STORAGE_PATH, logoFileData);
+    const coverFile = generateFilename(coverFileData);
+
+    await this.storageService
+      .disk('public')
+      .put(`${Business.STORAGE_PATH}/${coverFile}`, coverFileData.buffer);
+
+    const logoFile = generateFilename(coverFileData);
+
+    await this.storageService
+      .disk('public')
+      .put(`${Business.STORAGE_PATH}/${logoFile}`, logoFileData.buffer);
 
     const business = this.businessRepository.create({
       ...dataToStore,
@@ -84,8 +95,12 @@ export class BusinessService {
     businesses = businesses.map((business) => {
       return {
         ...business,
-        logo: getFileUrl(`${Business.STORAGE_PATH}/${business.logo}`),
-        cover: getFileUrl(`${Business.STORAGE_PATH}/${business.cover}`),
+        logo: this.storageService
+          .disk('public')
+          .url(`${Business.STORAGE_PATH}/${business.logo}`),
+        cover: this.storageService
+          .disk('public')
+          .url(`${Business.STORAGE_PATH}/${business.cover}`),
       };
     });
 

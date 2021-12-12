@@ -15,8 +15,8 @@ import { CronModule } from './cron/cron.module';
 import { CategoryModule } from './category/category.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { RatingModule } from './rating/rating.module';
-import { StorageModule } from '@squareboat/nest-storage';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -34,11 +34,10 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
       subscribers: [path.join(__dirname, '**/*.subscriber{.ts,.js}')],
     }),
     StorageModule.register({
-      default: 'docs',
       disks: {
         public: {
           driver: 'local',
-          basePath: path.join(process.cwd(), 'storage', 'public'),
+          path: path.join(process.cwd(), 'storage', 'public'),
           baseUrl: process.env.STORAGE_URL,
         },
       },
