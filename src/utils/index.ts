@@ -5,7 +5,6 @@ import { FrontEndpoint } from '../types';
 import slugify from 'slugify';
 import { MemoryStoredFile } from 'nestjs-form-data';
 import * as crypto from 'crypto';
-// import { StorageService } from '../storage/storage.service';
 
 const saltRounds = 10;
 
@@ -67,30 +66,6 @@ export function generateSlug(str: string) {
     lower: true,
   });
 }
-
-// export async function storeFile(
-//   path: string,
-//   file: MemoryStoredFile,
-//   disk = 'public',
-// ) {
-//   const fileExtension = file.originalName.split('.')[1];
-//
-//   const filename =
-//     crypto
-//       .createHash('md5')
-//       .update(file.originalName + new Date().getTime().toString())
-//       .digest('hex') + `.${fileExtension}`;
-//
-//   await StorageService.disk(disk).put(`${path}/${filename}`, file.buffer);
-//
-//   return filename;
-// }
-//
-// export function getFileUrl(path: string, disk = 'public') {
-//   const config = Storage.disk(disk).getConfig();
-//
-//   return config.baseUrl + path;
-// }
 
 export function generateFilename(file: MemoryStoredFile) {
   const fileExtension = file.originalName.split('.')[1];
