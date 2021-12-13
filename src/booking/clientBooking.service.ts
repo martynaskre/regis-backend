@@ -32,9 +32,6 @@ export class ClientBookingService {
       throwNotFound({ service: 'The service was not found.' });
     }
 
-    //get client booking where service id == booking data service id
-    // and where rezerved time == booking data rezerved time
-
     const booking = this.clientBookingRepository.create({
       ...bookingData,
       service: service,
