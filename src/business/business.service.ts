@@ -25,7 +25,7 @@ export class BusinessService {
     private readonly storageService: StorageService,
   ) {}
 
-  async getBookings(businesId: number){
+  async getBookings(businesId: number) {
     const business = await this.businessRepository
       .createQueryBuilder('business')
       .where({ id: businesId })
@@ -34,22 +34,19 @@ export class BusinessService {
       .leftJoinAndSelect('services.clientBookings', 'clientBookings')
       .getOne();
 
-      let providerBookings = business.providerBookings;
-      let clientBookings = [];
+    const providerBookings = business.providerBookings;
+    const clientBookings = [];
 
-      for(var x = 0; x < business.services.length; x++){
-        if(business.services[x].clientBookings.length !== 0)
-          for(var y = 0; y < business.services[x].clientBookings.length; y++){
-           clientBookings.push(business.services[x].clientBookings[y])
-          }
-      }
+    for (let x = 0; x < business.services.length; x++) {
+      if (business.services[x].clientBookings.length !== 0)
+        for (let y = 0; y < business.services[x].clientBookings.length; y++) {
+          clientBookings.push(business.services[x].clientBookings[y]);
+        }
+    }
 
-    
-      return {clientBookings, providerBookings};
-
-
+    return { clientBookings, providerBookings };
   }
-  
+
   async createBusiness(
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
@@ -83,11 +80,12 @@ export class BusinessService {
       rating: 0,
     });
 
-    try{
+    try {
       await this.businessRepository.save(business);
-    }
-    catch{
-      throwMoreThanOneBusiness({ businessId: 'Provider can only have 1 business' });
+    } catch {
+      throwMoreThanOneBusiness({
+        businessId: 'Provider can only have 1 business',
+      });
     }
 
     return business;

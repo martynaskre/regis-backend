@@ -41,9 +41,7 @@ export class ProviderBookingService {
     return booking;
   }
 
-  async getProviderBookings(
-    businessId: number,
-  ) {
+  async getProviderBookings(businessId: number) {
     const totalCount = await this.providerBookingRepository.count({
       where: { business: businessId },
     });

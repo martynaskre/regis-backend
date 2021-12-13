@@ -34,12 +34,9 @@ export class ProviderBookingController {
 
   @UseGuards(ProviderGuard)
   @Get('provider/:providerId')
-  async getProviderBookings(
-    @Param('providerId') providerId: string,
-   
-  ) {
-    return this.providerBookingService.getProviderBookings(Number(providerId)
-    )}
+  async getProviderBookings(@Param('providerId') providerId: string) {
+    return this.providerBookingService.getProviderBookings(Number(providerId));
+  }
 
   @UseGuards(ProviderGuard)
   @Get(':id')
