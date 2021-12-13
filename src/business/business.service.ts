@@ -159,7 +159,6 @@ export class BusinessService {
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
 
-    // ar reikia grazinti visus servisus
     return business;
   }
 
