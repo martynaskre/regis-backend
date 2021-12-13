@@ -9,7 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
-import { throwNotFound } from '../utils';
+import { throwDuplicateBooking, throwNotFound } from '../utils';
 
 @Injectable()
 export class ClientBookingService {
@@ -30,6 +30,16 @@ export class ClientBookingService {
 
     if (!service) {
       throwNotFound({ service: 'The service was not found.' });
+    }
+
+    const currentBooking = await this.clientBookingRepository
+    .createQueryBuilder('clientBooking')
+    .where('clientBooking.service = :id', { id: service.id })
+    .where('clientBooking.reservedTime = :reservedTime', { reservedTime: bookingData.reservedTime })
+    .getOne();
+
+    if(currentBooking){
+      throwDuplicateBooking({ reservedTime: 'This time is already booked' });
     }
 
     const booking = this.clientBookingRepository.create({

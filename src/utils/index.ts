@@ -39,6 +39,19 @@ export function throwMoreThanOneBusiness(
   );
 }
 
+export function throwDuplicateBooking(
+  errors: any,
+  message = 'The given data was invalid.',
+) {
+  throw new HttpException(
+    {
+      message,
+      errors,
+    },
+    HttpStatus.FORBIDDEN,
+  );
+}
+
 export function throwValidationException(
   errors: any,
   message = 'The given data was invalid.',
