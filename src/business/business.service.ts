@@ -24,6 +24,31 @@ export class BusinessService {
     private readonly servicesRepository: Repository<Service>,
     private readonly storageService: StorageService,
   ) {}
+
+  async getBookings(businesId: number){
+    const business = await this.businessRepository
+      .createQueryBuilder('business')
+      .where({ id: businesId })
+      .leftJoinAndSelect('business.providerBookings', 'providerBookings')
+      .leftJoinAndSelect('business.services', 'services')
+      .leftJoinAndSelect('services.clientBookings', 'clientBookings')
+      .getOne();
+
+      let providerBookings = business.providerBookings;
+      let clientBookings = [];
+
+      for(var x = 0; x < business.services.length; x++){
+        if(business.services[x].clientBookings.length !== 0)
+          for(var y = 0; y < business.services[x].clientBookings.length; y++){
+           clientBookings.push(business.services[x].clientBookings[y])
+          }
+      }
+
+    
+      return {clientBookings, providerBookings};
+
+
+  }
   
   async createBusiness(
     businessData: CreateBussinesDto,
