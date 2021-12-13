@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/client/client.entity';
 import { ServiceService } from 'src/service/service.service';
@@ -13,6 +13,8 @@ import { throwNotFound } from '../utils';
 
 @Injectable()
 export class ClientBookingService {
+  private readonly logger = new Logger(ClientBookingService.name);
+
   constructor(
     @InjectRepository(ClientBooking)
     private readonly clientBookingRepository: Repository<ClientBooking>,
@@ -20,6 +22,8 @@ export class ClientBookingService {
   ) {}
 
   async createBooking(bookingData: CreateClientBookingDto, client: Client) {
+    this.logger.log('Creating new client booking');
+
     const service = await this.serviceService.getServicesById(
       bookingData.serviceId,
     );
@@ -43,6 +47,8 @@ export class ClientBookingService {
     clientId: number,
     paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
+    this.logger.log('Getting client bookings');
+
     const totalCount = await this.clientBookingRepository.count({
       where: { client: clientId },
     });
@@ -71,6 +77,9 @@ export class ClientBookingService {
   }
 
   async getBookingById(id: number) {
+    this.logger.log('Getting client booking by id');
+
+
     const booking = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
       .where({ id: id })
@@ -94,6 +103,8 @@ export class ClientBookingService {
   async getBookings(
     paginationDto: PaginationDto,
   ): Promise<PaginatedClientBookingsResultDto> {
+    this.logger.log('Getting all bookings');
+
     const totalCount = await this.clientBookingRepository.count();
 
     const bookings = await this.clientBookingRepository
@@ -124,6 +135,8 @@ export class ClientBookingService {
   }
 
   async deleteBookingById(id: number, client: Client) {
+    this.logger.log('Deleting client booking by id');
+
     const booking = await this.getBookingById(id);
 
     if (!booking || booking.client.id !== client.id) {

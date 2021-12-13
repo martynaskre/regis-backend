@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
 import { Repository } from 'typeorm';
@@ -14,6 +14,9 @@ import { generateFilename, throwMoreThanOneBusiness } from '../utils';
 
 @Injectable()
 export class BusinessService {
+  private readonly logger = new Logger(BusinessService.name);
+
+
   update(businessId: any, arg1: { rating: number }) {
     throw new Error('Method not implemented.');
   }
@@ -26,6 +29,8 @@ export class BusinessService {
   ) {}
 
   async getBookings(businesId: number) {
+    this.logger.log('Getting all business bookings');
+
     const business = await this.businessRepository
       .createQueryBuilder('business')
       .where({ id: businesId })
@@ -51,6 +56,8 @@ export class BusinessService {
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
   ) {
+    this.logger.log('Creating new business');
+
     const {
       logo: logoFileData,
       cover: coverFileData,
@@ -94,6 +101,8 @@ export class BusinessService {
   async getBusinesses(
     getBusinessDto: GetBusinessDto,
   ): Promise<PaginatedBusinessesResultDto> {
+    this.logger.log('Getting all businesses');
+
     let query = this.businessRepository.createQueryBuilder('business');
 
     if (getBusinessDto.category) {
@@ -142,6 +151,8 @@ export class BusinessService {
   }
 
   async getBusinessById(id: number) {
+    this.logger.log('Getting business by its id');
+
     const business = await this.businessRepository
       .createQueryBuilder('business')
       .where({ id: id })
@@ -153,6 +164,8 @@ export class BusinessService {
   }
 
   async deleteBusinessById(id: number, provider: ProviderEntity) {
+    this.logger.log('Deleting business by id');
+
     const business = await this.getBusinessById(id);
 
     if (business.provider.id !== provider.id) {
@@ -180,6 +193,8 @@ export class BusinessService {
     UpdateBusinessBody: UpadateBussinesDto,
     provider: ProviderEntity,
   ) {
+    this.logger.log('Updating business by id');
+
     const business = await this.getBusinessById(id);
 
     if (business.provider.id !== provider.id) {

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessService } from '../business/business.service';
 import { Repository } from 'typeorm';
@@ -10,6 +10,8 @@ import { Business } from '../business/business.entity';
 
 @Injectable()
 export class ScheduleService {
+  private readonly logger = new Logger(ScheduleService.name);
+
   constructor(
     @InjectRepository(Schedule)
     private readonly scheduleRepository: Repository<Schedule>,
@@ -19,6 +21,8 @@ export class ScheduleService {
   ) {}
 
   async createSchedule(scheduleData: CreateScheduleDto) {
+    this.logger.log('Creating schedule');
+
     const business = await this.businessService.getBusinessById(
       scheduleData.businessId,
     );
@@ -34,6 +38,8 @@ export class ScheduleService {
   }
 
   async getProviderSchedule(businessId: number) {
+    this.logger.log('Getting provider schedules');
+
     const schedule = await this.scheduleRepository
       .createQueryBuilder('schedule')
       .where('schedule.business = :id', { id: businessId })
@@ -48,6 +54,8 @@ export class ScheduleService {
     updateSchedule: UpdateScheduleDto,
     provider: ProviderEntity,
   ) {
+    this.logger.log('Updating provider schedule');
+
     if (schedule.business.provider.id !== provider.id) {
       throw new HttpException(
         {
