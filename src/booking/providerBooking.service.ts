@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessService } from '../business/business.service';
 import { ProviderEntity } from '../provider/provider.entity';
@@ -13,6 +13,9 @@ import { throwNotFound } from '../utils';
 
 @Injectable()
 export class ProviderBookingService {
+  private readonly logger = new Logger(ProviderBookingService.name);
+
+
   constructor(
     @InjectRepository(ProviderBooking)
     private readonly providerBookingRepository: Repository<ProviderBooking>,
@@ -23,6 +26,8 @@ export class ProviderBookingService {
     provider: ProviderEntity,
     bookingData: createProviderBooking,
   ) {
+    this.logger.log('Creating new provider booking');
+
     const business = await this.businessService.getBusinessById(
       bookingData.businessId,
     );
@@ -41,10 +46,9 @@ export class ProviderBookingService {
     return booking;
   }
 
-  async getProviderBookings(
-    businessId: number,
-    paginationDto: PaginationDto,
-  ): Promise<PaginatedProviderBookingsResultDto> {
+  async getProviderBookings(businessId: number) {
+    this.logger.log('provider client bookings');
+
     const totalCount = await this.providerBookingRepository.count({
       where: { business: businessId },
     });
@@ -64,15 +68,12 @@ export class ProviderBookingService {
       );
     }
 
-    return {
-      totalCount,
-      page: paginationDto.page,
-      limit: paginationDto.limit,
-      data: bookings,
-    };
+    return bookings;
   }
 
   async getBookingById(id: number) {
+    this.logger.log('Getting provider booking by id');
+
     const booking = await this.providerBookingRepository
       .createQueryBuilder('providerBooking')
       .where({ id: id })
@@ -96,6 +97,8 @@ export class ProviderBookingService {
   async getBookings(
     paginationDto: PaginationDto,
   ): Promise<PaginatedProviderBookingsResultDto> {
+    this.logger.log('Getting all bookings');
+
     const totalCount = await this.providerBookingRepository.count();
 
     const bookings = await this.providerBookingRepository
@@ -125,6 +128,8 @@ export class ProviderBookingService {
   }
 
   async deleteBookingById(id: number, provider: ProviderEntity) {
+    this.logger.log('Deleting provider booking by id');
+
     const booking = await this.getBookingById(id);
 
     if (booking.provider.id !== provider.id || !booking) {

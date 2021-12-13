@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from './provider.entity';
 import { Repository } from 'typeorm';
@@ -18,7 +18,9 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Injectable()
 export class ProviderService {
-  constructor(
+     private readonly logger = new Logger(ProviderService.name);
+ 
+    constructor(
     @InjectRepository(ProviderEntity)
     private readonly providerRepository: Repository<ProviderEntity>,
     private readonly mailService: MailService,
@@ -26,6 +28,8 @@ export class ProviderService {
   ) {}
 
   async create(providerData: CreateProviderDto) {
+    this.logger.log('Creating new provider');
+
     const provider = new ProviderEntity();
 
     provider.firstName = providerData.firstName;
@@ -55,6 +59,8 @@ export class ProviderService {
   }
 
   async login(providerLogin: LoginProviderDto): Promise<JwtPayload> {
+    this.logger.log('Logging in provider');
+
     const provider = await this.providerRepository.findOne({
       email: providerLogin.email,
     });
@@ -76,6 +82,8 @@ export class ProviderService {
   }
 
   async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    this.logger.log('Forgot password of provider');
+
     await this.passwordResetService.handlePasswordForget(async () => {
       return await this.providerRepository.findOne({
         email: forgotPassword.email,
@@ -84,6 +92,8 @@ export class ProviderService {
   }
 
   async resetPassword(resetPassword: ResetPasswordDto) {
+    this.logger.log('Reseting password of provider');
+
     await this.passwordResetService.handlePasswordReset(
       'provider',
       resetPassword.token,

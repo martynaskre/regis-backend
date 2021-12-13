@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from './client.entity';
@@ -18,6 +18,8 @@ import { PasswordResetService } from '../auth/passwor-resets/password-reset.serv
 
 @Injectable()
 export class ClientService {
+  private readonly logger = new Logger(ClientService.name);
+
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
@@ -26,6 +28,9 @@ export class ClientService {
   ) {}
 
   async create(clientData: CreateClientDto) {
+    this.logger.log('Creating new client');
+
+
     const client = new Client();
 
     client.firstName = clientData.firstName;
@@ -48,6 +53,9 @@ export class ClientService {
   }
 
   async login(loginClient: LogInClientDto): Promise<JwtPayload> {
+    this.logger.log('Logging in client');
+
+
     const client = await this.clientRepository.findOne({
       email: loginClient.email,
     });
@@ -69,6 +77,8 @@ export class ClientService {
   }
 
   async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    this.logger.log('Forgot password of client');
+
     await this.passwordResetService.handlePasswordForget(async () => {
       return await this.clientRepository.findOne({
         email: forgotPassword.email,
@@ -77,6 +87,9 @@ export class ClientService {
   }
 
   async resetPassword(resetPassword: ResetPasswordDto) {
+    this.logger.log('Reseting password of client');
+
+
     await this.passwordResetService.handlePasswordReset(
       'client',
       resetPassword.token,

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessService } from '../business/business.service';
 import { Repository } from 'typeorm';
@@ -13,6 +13,8 @@ import {
 
 @Injectable()
 export class ServiceService {
+  private readonly logger = new Logger(ServiceService.name);
+
   constructor(
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
@@ -20,6 +22,9 @@ export class ServiceService {
   ) {}
 
   async createService(serviceData: CreateServiceDto, provider: ProviderEntity) {
+    this.logger.log('Creating new service');
+
+
     const business = await this.businessService.getBusinessById(
       serviceData.businessId,
     );
@@ -47,6 +52,9 @@ export class ServiceService {
   async getServices(
     paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
+    this.logger.log('Getting all service');
+
+
     const totalCount = await this.serviceRepository.count();
 
     console.log(paginationDto);
@@ -67,6 +75,8 @@ export class ServiceService {
   }
 
   async getServicesById(id: number) {
+    this.logger.log('Getting service by its id');
+
     const service = await this.serviceRepository
       .createQueryBuilder('service')
       .where({ id: id })
@@ -80,6 +90,8 @@ export class ServiceService {
   }
 
   async deleteServiceById(id: number, provider: ProviderEntity) {
+    this.logger.log('Deleting service by its id');
+
     const service = await this.getServicesById(id);
 
     if (service.business.provider.id !== provider.id && !service) {
@@ -105,6 +117,8 @@ export class ServiceService {
     UpdateServiceBody: UpadateServiceDto,
     provider: ProviderEntity,
   ) {
+    this.logger.log('Updating service by its id');
+
     const service = await this.getServicesById(id);
 
     if (service.business.provider.id !== provider.id && !service) {

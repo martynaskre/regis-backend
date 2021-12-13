@@ -63,7 +63,10 @@ export class BusinessController {
     return this.bussinesService.getBusinessById(Number(id));
   }
 
-  //@GET(provider/:id)
+  @Get(':id/bookings')
+  async getBookings(@Param('id') id: string) {
+    return this.bussinesService.getBookings(Number(id));
+  }
 
   @UseGuards(ProviderGuard)
   @Delete(':id')

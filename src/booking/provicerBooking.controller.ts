@@ -34,14 +34,8 @@ export class ProviderBookingController {
 
   @UseGuards(ProviderGuard)
   @Get('provider/:providerId')
-  async getProviderBookings(
-    @Param('providerId') providerId: string,
-    @Query() paginationDto: PaginationDto,
-  ): Promise<PaginatedProviderBookingsResultDto> {
-    return this.providerBookingService.getProviderBookings(Number(providerId), {
-      ...paginationDto,
-      limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
-    });
+  async getProviderBookings(@Param('providerId') providerId: string) {
+    return this.providerBookingService.getProviderBookings(Number(providerId));
   }
 
   @UseGuards(ProviderGuard)
