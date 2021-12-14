@@ -57,6 +57,7 @@ export class ClientBookingService {
     const booking = this.clientBookingRepository.create({
       ...bookingData,
       service: service,
+      duration: service.duration,
       client: client,
     });
 
