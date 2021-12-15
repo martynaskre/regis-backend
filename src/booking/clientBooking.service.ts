@@ -53,6 +53,9 @@ export class ClientBookingService {
     //     throwDuplicateBooking({ reservedTime: 'This time is already booked by client' });
     //   }
     // }
+
+    // PAGALIAU VEIKIA
+    console.log(bookingData.reservedTime.toISOString());
   
     const booking = this.clientBookingRepository.create({
       ...bookingData,

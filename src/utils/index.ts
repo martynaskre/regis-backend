@@ -103,3 +103,15 @@ export function generateFilename(file: MemoryStoredFile) {
       .digest('hex') + `.${fileExtension}`
   );
 }
+
+export function formatValidationErrors(errors) {
+  const result = {};
+
+  errors.forEach((error) => {
+    const property = error.property;
+
+    result[property] = Object.values(error.constraints)[0];
+  });
+
+  return throwValidationException(result);
+}
