@@ -28,6 +28,9 @@ export class ClientBookingService {
       throwNotFound({ service: 'The service was not found.' });
     }
 
+    // PAGALIAU VEIKIA
+    console.log(bookingData.reservedTime.toISOString());
+
     const booking = this.clientBookingRepository.create({
       ...bookingData,
       service: service,
