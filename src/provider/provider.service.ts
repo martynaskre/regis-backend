@@ -18,9 +18,9 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Injectable()
 export class ProviderService {
-     private readonly logger = new Logger(ProviderService.name);
- 
-    constructor(
+  private readonly logger = new Logger(ProviderService.name);
+
+  constructor(
     @InjectRepository(ProviderEntity)
     private readonly providerRepository: Repository<ProviderEntity>,
     private readonly mailService: MailService,

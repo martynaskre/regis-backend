@@ -20,7 +20,7 @@ export class ClientBookingService {
     @InjectRepository(ClientBooking)
     private readonly clientBookingRepository: Repository<ClientBooking>,
     private readonly serviceService: ServiceService,
-    private readonly businessService: BusinessService
+    private readonly businessService: BusinessService,
   ) {}
 
   async createBooking(bookingData: CreateClientBookingDto, client: Client) {
@@ -56,7 +56,7 @@ export class ClientBookingService {
 
     // PAGALIAU VEIKIA
     console.log(bookingData.reservedTime.toISOString());
-  
+
     const booking = this.clientBookingRepository.create({
       ...bookingData,
       service: service,
@@ -103,7 +103,6 @@ export class ClientBookingService {
 
   async getBookingById(id: number) {
     this.logger.log('Getting client booking by id');
-
 
     const booking = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')

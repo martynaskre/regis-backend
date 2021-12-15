@@ -30,7 +30,6 @@ export class ClientService {
   async create(clientData: CreateClientDto) {
     this.logger.log('Creating new client');
 
-
     const client = new Client();
 
     client.firstName = clientData.firstName;
@@ -54,7 +53,6 @@ export class ClientService {
 
   async login(loginClient: LogInClientDto): Promise<JwtPayload> {
     this.logger.log('Logging in client');
-
 
     const client = await this.clientRepository.findOne({
       email: loginClient.email,
@@ -88,7 +86,6 @@ export class ClientService {
 
   async resetPassword(resetPassword: ResetPasswordDto) {
     this.logger.log('Reseting password of client');
-
 
     await this.passwordResetService.handlePasswordReset(
       'client',

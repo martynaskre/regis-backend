@@ -15,7 +15,6 @@ import { throwNotFound } from '../utils';
 export class ProviderBookingService {
   private readonly logger = new Logger(ProviderBookingService.name);
 
-
   constructor(
     @InjectRepository(ProviderBooking)
     private readonly providerBookingRepository: Repository<ProviderBooking>,

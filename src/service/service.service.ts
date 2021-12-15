@@ -24,7 +24,6 @@ export class ServiceService {
   async createService(serviceData: CreateServiceDto, provider: ProviderEntity) {
     this.logger.log('Creating new service');
 
-
     const business = await this.businessService.getBusinessById(
       serviceData.businessId,
     );
@@ -53,7 +52,6 @@ export class ServiceService {
     paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
     this.logger.log('Getting all service');
-
 
     const totalCount = await this.serviceRepository.count();
 
