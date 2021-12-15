@@ -1,4 +1,3 @@
-import { Service } from "src/service/service.entity";
 
 export interface JwtPayload {
   email: string;
