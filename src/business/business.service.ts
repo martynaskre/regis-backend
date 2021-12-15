@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProviderEntity } from '../provider/provider.entity';
-import { Repository } from 'typeorm';
+import { Entity, Repository } from 'typeorm';
 import { Business } from './business.entity';
 import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
@@ -11,6 +11,8 @@ import { Service } from '../service/service.entity';
 import '../utils/typeormExtras';
 import { StorageService } from '../storage/storage.service';
 import { generateFilename, throwMoreThanOneBusiness } from '../utils';
+import { ClientBooking } from '../booking/clientBooking.entity';
+import { BookingEntry } from 'src/types';
 
 @Injectable()
 export class BusinessService {
@@ -27,7 +29,7 @@ export class BusinessService {
     private readonly storageService: StorageService,
   ) {}
 
-  async getBookings(businesId: number) {
+  async getBookings(businesId: number): Promise<BookingEntry[]> {
     this.logger.log('Getting all business bookings');
 
     const business = await this.businessRepository
@@ -36,10 +38,14 @@ export class BusinessService {
       .leftJoinAndSelect('business.providerBookings', 'providerBookings')
       .leftJoinAndSelect('business.services', 'services')
       .leftJoinAndSelect('services.clientBookings', 'clientBookings')
+      .leftJoinAndSelect('clientBookings.service', 'service')
       .getOne();
+
+
 
     const providerBookings = business.providerBookings;
     const clientBookings = [];
+
 
     for (let x = 0; x < business.services.length; x++) {
       if (business.services[x].clientBookings.length !== 0)
@@ -48,7 +54,16 @@ export class BusinessService {
         }
     }
 
-    return { clientBookings, providerBookings };
+    const bookings = [...providerBookings, ...clientBookings].map((entry) => {
+      return {
+          reservedTime: entry.reservedTime,
+          duration: entry.duration,
+          title: (entry instanceof ClientBooking) ? entry.service.title : null,
+          description: (entry instanceof ClientBooking) ? entry.service.description : null,
+      };
+  });
+
+    return bookings;
   }
 
   async createBusiness(

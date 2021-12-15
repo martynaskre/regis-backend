@@ -3,6 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
   Min,
   MinLength,
@@ -26,10 +27,16 @@ export class CreateServiceDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
+  @Min(1)
   readonly minPrice: number;
 
   @IsOptional()
   @IsNumber()
   readonly maxPrice: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  @Max(10)
+  readonly duration: number;
 }

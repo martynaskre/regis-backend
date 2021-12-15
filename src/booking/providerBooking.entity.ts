@@ -1,6 +1,8 @@
+import { Max, Min } from 'class-validator';
 import { Business } from 'src/business/business.entity';
 import { Client } from 'src/client/client.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -23,6 +25,9 @@ export class ProviderBooking {
     type: 'timestamp',
   })
   public reservedTime: Date;
+
+  @Column()
+  public duration: number;
 
   @CreateDateColumn({
     type: 'timestamp',

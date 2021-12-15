@@ -33,26 +33,21 @@ export class ClientBookingService {
     if (!service) {
       throwNotFound({ service: 'The service was not found.' });
     }
+    
+    const bookings = await this.businessService.getBookings(service.business.id);
 
-    // HUINE SULOTION
-    // const bookings = await this.businessService.getBookings(service.business.id);
+    
+    for(let x = 0; x < bookings.length; x++)
+    {
+      console.log("Booked")
+      console.log(bookings[x].reservedTime)
+      console.log(bookingData.reservedTime)
 
-    // for(var x = 0; x < bookings.providerBookings.length; x++)
-    // {
-    //   console.log(bookings.providerBookings[x].reservedTime)
-    //   console.log(new Date(bookingData.reservedTime))
-
-    //   if(bookings.providerBookings[x].reservedTime === bookingData.reservedTime){
-    //     throwDuplicateBooking({ reservedTime: 'This time is already booked by provider' });
-    //   }
-    // }
-
-    // for(var x = 0; x < bookings.clientBookings.length; x++)
-    // {
-    //   if(bookings.clientBookings[x].reservedTime.toISOString() === bookingData.reservedTime){
-    //     throwDuplicateBooking({ reservedTime: 'This time is already booked by client' });
-    //   }
-    // }
+      if(bookings[x].reservedTime === bookingData.reservedTime)
+      {
+        console.log("fsafsf")
+      }
+    }
 
     // PAGALIAU VEIKIA
     console.log(bookingData.reservedTime.toISOString());
@@ -60,6 +55,7 @@ export class ClientBookingService {
     const booking = this.clientBookingRepository.create({
       ...bookingData,
       service: service,
+      duration: service.duration,
       client: client,
     });
 
