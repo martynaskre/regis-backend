@@ -27,6 +27,8 @@ export class ClientBooking {
   public reservedTime: Date;
 
   @Column()
+  @Min(1)
+  @Max(10)
   public duration: number;
 
   @CreateDateColumn({
