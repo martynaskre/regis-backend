@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ClientBooking } from 'src/booking/clientBooking.entity';
+import { Max, Min } from 'class-validator';
 
 @Entity('services')
 export class Service {
@@ -34,6 +35,9 @@ export class Service {
     nullable: true,
   })
   maxPrice: number;
+
+  @Column()
+  public duration: number;
 
   @CreateDateColumn({
     type: 'timestamp',

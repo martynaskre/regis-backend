@@ -16,7 +16,6 @@ import { generateFilename, throwMoreThanOneBusiness } from '../utils';
 export class BusinessService {
   private readonly logger = new Logger(BusinessService.name);
 
-
   update(businessId: any, arg1: { rating: number }) {
     throw new Error('Method not implemented.');
   }

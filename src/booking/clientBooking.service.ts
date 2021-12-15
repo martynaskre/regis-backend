@@ -9,7 +9,8 @@ import {
 import { Repository } from 'typeorm';
 import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
-import { throwNotFound } from '../utils';
+import { throwDuplicateBooking, throwNotFound } from '../utils';
+import { BusinessService } from 'src/business/business.service';
 
 @Injectable()
 export class ClientBookingService {
@@ -19,6 +20,7 @@ export class ClientBookingService {
     @InjectRepository(ClientBooking)
     private readonly clientBookingRepository: Repository<ClientBooking>,
     private readonly serviceService: ServiceService,
+    private readonly businessService: BusinessService
   ) {}
 
   async createBooking(bookingData: CreateClientBookingDto, client: Client) {
@@ -32,6 +34,26 @@ export class ClientBookingService {
       throwNotFound({ service: 'The service was not found.' });
     }
 
+    // HUINE SULOTION
+    // const bookings = await this.businessService.getBookings(service.business.id);
+
+    // for(var x = 0; x < bookings.providerBookings.length; x++)
+    // {
+    //   console.log(bookings.providerBookings[x].reservedTime)
+    //   console.log(new Date(bookingData.reservedTime))
+
+    //   if(bookings.providerBookings[x].reservedTime === bookingData.reservedTime){
+    //     throwDuplicateBooking({ reservedTime: 'This time is already booked by provider' });
+    //   }
+    // }
+
+    // for(var x = 0; x < bookings.clientBookings.length; x++)
+    // {
+    //   if(bookings.clientBookings[x].reservedTime.toISOString() === bookingData.reservedTime){
+    //     throwDuplicateBooking({ reservedTime: 'This time is already booked by client' });
+    //   }
+    // }
+  
     const booking = this.clientBookingRepository.create({
       ...bookingData,
       service: service,
