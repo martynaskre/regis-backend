@@ -46,8 +46,6 @@ export class ServiceService {
     return service;
   }
 
-  // get business services
-
   async getServices(
     paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
@@ -62,7 +60,6 @@ export class ServiceService {
       .orderBy('service.id')
       .getMany();
 
-    // ar reikia grazinti business ir provider
 
     return {
       totalCount,

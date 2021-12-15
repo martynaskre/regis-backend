@@ -10,10 +10,4 @@ export class CreateClientBookingDto {
   @IsDate()
   @IsNotEmpty()
   reservedTime: Date;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  @Max(10)
-  readonly duration: number;
 }

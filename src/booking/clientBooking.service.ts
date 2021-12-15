@@ -37,20 +37,11 @@ export class ClientBookingService {
     const bookings = await this.businessService.getBookings(service.business.id);
 
     
-    for(let x = 0; x < bookings.length; x++)
-    {
-      console.log("Booked")
-      console.log(bookings[x].reservedTime)
-      console.log(bookingData.reservedTime)
-
-      if(bookings[x].reservedTime === bookingData.reservedTime)
-      {
-        console.log("fsafsf")
+    for(let x = 0; x < bookings.length; x++) {
+      if(bookings[x].reservedTime.toISOString() === bookingData.reservedTime.toISOString()){
+        throwDuplicateBooking({reservedTime: 'Thits time is already booked'})
       }
     }
-
-    // PAGALIAU VEIKIA
-    console.log(bookingData.reservedTime.toISOString());
 
     const booking = this.clientBookingRepository.create({
       ...bookingData,
