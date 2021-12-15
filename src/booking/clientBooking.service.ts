@@ -33,7 +33,6 @@ export class ClientBookingService {
     if (!service) {
       throwNotFound({ service: 'The service was not found.' });
     }
-
     
     const bookings = await this.businessService.getBookings(service.business.id);
 
@@ -49,6 +48,9 @@ export class ClientBookingService {
         console.log("fsafsf")
       }
     }
+
+    // PAGALIAU VEIKIA
+    console.log(bookingData.reservedTime.toISOString());
   
     const booking = this.clientBookingRepository.create({
       ...bookingData,
