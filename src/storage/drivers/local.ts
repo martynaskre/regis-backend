@@ -13,4 +13,10 @@ export class Local implements StorageDriver {
   url(path: string): string {
     return new URL(path, this.config.baseUrl).toString();
   }
+
+  async delete(filePath: string): Promise<void> {
+    try {
+      await fs.remove(path.join(this.config.path, filePath));
+    } catch (e) {}
+  }
 }

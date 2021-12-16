@@ -1,18 +1,18 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProviderEntity } from '../provider/provider.entity';
-import { Entity, Repository } from 'typeorm';
-import { Business } from './business.entity';
-import { CreateBussinesDto } from './dto/create-business.dto';
-import { UpadateBussinesDto } from './dto/update-business.dto';
-import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
-import { GetBusinessDto } from './dto/get-business.dto';
-import { Service } from '../service/service.entity';
-import '../utils/typeormExtras';
-import { StorageService } from '../storage/storage.service';
-import { generateFilename, throwMoreThanOneBusiness } from '../utils';
-import { ClientBooking } from '../booking/clientBooking.entity';
-import { BookingEntry } from 'src/types';
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ProviderEntity } from "../provider/provider.entity";
+import { Repository } from "typeorm";
+import { Business } from "./business.entity";
+import { CreateBussinesDto } from "./dto/create-business.dto";
+import { UpadateBussinesDto } from "./dto/update-business.dto";
+import { PaginatedBusinessesResultDto } from "src/utils/dto/pagination.dto";
+import { GetBusinessDto } from "./dto/get-business.dto";
+import { Service } from "../service/service.entity";
+import "../utils/typeormExtras";
+import { StorageService } from "../storage/storage.service";
+import { generateFilename, throwMoreThanOneBusiness } from "../utils";
+import { ClientBooking } from "../booking/clientBooking.entity";
+import { BookingEntry } from "src/types";
 
 @Injectable()
 export class BusinessService {
@@ -106,8 +106,6 @@ export class BusinessService {
         businessId: 'Provider can only have 1 business',
       });
     }
-
-    return business;
   }
 
   async getBusinesses(
@@ -165,13 +163,11 @@ export class BusinessService {
   async getBusinessById(id: number) {
     this.logger.log('Getting business by its id');
 
-    const business = await this.businessRepository
+    return await this.businessRepository
       .createQueryBuilder('business')
       .where({ id: id })
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
-
-    return business;
   }
 
   async deleteBusinessById(id: number, provider: ProviderEntity) {
@@ -201,14 +197,14 @@ export class BusinessService {
 
   async updateBusiness(
     id: number,
-    UpdateBusinessBody: UpadateBussinesDto,
+    updateBusinessDto: UpadateBussinesDto,
     provider: ProviderEntity,
   ) {
     this.logger.log('Updating business by id');
 
     const business = await this.getBusinessById(id);
 
-    if (business.provider.id !== provider.id) {
+    if (!business || business.provider.id !== provider.id) {
       throw new HttpException(
         {
           message: "The id's dont match.",
@@ -217,9 +213,43 @@ export class BusinessService {
       );
     }
 
-    // TODO: sutvarkyti update
-    //await this.businessRepository.update(id, UpdateBusinessBody);
+    const {
+      logo: logoFileData,
+      cover: coverFileData,
+      ...dataToUpdate
+    } = updateBusinessDto;
 
-    return await this.businessRepository.findOne(id);
+    let logoFile = undefined;
+    let coverFile = undefined;
+
+    if (logoFileData) {
+      await this.storageService
+        .disk('public')
+        .delete(`${Business.STORAGE_PATH}/${business.logo}`);
+
+      logoFile = generateFilename(logoFileData);
+
+      await this.storageService
+        .disk('public')
+        .put(`${Business.STORAGE_PATH}/${logoFile}`, logoFileData.buffer);
+    }
+
+    if (coverFileData) {
+      await this.storageService
+        .disk('public')
+        .delete(`${Business.STORAGE_PATH}/${business.cover}`);
+
+      coverFile = generateFilename(coverFileData);
+
+      await this.storageService
+        .disk('public')
+        .put(`${Business.STORAGE_PATH}/${coverFile}`, coverFileData.buffer);
+    }
+
+    await this.businessRepository.update(id, {
+      ...(logoFileData && { logo: logoFile }),
+      ...(coverFileData && { cover: coverFile }),
+      ...dataToUpdate,
+    });
   }
 }
