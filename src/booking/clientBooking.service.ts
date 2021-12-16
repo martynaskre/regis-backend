@@ -33,13 +33,23 @@ export class ClientBookingService {
     if (!service) {
       throwNotFound({ service: 'The service was not found.' });
     }
-    
-    const bookings = await this.businessService.getBookings(service.business.id);
 
-    
-    for(let x = 0; x < bookings.length; x++) {
-      if(bookings[x].reservedTime.toISOString() === bookingData.reservedTime.toISOString()){
-        throwDuplicateBooking({reservedTime: 'Thits time is already booked'})
+    const bookings = await this.businessService.getBookings(
+      service.business.id,
+    );
+
+    for (let x = 0; x < bookings.length; x++) {
+      if (
+        bookings[x].reservedTime.toISOString() ===
+          bookingData.reservedTime.toISOString() ||
+        (bookings[x].reservedTime.getTime() + bookings[x].duration * 3600000 >
+          bookingData.reservedTime.getTime() &&
+          bookings[x].reservedTime.getDay() ===
+            bookingData.reservedTime.getDay() &&
+          bookings[x].reservedTime.getMonth() ===
+            bookingData.reservedTime.getMonth())
+      ) {
+        throwDuplicateBooking({ reservedTime: 'This time is already booked' });
       }
     }
 

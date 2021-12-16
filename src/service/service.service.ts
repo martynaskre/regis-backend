@@ -60,7 +60,6 @@ export class ServiceService {
       .orderBy('service.id')
       .getMany();
 
-
     return {
       totalCount,
       page: paginationDto.page,
