@@ -22,9 +22,9 @@ import { ProviderBookingService } from './providerBooking.service';
   ],
   controllers: [ClientBookingController, ProviderBookingController],
   providers: [
-    ClientBookingService,
-    ServiceService,
     BusinessService,
+    ServiceService,
+    ClientBookingService,
     ProviderBookingService,
   ],
 })

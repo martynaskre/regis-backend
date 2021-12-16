@@ -5,10 +5,11 @@ import { Business } from './business.entity';
 import { BusinessService } from './business.service';
 import { Service } from '../service/service.entity';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { ClientBooking } from '../booking/clientBooking.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Business, Service]),
+    TypeOrmModule.forFeature([Business, Service, ClientBooking]),
     NestjsFormDataModule,
   ],
   controllers: [BusinessController],

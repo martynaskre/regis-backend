@@ -27,9 +27,14 @@ export class BusinessService {
     @InjectRepository(Service)
     private readonly servicesRepository: Repository<Service>,
     private readonly storageService: StorageService,
+    @InjectRepository(ClientBooking)
+    private readonly clientBookingRepository: Repository<ClientBooking>,
   ) {}
 
-  async getBookings(businesId: number): Promise<BookingEntry[]> {
+  async getBookings(
+    businesId: number,
+    cliendId?: number,
+  ): Promise<BookingEntry[]> {
     this.logger.log('Getting all business bookings');
 
     const business = await this.businessRepository
@@ -44,14 +49,31 @@ export class BusinessService {
     const providerBookings = business.providerBookings;
     const clientBookings = [];
 
+    const id = [];
+    let existingClientBookings = [];
+
     for (let x = 0; x < business.services.length; x++) {
       if (business.services[x].clientBookings.length !== 0)
         for (let y = 0; y < business.services[x].clientBookings.length; y++) {
           clientBookings.push(business.services[x].clientBookings[y]);
+          id.push(business.services[x].clientBookings[y].id);
         }
     }
 
-    const bookings = [...providerBookings, ...clientBookings].map((entry) => {
+    if (cliendId) {
+      existingClientBookings = await this.clientBookingRepository
+        .createQueryBuilder('clientBooking')
+        .where('clientBooking.client = :id', { id: cliendId })
+        .andWhere('clientBooking.id NOT IN (:bookings)', { bookings: id })
+        .orderBy('clientBooking.id')
+        .getMany();
+    }
+
+    const bookings = [
+      ...providerBookings,
+      ...clientBookings,
+      ...existingClientBookings,
+    ].map((entry) => {
       return {
         reservedTime: entry.reservedTime,
         duration: entry.duration,
@@ -60,6 +82,8 @@ export class BusinessService {
           entry instanceof ClientBooking ? entry.service.description : null,
       };
     });
+
+    bookings.sort((a, b) => b.reservedTime - a.reservedTime);
 
     return bookings;
   }
