@@ -54,6 +54,10 @@ export class ProviderBookingService {
           bookingData.reservedTime.toISOString() ||
         (bookings[x].reservedTime.getTime() + bookings[x].duration  * 3600000 > bookingData.reservedTime.getTime() 
         && bookings[x].reservedTime.getTime() < bookingData.reservedTime.getTime()
+        ) ||
+        (
+          bookings[x].reservedTime.getTime() > bookingData.reservedTime.getTime() &&
+          bookings[x].reservedTime.getTime() < bookingData.reservedTime.getTime() + bookingData.duration * 3600000
         ) 
       ){
         throwDuplicateBooking({ reservedTime: 'This time is already booked' });
