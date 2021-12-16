@@ -39,15 +39,15 @@ export class ClientBookingService {
     );
 
     for (let x = 0; x < bookings.length; x++) {
+      console.log(bookings[x])
+      console.log(bookingData)
       if (
         bookings[x].reservedTime.toISOString() ===
           bookingData.reservedTime.toISOString() ||
         (bookings[x].reservedTime.getTime() + bookings[x].duration * 3600000 >
           bookingData.reservedTime.getTime() &&
           bookings[x].reservedTime.getTime() + bookings[x].duration <
-            bookingData.reservedTime.getTime()) ||
-        bookingData.reservedTime.getTime() + service.duration * 3600000 >
-          bookings[x].reservedTime.getTime()
+            bookingData.reservedTime.getTime()) 
       ) {
         throwDuplicateBooking({ reservedTime: 'This time is already booked' });
       }
