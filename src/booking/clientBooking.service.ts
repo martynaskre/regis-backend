@@ -44,10 +44,10 @@ export class ClientBookingService {
           bookingData.reservedTime.toISOString() ||
         (bookings[x].reservedTime.getTime() + bookings[x].duration * 3600000 >
           bookingData.reservedTime.getTime() &&
-          bookings[x].reservedTime.getDay() ===
-            bookingData.reservedTime.getDay() &&
-          bookings[x].reservedTime.getMonth() ===
-            bookingData.reservedTime.getMonth())
+          bookings[x].reservedTime.getTime() + bookings[x].duration <
+            bookingData.reservedTime.getTime()) ||
+        bookingData.reservedTime.getTime() + service.duration * 3600000 >
+          bookings[x].reservedTime.getTime()
       ) {
         throwDuplicateBooking({ reservedTime: 'This time is already booked' });
       }
