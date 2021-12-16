@@ -17,6 +17,7 @@ import { CreateBussinesDto } from './dto/create-business.dto';
 import { UpadateBussinesDto } from './dto/update-business.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { FormDataRequest } from 'nestjs-form-data';
+import { formatResponse } from '../utils';
 
 @Controller('business')
 export class BusinessController {
@@ -29,7 +30,9 @@ export class BusinessController {
     @Body() business: CreateBussinesDto,
     @Request() request,
   ) {
-    return this.bussinesService.createBusiness(business, request.user);
+    await this.bussinesService.createBusiness(business, request.user);
+
+    return formatResponse('Business created.');
   }
 
   @UseGuards(ProviderGuard)
@@ -40,11 +43,13 @@ export class BusinessController {
     @Body() UpdateBusinessBody: UpadateBussinesDto,
     @Request() request,
   ) {
-    return this.bussinesService.updateBusiness(
+    await this.bussinesService.updateBusiness(
       Number(id),
       UpdateBusinessBody,
       request.user,
     );
+
+    return formatResponse('Business updated.');
   }
 
   @Get()
