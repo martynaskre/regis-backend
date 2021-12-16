@@ -41,11 +41,8 @@ export class BusinessService {
       .leftJoinAndSelect('clientBookings.service', 'service')
       .getOne();
 
-
-
     const providerBookings = business.providerBookings;
     const clientBookings = [];
-
 
     for (let x = 0; x < business.services.length; x++) {
       if (business.services[x].clientBookings.length !== 0)
@@ -56,12 +53,13 @@ export class BusinessService {
 
     const bookings = [...providerBookings, ...clientBookings].map((entry) => {
       return {
-          reservedTime: entry.reservedTime,
-          duration: entry.duration,
-          title: (entry instanceof ClientBooking) ? entry.service.title : null,
-          description: (entry instanceof ClientBooking) ? entry.service.description : null,
+        reservedTime: entry.reservedTime,
+        duration: entry.duration,
+        title: entry instanceof ClientBooking ? entry.service.title : null,
+        description:
+          entry instanceof ClientBooking ? entry.service.description : null,
       };
-  });
+    });
 
     return bookings;
   }

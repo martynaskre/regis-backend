@@ -1,4 +1,3 @@
-
 export interface JwtPayload {
   email: string;
   sub: number;
@@ -23,7 +22,7 @@ export enum Days {
   SUNDAY = 6,
 }
 
-export interface BookingEntry{
+export interface BookingEntry {
   reservedTime: Date;
   duration: number;
   title?: string;

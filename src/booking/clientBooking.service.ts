@@ -33,24 +33,25 @@ export class ClientBookingService {
     if (!service) {
       throwNotFound({ service: 'The service was not found.' });
     }
-    
-    const bookings = await this.businessService.getBookings(service.business.id);
 
-    
-    for(let x = 0; x < bookings.length; x++)
-    {
-      console.log("Booked")
-      console.log(bookings[x].reservedTime)
-      console.log(bookingData.reservedTime)
+    const bookings = await this.businessService.getBookings(
+      service.business.id,
+    );
 
-      if(bookings[x].reservedTime === bookingData.reservedTime)
-      {
-        console.log("fsafsf")
+    for (let x = 0; x < bookings.length; x++) {
+      if (
+        bookings[x].reservedTime.toISOString() ===
+          bookingData.reservedTime.toISOString() ||
+        (bookings[x].reservedTime.getTime() + bookings[x].duration * 3600000 >
+          bookingData.reservedTime.getTime() &&
+          bookings[x].reservedTime.getDay() ===
+            bookingData.reservedTime.getDay() &&
+          bookings[x].reservedTime.getMonth() ===
+            bookingData.reservedTime.getMonth())
+      ) {
+        throwDuplicateBooking({ reservedTime: 'This time is already booked' });
       }
     }
-
-    // PAGALIAU VEIKIA
-    console.log(bookingData.reservedTime.toISOString());
 
     const booking = this.clientBookingRepository.create({
       ...bookingData,
