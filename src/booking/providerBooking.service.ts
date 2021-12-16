@@ -9,7 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
-import { throwNotFound } from '../utils';
+import { throwDuplicateBooking, throwNotFound } from '../utils';
 
 @Injectable()
 export class ProviderBookingService {
@@ -31,6 +31,8 @@ export class ProviderBookingService {
       bookingData.businessId,
     );
 
+    const bookings = await this.businessService.getBookings(business.id);
+
     if (!business || business.provider.id !== provider.id) {
       throwNotFound({ business: 'The business was not found.' });
     }
@@ -39,6 +41,26 @@ export class ProviderBookingService {
       ...bookingData,
       business: business,
     });
+
+    for (let x = 0; x < bookings.length; x++) {
+      console.log(bookings[x]);
+      console.log(bookingData);
+
+      if (
+        bookings[x].reservedTime.toISOString() ===
+          bookingData.reservedTime.toISOString() ||
+        (bookings[x].reservedTime.getTime() + bookings[x].duration * 3600000 >
+          bookingData.reservedTime.getTime() &&
+          bookings[x].reservedTime.getTime() <
+            bookingData.reservedTime.getTime()) ||
+        (bookings[x].reservedTime.getTime() >
+          bookingData.reservedTime.getTime() &&
+          bookings[x].reservedTime.getTime() <
+            bookingData.reservedTime.getTime() + bookingData.duration * 3600000)
+      ) {
+        throwDuplicateBooking({ reservedTime: 'This time is already booked' });
+      }
+    }
 
     await this.providerBookingRepository.save(booking);
 

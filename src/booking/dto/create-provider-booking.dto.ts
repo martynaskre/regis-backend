@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
 
 export class createProviderBooking {
   @IsNumber()
@@ -10,4 +10,10 @@ export class createProviderBooking {
   @IsDate()
   @IsNotEmpty()
   reservedTime: Date;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  @Max(10)
+  readonly duration: number;
 }

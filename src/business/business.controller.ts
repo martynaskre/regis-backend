@@ -69,8 +69,8 @@ export class BusinessController {
   }
 
   @Get(':id/bookings')
-  async getBookings(@Param('id') id: string) {
-    return this.bussinesService.getBookings(Number(id));
+  async getBookings(@Param('id') id: string, cliendId?: number) {
+    return this.bussinesService.getBookings(Number(id), cliendId);
   }
 
   @UseGuards(ProviderGuard)
