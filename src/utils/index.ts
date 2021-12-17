@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
-import { FrontEndpoint } from '../types';
+import { Days, FrontEndpoint } from "../types";
 import slugify from 'slugify';
 import { MemoryStoredFile } from 'nestjs-form-data';
 import * as crypto from 'crypto';
@@ -114,4 +114,9 @@ export function formatValidationErrors(errors) {
   });
 
   return throwValidationException(result);
+}
+
+export function mergeAndRemoveDuplicates(array1: any, array2: any) {
+  let array3 = array1.concat(array2);
+  return [...new Set([...array1, ...array2])]
 }

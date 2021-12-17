@@ -1,18 +1,21 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ProviderEntity } from "../provider/provider.entity";
-import { Repository } from "typeorm";
-import { Business } from "./business.entity";
-import { CreateBussinesDto } from "./dto/create-business.dto";
-import { UpadateBussinesDto } from "./dto/update-business.dto";
-import { PaginatedBusinessesResultDto } from "src/utils/dto/pagination.dto";
-import { GetBusinessDto } from "./dto/get-business.dto";
-import { Service } from "../service/service.entity";
-import "../utils/typeormExtras";
-import { StorageService } from "../storage/storage.service";
-import { generateFilename, throwMoreThanOneBusiness } from "../utils";
-import { ClientBooking } from "../booking/clientBooking.entity";
-import { BookingEntry } from "src/types";
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProviderEntity } from '../provider/provider.entity';
+import { Repository } from 'typeorm';
+import { Business } from './business.entity';
+import { CreateBussinesDto } from './dto/create-business.dto';
+import { UpadateBussinesDto } from './dto/update-business.dto';
+import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
+import { GetBusinessDto } from './dto/get-business.dto';
+import { Service } from '../service/service.entity';
+import '../utils/typeormExtras';
+import { StorageService } from '../storage/storage.service';
+import { generateFilename, throwMoreThanOneBusiness } from '../utils';
+import { ClientBooking } from '../booking/clientBooking.entity';
+import { BookingEntry, Days } from 'src/types';
+import { Schedule } from '../schedule/schedule.entity';
+import { GetBookingsDto } from './dto/get-bookings.dto';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class BusinessService {
@@ -31,6 +34,103 @@ export class BusinessService {
     private readonly clientBookingRepository: Repository<ClientBooking>,
   ) {}
 
+  async newGetBookings(
+    businessId: number,
+    bookingsData: GetBookingsDto,
+    clientId?: number,
+  ) {
+    const startDate = dayjs(bookingsData.startDate); // will always be monday
+
+    const selectedClientBookings = !clientId
+      ? []
+      : await this.clientBookingRepository
+          .createQueryBuilder('clientBooking')
+          .where('clientBooking.client = :id', { id: clientId })
+          .getMany();
+
+    const business = await this.businessRepository
+      .createQueryBuilder('business')
+      .where({ id: businessId })
+      .leftJoinAndSelect(
+        'business.providerBookings',
+        'providerBookings',
+        'providerBookings.reservedTime BETWEEN :startDate AND :finishDate',
+        {
+          startDate: startDate.hour(0).toDate(),
+          finishDate: startDate.isoWeekday(Days.SUNDAY).hour(24).toDate(),
+        },
+      )
+      .leftJoinAndSelect('business.services', 'services')
+      .leftJoinAndSelect(
+        'services.clientBookings',
+        'clientBookings',
+        `${
+          selectedClientBookings.length > 0
+            ? 'clientBookings.id NOT IN (:selectedClientBookingsIds) AND '
+            : ''
+        } clientBookings.reservedTime BETWEEN :startDate AND :finishDate`,
+        {
+          startDate: startDate.hour(0).toDate(),
+          finishDate: startDate.isoWeekday(Days.SUNDAY).hour(24).toDate(),
+          selectedClientBookingsIds: selectedClientBookings.map(
+            (selectedClientBooking) => selectedClientBooking.id,
+          ),
+        },
+      )
+      .leftJoinAndSelect('clientBookings.service', 'service')
+      .leftJoinAndSelect('business.schedules', 'schedule')
+      .getOne();
+
+    const providerBookings = business.providerBookings;
+    const clientBookings = [];
+
+    for (let x = 0; x < business.services.length; x++) {
+      for (let y = 0; y < business.services[x].clientBookings.length; y++) {
+        clientBookings.push(business.services[x].clientBookings[y]);
+      }
+    }
+
+    const bookingEntries: BookingEntry[] = [];
+
+    // possibility of ~30k iterations
+    for (let day = Days.MONDAY; day <= Days.SUNDAY; day++) {
+      const schedule = business.schedules.find(
+        (schedule) => schedule.weekDay === day,
+      );
+
+      const ignoredHours = schedule
+        ? Array.from(Array(schedule.finishHours).keys()).slice(
+            schedule.startHours,
+          )
+        : [];
+
+      for (let hour = 0; hour <= 23; hour++) {
+        const date = startDate.isoWeekday(day).hour(hour);
+
+        if (ignoredHours.includes(hour)) {
+          const clientBooking = clientBookings.find((clientBooking) => {
+            const reservedTime = dayjs(clientBooking.reservedTime);
+
+            return (
+              reservedTime.isoWeekday() === day && reservedTime.hour() === hour
+            );
+          });
+
+          console.log(clientBooking);
+
+          //TODO include real bookings in the most efficient way
+        } else {
+          bookingEntries.push({
+            reservedTime: date.toDate(),
+            duration: 1,
+          });
+        }
+      }
+    }
+
+    console.log(bookingEntries.length);
+  }
+
   async getBookings(
     businesId: number,
     cliendId?: number,
@@ -44,7 +144,16 @@ export class BusinessService {
       .leftJoinAndSelect('business.services', 'services')
       .leftJoinAndSelect('services.clientBookings', 'clientBookings')
       .leftJoinAndSelect('clientBookings.service', 'service')
+      .leftJoinAndSelect('business.schedules', 'schedule')
       .getOne();
+
+    const scheduleEntries = business.schedules.map((schedule: Schedule) => {
+      const entries = [];
+
+      return entries;
+    });
+
+    console.log(scheduleEntries);
 
     const providerBookings = business.providerBookings;
     const clientBookings = [];
