@@ -57,4 +57,12 @@ export class ProviderController {
 
     return formatResponse('Password changed');
   }
+
+  @UseGuards(ProviderGuard)
+  @Get('business')
+  async getBusiness(@Request() request) {
+    const business = await this.providerService.getBusiness(request.user);
+
+    return formatResponse('Business data.', business);
+  }
 }

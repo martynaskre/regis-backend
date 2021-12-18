@@ -15,6 +15,7 @@ import { MailService } from '../mail/mail.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PasswordResetService } from '../auth/passwor-resets/password-reset.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { Business } from '../business/business.entity';
 
 @Injectable()
 export class ProviderService {
@@ -23,6 +24,8 @@ export class ProviderService {
   constructor(
     @InjectRepository(ProviderEntity)
     private readonly providerRepository: Repository<ProviderEntity>,
+    @InjectRepository(Business)
+    private readonly businessRepository: Repository<Business>,
     private readonly mailService: MailService,
     private readonly passwordResetService: PasswordResetService,
   ) {}
@@ -111,5 +114,14 @@ export class ProviderService {
         return provider;
       },
     );
+  }
+
+  async getBusiness(provider: ProviderEntity) {
+    return await this.businessRepository
+      .createQueryBuilder('business')
+      .where('business.provider = :providerId', {
+        providerId: provider.id,
+      })
+      .getOne();
   }
 }

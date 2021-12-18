@@ -5,9 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProviderEntity } from './provider.entity';
 import { AuthModule } from '../auth/auth.module';
 import { MailModule } from '../mail/mail.module';
+import { Business } from '../business/business.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProviderEntity]), AuthModule, MailModule],
+  imports: [
+    TypeOrmModule.forFeature([ProviderEntity, Business]),
+    AuthModule,
+    MailModule,
+  ],
   providers: [ProviderService],
   controllers: [ProviderController],
   exports: [ProviderService],
