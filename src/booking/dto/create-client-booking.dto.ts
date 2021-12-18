@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateClientBookingDto {
   @IsNumber()

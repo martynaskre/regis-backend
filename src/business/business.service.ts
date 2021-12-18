@@ -1,26 +1,26 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ProviderEntity } from "../provider/provider.entity";
-import { Repository } from "typeorm";
-import { Business } from "./business.entity";
-import { CreateBussinesDto } from "./dto/create-business.dto";
-import { UpadateBussinesDto } from "./dto/update-business.dto";
-import { PaginatedBusinessesResultDto } from "src/utils/dto/pagination.dto";
-import { GetBusinessDto } from "./dto/get-business.dto";
-import { Service } from "../service/service.entity";
-import "../utils/typeormExtras";
-import { StorageService } from "../storage/storage.service";
-import { generateFilename, throwMoreThanOneBusiness } from "../utils";
-import { ClientBooking } from "../booking/clientBooking.entity";
-import { BookingEntry } from "src/types";
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProviderEntity } from '../provider/provider.entity';
+import { Repository } from 'typeorm';
+import { Business } from './business.entity';
+import { CreateBussinesDto } from './dto/create-business.dto';
+import { UpadateBussinesDto } from './dto/update-business.dto';
+import { PaginatedBusinessesResultDto } from 'src/utils/dto/pagination.dto';
+import { GetBusinessDto } from './dto/get-business.dto';
+import { Service } from '../service/service.entity';
+import '../utils/typeormExtras';
+import { StorageService } from '../storage/storage.service';
+import { generateFilename, throwMoreThanOneBusiness } from '../utils';
+import { ClientBooking } from '../booking/clientBooking.entity';
+import { BookingEntry, Days } from 'src/types';
+import * as dayjs from 'dayjs';
+import { ProviderBooking } from '../booking/providerBooking.entity';
+import { BookingsDto } from '../utils/dto/bookings.dto';
 
 @Injectable()
 export class BusinessService {
   private readonly logger = new Logger(BusinessService.name);
 
-  update(businessId: any, arg1: { rating: number }) {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     @InjectRepository(Business)
     private readonly businessRepository: Repository<Business>,
@@ -31,61 +31,143 @@ export class BusinessService {
     private readonly clientBookingRepository: Repository<ClientBooking>,
   ) {}
 
+  /*
+   * bookingsData.startDate must be start of the week
+   * */
   async getBookings(
-    businesId: number,
-    cliendId?: number,
+    businessId: number,
+    clientId?: number,
+    bookingsData: BookingsDto = new BookingsDto(),
   ): Promise<BookingEntry[]> {
-    this.logger.log('Getting all business bookings');
+    const startDate = dayjs(bookingsData.startDate); // will always be monday
+
+    const sqlDateComparison = {
+      startDate: startDate.format('YYYY-MM-DD'),
+      finishDate: startDate.isoWeekday(Days.SUNDAY).format('YYYY-MM-DD'),
+    };
+
+    const selectedClientBookings = !clientId
+      ? []
+      : await this.clientBookingRepository
+          .createQueryBuilder('clientBooking')
+          .where('clientBooking.client = :id', { id: clientId })
+          .andWhere(
+            'DATE(clientBooking.reservedTime) BETWEEN :startDate AND :finishDate',
+            sqlDateComparison,
+          )
+          .leftJoinAndSelect('clientBooking.client', 'client')
+          .leftJoinAndSelect('clientBooking.service', 'service')
+          .getMany();
 
     const business = await this.businessRepository
       .createQueryBuilder('business')
-      .where({ id: businesId })
-      .leftJoinAndSelect('business.providerBookings', 'providerBookings')
+      .where({ id: businessId })
+      .leftJoinAndSelect(
+        'business.providerBookings',
+        'providerBookings',
+        'DATE(providerBookings.reservedTime) BETWEEN :startDate AND :finishDate',
+        sqlDateComparison,
+      )
       .leftJoinAndSelect('business.services', 'services')
-      .leftJoinAndSelect('services.clientBookings', 'clientBookings')
-      .leftJoinAndSelect('clientBookings.service', 'service')
+      .leftJoinAndSelect(
+        'services.clientBookings',
+        'clientBookings',
+        `${
+          selectedClientBookings.length > 0
+            ? 'clientBookings.id NOT IN (:selectedClientBookingsIds) AND '
+            : ''
+        } DATE(clientBookings.reservedTime) BETWEEN :startDate AND :finishDate`,
+        {
+          ...sqlDateComparison,
+          selectedClientBookingsIds: selectedClientBookings.map(
+            (selectedClientBooking) => selectedClientBooking.id,
+          ),
+        },
+      )
+      .leftJoinAndSelect('business.schedules', 'schedule')
       .getOne();
 
     const providerBookings = business.providerBookings;
     const clientBookings = [];
 
-    const id = [];
-    let existingClientBookings = [];
-
+    // gathering client bookings of all business services
     for (let x = 0; x < business.services.length; x++) {
-      if (business.services[x].clientBookings.length !== 0)
-        for (let y = 0; y < business.services[x].clientBookings.length; y++) {
-          clientBookings.push(business.services[x].clientBookings[y]);
-          id.push(business.services[x].clientBookings[y].id);
-        }
+      for (let y = 0; y < business.services[x].clientBookings.length; y++) {
+        clientBookings.push(business.services[x].clientBookings[y]);
+      }
     }
 
-    if (cliendId) {
-      existingClientBookings = await this.clientBookingRepository
-        .createQueryBuilder('clientBooking')
-        .where('clientBooking.client = :id', { id: cliendId })
-        .andWhere('clientBooking.id NOT IN (:bookings)', { bookings: id })
-        .orderBy('clientBooking.id')
-        .getMany();
-    }
+    const realBookings = {};
 
-    const bookings = [
+    // mapping all bookings into an object
+    for (const realBooking of [
       ...providerBookings,
       ...clientBookings,
-      ...existingClientBookings,
-    ].map((entry) => {
-      return {
-        reservedTime: entry.reservedTime,
-        duration: entry.duration,
-        title: entry instanceof ClientBooking ? entry.service.title : null,
-        description:
-          entry instanceof ClientBooking ? entry.service.description : null,
+      ...selectedClientBookings,
+    ]) {
+      const date = dayjs(realBooking.reservedTime);
+
+      if (!realBookings.hasOwnProperty(date.isoWeekday())) {
+        realBookings[date.isoWeekday()] = {};
+      }
+
+      const isRealClientBooking =
+        clientId && realBooking?.client?.id === clientId;
+
+      realBookings[date.isoWeekday()][date.hour()] = {
+        type:
+          realBooking instanceof ProviderBooking
+            ? 'taken-provider'
+            : isRealClientBooking
+            ? 'default'
+            : 'taken-client',
+        reservedTime: realBooking.reservedTime,
+        duration: realBooking.duration,
+        ...(isRealClientBooking && {
+          title: realBooking.service.title,
+          description: realBooking.service.description,
+        }),
       };
-    });
+    }
 
-    bookings.sort((a, b) => b.reservedTime - a.reservedTime);
+    const bookingEntries: BookingEntry[] = [];
 
-    return bookings;
+    // constructing booking entries array
+    for (let day = Days.MONDAY; day <= Days.SUNDAY; day++) {
+      const schedule = business.schedules.find(
+        (schedule) => schedule.weekDay === day,
+      );
+
+      const workingHours = schedule
+        ? Array.from(Array(schedule.finishHours).keys()).slice(
+            schedule.startHours,
+          )
+        : [];
+
+      for (let hour = 0; hour < 24; hour++) {
+        if (workingHours.includes(hour)) {
+          const booking = realBookings?.[day]?.[hour];
+
+          if (booking) {
+            bookingEntries.push(booking);
+          }
+        } else {
+          bookingEntries.push({
+            type: 'taken-provider',
+            reservedTime: startDate
+              .isoWeekday(day)
+              .hour(hour)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
+            duration: 1,
+          });
+        }
+      }
+    }
+
+    return bookingEntries;
   }
 
   async createBusiness(

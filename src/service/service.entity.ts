@@ -9,7 +9,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ClientBooking } from 'src/booking/clientBooking.entity';
-import { Max, Min } from 'class-validator';
 
 @Entity('services')
 export class Service {

@@ -18,6 +18,8 @@ import { UpadateBussinesDto } from './dto/update-business.dto';
 import { GetBusinessDto } from './dto/get-business.dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { formatResponse } from '../utils';
+import { GetBookingsDto } from './dto/get-bookings.dto';
+import { ClientGuard } from '../auth/guards/client.guard';
 
 @Controller('business')
 export class BusinessController {
@@ -68,9 +70,20 @@ export class BusinessController {
     return this.bussinesService.getBusinessById(Number(id));
   }
 
+  @UseGuards(ClientGuard)
   @Get(':id/bookings')
-  async getBookings(@Param('id') id: string, cliendId?: number) {
-    return this.bussinesService.getBookings(Number(id), cliendId);
+  async getBookings(
+    @Param('id') id: string,
+    @Query() bookingsData: GetBookingsDto,
+    @Request() request,
+  ) {
+    const bookingEntries = await this.bussinesService.getBookings(
+      Number(id),
+      request.user.id,
+      bookingsData,
+    );
+
+    return formatResponse('Bookings list', bookingEntries);
   }
 
   @UseGuards(ProviderGuard)
