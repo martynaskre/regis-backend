@@ -31,6 +31,11 @@ export class ClientBooking {
   @Max(10)
   public duration: number;
 
+  @Column({
+    nullable: true,
+  })
+  uuid: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'NOW()',

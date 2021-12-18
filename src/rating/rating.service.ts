@@ -4,7 +4,10 @@ import { Business } from '../business/business.entity';
 import { Repository } from 'typeorm';
 import { Rating } from './rating.entity';
 import { CreateRatingDto } from './dto/create-rating.dto';
-import { BusinessService } from '../business/business.service';
+import '../utils/typeormExtras';
+import { Service } from '../service/service.entity';
+import { ClientBooking } from '../booking/clientBooking.entity';
+import { throwNotFound } from '../utils';
 
 @Injectable()
 export class RatingService {
@@ -15,15 +18,39 @@ export class RatingService {
     private readonly ratingRepository: Repository<Rating>,
     @InjectRepository(Business)
     private readonly businessRepository: Repository<Business>,
-    private readonly businessService: BusinessService,
+    @InjectRepository(Service)
+    private readonly servicesRepository: Repository<Service>,
+    @InjectRepository(ClientBooking)
+    private readonly clientBookingsRepository: Repository<ClientBooking>,
   ) {}
 
-  async rateBusiness(ratingData: CreateRatingDto) {
+  async getBusinessByUuid(uuid: string) {
+    return await this.businessRepository
+      .createQueryBuilder('business')
+      .whereExists(
+        this.servicesRepository
+          .createQueryBuilder('service')
+          .where('service.business = business.id')
+          .andWhereExists(
+            this.clientBookingsRepository
+              .createQueryBuilder('clientBooking')
+              .where('clientBooking.uuid = :uuid', {
+                uuid,
+              })
+              .andWhere('clientBooking.service = service.id'),
+          ),
+      )
+      .getOne();
+  }
+
+  async rateBusiness(uuid: string, ratingData: CreateRatingDto) {
     this.logger.log('Rating business');
 
-    const business = await this.businessService.getBusinessById(
-      ratingData.businessId,
-    );
+    const business = await this.getBusinessByUuid(uuid);
+
+    if (!business) {
+      throwNotFound('Business was not found.');
+    }
 
     const rating = this.ratingRepository.create({
       ...ratingData,
@@ -36,7 +63,7 @@ export class RatingService {
 
     const ratings = await this.ratingRepository
       .createQueryBuilder('rating')
-      .where('rating.business = :id', { id: ratingData.businessId })
+      .where('rating.business = :id', { id: business.id })
       .getMany();
 
     for (let x = 0; x < ratings.length; x++) avg += ratings[x].rating;
@@ -44,6 +71,15 @@ export class RatingService {
     await this.businessRepository.update(business.id, {
       rating: avg / ratings.length,
     });
+
+    await this.clientBookingsRepository.update(
+      {
+        uuid,
+      },
+      {
+        uuid: null,
+      },
+    );
 
     return avg / ratings.length;
   }

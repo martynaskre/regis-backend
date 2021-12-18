@@ -9,7 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
-import { throwDuplicateBooking, throwNotFound } from '../utils';
+import { throwNotFound, throwValidationException } from '../utils';
 
 @Injectable()
 export class ProviderBookingService {
@@ -58,7 +58,9 @@ export class ProviderBookingService {
           bookings[x].reservedTime.getTime() <
             bookingData.reservedTime.getTime() + bookingData.duration * 3600000)
       ) {
-        throwDuplicateBooking({ reservedTime: 'This time is already booked' });
+        throwValidationException({
+          reservedTime: 'This time is already booked',
+        });
       }
     }
 

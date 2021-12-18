@@ -18,6 +18,7 @@ import {
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpadateServiceDto } from './dto/update-service.dto';
 import { ServiceService } from './service.service';
+import { formatResponse } from '../utils';
 
 @Controller('service')
 export class ServiceController {
@@ -33,17 +34,13 @@ export class ServiceController {
   async getServices(
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginatedServicesResultDto> {
-    console.log(paginationDto);
+    const { data, ...additionalProperties } =
+      await this.serviceService.getServices({
+        ...paginationDto,
+        limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
+      });
 
-    paginationDto.page = Number(paginationDto.page);
-    paginationDto.limit = Number(paginationDto.limit);
-
-    console.log(paginationDto);
-
-    return this.serviceService.getServices({
-      ...paginationDto,
-      limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
-    });
+    return formatResponse('Services', data, additionalProperties);
   }
 
   @UseGuards(ProviderGuard)

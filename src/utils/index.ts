@@ -19,10 +19,15 @@ export async function compareHash(
   return await bcrypt.compare(value, hash);
 }
 
-export function formatResponse(message: string, data?: any) {
+export function formatResponse(
+  message: string,
+  data?: any,
+  additionalProperties?: any,
+) {
   return {
     message,
     data,
+    ...additionalProperties,
   };
 }
 
