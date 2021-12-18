@@ -1,11 +1,8 @@
-import { Type } from 'class-transformer';
-import { IsDate } from 'class-validator';
-import { IsStartOfTheWeek } from '../../shared/validation/IsStartOfTheWeek';
 import * as dayjs from 'dayjs';
+import { BookingsDto } from '../../utils/dto/bookings.dto';
+import { IsNotPastWeek } from '../../shared/validation/IsNotPastWeek';
 
-export class GetBookingsDto {
-  @Type(() => Date)
-  @IsDate()
-  @IsStartOfTheWeek()
+export class GetBookingsDto extends BookingsDto {
+  @IsNotPastWeek()
   readonly startDate: Date = dayjs().isoWeekday(1).toDate();
 }

@@ -13,18 +13,14 @@ import { StorageService } from '../storage/storage.service';
 import { generateFilename, throwMoreThanOneBusiness } from '../utils';
 import { ClientBooking } from '../booking/clientBooking.entity';
 import { BookingEntry, Days } from 'src/types';
-import { Schedule } from '../schedule/schedule.entity';
-import { GetBookingsDto } from './dto/get-bookings.dto';
 import * as dayjs from 'dayjs';
 import { ProviderBooking } from '../booking/providerBooking.entity';
+import { BookingsDto } from '../utils/dto/bookings.dto';
 
 @Injectable()
 export class BusinessService {
   private readonly logger = new Logger(BusinessService.name);
 
-  update(businessId: any, arg1: { rating: number }) {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     @InjectRepository(Business)
     private readonly businessRepository: Repository<Business>,
@@ -35,18 +31,30 @@ export class BusinessService {
     private readonly clientBookingRepository: Repository<ClientBooking>,
   ) {}
 
-  async newGetBookings(
+  /*
+   * bookingsData.startDate must be start of the week
+   * */
+  async getBookings(
     businessId: number,
-    bookingsData: GetBookingsDto,
     clientId?: number,
-  ) {
+    bookingsData: BookingsDto = new BookingsDto(),
+  ): Promise<BookingEntry[]> {
     const startDate = dayjs(bookingsData.startDate); // will always be monday
+
+    const sqlDateComparison = {
+      startDate: startDate.format('YYYY-MM-DD'),
+      finishDate: startDate.isoWeekday(Days.SUNDAY).format('YYYY-MM-DD'),
+    };
 
     const selectedClientBookings = !clientId
       ? []
       : await this.clientBookingRepository
           .createQueryBuilder('clientBooking')
           .where('clientBooking.client = :id', { id: clientId })
+          .andWhere(
+            'DATE(clientBooking.reservedTime) BETWEEN :startDate AND :finishDate',
+            sqlDateComparison,
+          )
           .leftJoinAndSelect('clientBooking.client', 'client')
           .leftJoinAndSelect('clientBooking.service', 'service')
           .getMany();
@@ -57,11 +65,8 @@ export class BusinessService {
       .leftJoinAndSelect(
         'business.providerBookings',
         'providerBookings',
-        'providerBookings.reservedTime BETWEEN :startDate AND :finishDate',
-        {
-          startDate: startDate.hour(0).toDate(),
-          finishDate: startDate.isoWeekday(Days.SUNDAY).hour(24).toDate(),
-        },
+        'DATE(providerBookings.reservedTime) BETWEEN :startDate AND :finishDate',
+        sqlDateComparison,
       )
       .leftJoinAndSelect('business.services', 'services')
       .leftJoinAndSelect(
@@ -71,10 +76,9 @@ export class BusinessService {
           selectedClientBookings.length > 0
             ? 'clientBookings.id NOT IN (:selectedClientBookingsIds) AND '
             : ''
-        } clientBookings.reservedTime BETWEEN :startDate AND :finishDate`,
+        } DATE(clientBookings.reservedTime) BETWEEN :startDate AND :finishDate`,
         {
-          startDate: startDate.hour(0).toDate(),
-          finishDate: startDate.isoWeekday(Days.SUNDAY).hour(24).toDate(),
+          ...sqlDateComparison,
           selectedClientBookingsIds: selectedClientBookings.map(
             (selectedClientBooking) => selectedClientBooking.id,
           ),
@@ -86,6 +90,7 @@ export class BusinessService {
     const providerBookings = business.providerBookings;
     const clientBookings = [];
 
+    // gathering client bookings of all business services
     for (let x = 0; x < business.services.length; x++) {
       for (let y = 0; y < business.services[x].clientBookings.length; y++) {
         clientBookings.push(business.services[x].clientBookings[y]);
@@ -94,6 +99,7 @@ export class BusinessService {
 
     const realBookings = {};
 
+    // mapping all bookings into an object
     for (const realBooking of [
       ...providerBookings,
       ...clientBookings,
@@ -108,15 +114,13 @@ export class BusinessService {
       const isRealClientBooking =
         clientId && realBooking?.client?.id === clientId;
 
-      console.log(isRealClientBooking, realBooking);
-
       realBookings[date.isoWeekday()][date.hour()] = {
         type:
           realBooking instanceof ProviderBooking
             ? 'taken-provider'
             : isRealClientBooking
-              ? 'default'
-              : 'taken-client',
+            ? 'default'
+            : 'taken-client',
         reservedTime: realBooking.reservedTime,
         duration: realBooking.duration,
         ...(isRealClientBooking && {
@@ -126,10 +130,9 @@ export class BusinessService {
       };
     }
 
-    console.log(realBookings);
-
     const bookingEntries: BookingEntry[] = [];
-    
+
+    // constructing booking entries array
     for (let day = Days.MONDAY; day <= Days.SUNDAY; day++) {
       const schedule = business.schedules.find(
         (schedule) => schedule.weekDay === day,
@@ -141,95 +144,30 @@ export class BusinessService {
           )
         : [];
 
-      for (let hour = 0; hour <= 23; hour++) {
-        const date = startDate.isoWeekday(day).hour(hour);
-
+      for (let hour = 0; hour < 24; hour++) {
         if (workingHours.includes(hour)) {
-          const booking = realBookings[day][hour];
+          const booking = realBookings?.[day]?.[hour];
 
           if (booking) {
-            bookingEntries.push(realBookings[day][hour]);
+            bookingEntries.push(booking);
           }
         } else {
           bookingEntries.push({
             type: 'taken-provider',
-            reservedTime: date.toDate(),
+            reservedTime: startDate
+              .isoWeekday(day)
+              .hour(hour)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
             duration: 1,
           });
         }
       }
     }
 
-    console.log(bookingEntries.length);
-
     return bookingEntries;
-  }
-
-  async getBookings(
-    businesId: number,
-    cliendId?: number,
-  ): Promise<BookingEntry[]> {
-    this.logger.log('Getting all business bookings');
-
-    const business = await this.businessRepository
-      .createQueryBuilder('business')
-      .where({ id: businesId })
-      .leftJoinAndSelect('business.providerBookings', 'providerBookings')
-      .leftJoinAndSelect('business.services', 'services')
-      .leftJoinAndSelect('services.clientBookings', 'clientBookings')
-      .leftJoinAndSelect('clientBookings.service', 'service')
-      .leftJoinAndSelect('business.schedules', 'schedule')
-      .getOne();
-
-    const scheduleEntries = business.schedules.map((schedule: Schedule) => {
-      const entries = [];
-
-      return entries;
-    });
-
-    console.log(scheduleEntries);
-
-    const providerBookings = business.providerBookings;
-    const clientBookings = [];
-
-    const id = [];
-    let existingClientBookings = [];
-
-    for (let x = 0; x < business.services.length; x++) {
-      if (business.services[x].clientBookings.length !== 0)
-        for (let y = 0; y < business.services[x].clientBookings.length; y++) {
-          clientBookings.push(business.services[x].clientBookings[y]);
-          id.push(business.services[x].clientBookings[y].id);
-        }
-    }
-
-    if (cliendId) {
-      existingClientBookings = await this.clientBookingRepository
-        .createQueryBuilder('clientBooking')
-        .where('clientBooking.client = :id', { id: cliendId })
-        .andWhere('clientBooking.id NOT IN (:bookings)', { bookings: id })
-        .orderBy('clientBooking.id')
-        .getMany();
-    }
-
-    const bookings = [
-      ...providerBookings,
-      ...clientBookings,
-      ...existingClientBookings,
-    ].map((entry) => {
-      return {
-        type: 'default',
-        reservedTime: entry.reservedTime,
-        duration: entry.duration,
-        title: entry instanceof ClientBooking ? entry.service.title : null,
-        description:
-          entry instanceof ClientBooking ? entry.service.description : null,
-      };
-    });
-
-    bookings.sort((a, b) => b.reservedTime - a.reservedTime);
-
-    return [];
   }
 
   async createBusiness(
