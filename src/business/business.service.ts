@@ -16,6 +16,7 @@ import { BookingEntry, Days } from 'src/types';
 import { Schedule } from '../schedule/schedule.entity';
 import { GetBookingsDto } from './dto/get-bookings.dto';
 import * as dayjs from 'dayjs';
+import { ProviderBooking } from '../booking/providerBooking.entity';
 
 @Injectable()
 export class BusinessService {
@@ -46,6 +47,8 @@ export class BusinessService {
       : await this.clientBookingRepository
           .createQueryBuilder('clientBooking')
           .where('clientBooking.client = :id', { id: clientId })
+          .leftJoinAndSelect('clientBooking.client', 'client')
+          .leftJoinAndSelect('clientBooking.service', 'service')
           .getMany();
 
     const business = await this.businessRepository
@@ -77,7 +80,6 @@ export class BusinessService {
           ),
         },
       )
-      .leftJoinAndSelect('clientBookings.service', 'service')
       .leftJoinAndSelect('business.schedules', 'schedule')
       .getOne();
 
@@ -90,15 +92,50 @@ export class BusinessService {
       }
     }
 
-    const bookingEntries: BookingEntry[] = [];
+    const realBookings = {};
 
-    // possibility of ~30k iterations
+    for (const realBooking of [
+      ...providerBookings,
+      ...clientBookings,
+      ...selectedClientBookings,
+    ]) {
+      const date = dayjs(realBooking.reservedTime);
+
+      if (!realBookings.hasOwnProperty(date.isoWeekday())) {
+        realBookings[date.isoWeekday()] = {};
+      }
+
+      const isRealClientBooking =
+        clientId && realBooking?.client?.id === clientId;
+
+      console.log(isRealClientBooking, realBooking);
+
+      realBookings[date.isoWeekday()][date.hour()] = {
+        type:
+          realBooking instanceof ProviderBooking
+            ? 'taken-provider'
+            : isRealClientBooking
+              ? 'default'
+              : 'taken-client',
+        reservedTime: realBooking.reservedTime,
+        duration: realBooking.duration,
+        ...(isRealClientBooking && {
+          title: realBooking.service.title,
+          description: realBooking.service.description,
+        }),
+      };
+    }
+
+    console.log(realBookings);
+
+    const bookingEntries: BookingEntry[] = [];
+    
     for (let day = Days.MONDAY; day <= Days.SUNDAY; day++) {
       const schedule = business.schedules.find(
         (schedule) => schedule.weekDay === day,
       );
 
-      const ignoredHours = schedule
+      const workingHours = schedule
         ? Array.from(Array(schedule.finishHours).keys()).slice(
             schedule.startHours,
           )
@@ -107,20 +144,15 @@ export class BusinessService {
       for (let hour = 0; hour <= 23; hour++) {
         const date = startDate.isoWeekday(day).hour(hour);
 
-        if (ignoredHours.includes(hour)) {
-          const clientBooking = clientBookings.find((clientBooking) => {
-            const reservedTime = dayjs(clientBooking.reservedTime);
+        if (workingHours.includes(hour)) {
+          const booking = realBookings[day][hour];
 
-            return (
-              reservedTime.isoWeekday() === day && reservedTime.hour() === hour
-            );
-          });
-
-          console.log(clientBooking);
-
-          //TODO include real bookings in the most efficient way
+          if (booking) {
+            bookingEntries.push(realBookings[day][hour]);
+          }
         } else {
           bookingEntries.push({
+            type: 'taken-provider',
             reservedTime: date.toDate(),
             duration: 1,
           });
@@ -129,6 +161,8 @@ export class BusinessService {
     }
 
     console.log(bookingEntries.length);
+
+    return bookingEntries;
   }
 
   async getBookings(
@@ -184,6 +218,7 @@ export class BusinessService {
       ...existingClientBookings,
     ].map((entry) => {
       return {
+        type: 'default',
         reservedTime: entry.reservedTime,
         duration: entry.duration,
         title: entry instanceof ClientBooking ? entry.service.title : null,
@@ -194,7 +229,7 @@ export class BusinessService {
 
     bookings.sort((a, b) => b.reservedTime - a.reservedTime);
 
-    return bookings;
+    return [];
   }
 
   async createBusiness(

@@ -23,6 +23,7 @@ export enum Days {
 }
 
 export interface BookingEntry {
+  type: 'taken-provider' | 'taken-client' | 'default';
   reservedTime: Date;
   duration: number;
   title?: string;

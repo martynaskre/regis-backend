@@ -77,11 +77,13 @@ export class BusinessController {
     @Query() bookingsData: GetBookingsDto,
     @Request() request,
   ) {
-    return this.bussinesService.newGetBookings(
+    const bookingEntries = await this.bussinesService.newGetBookings(
       Number(id),
       bookingsData,
       request.user.id,
     );
+
+    return formatResponse('Bookings list', bookingEntries);
   }
 
   @UseGuards(ProviderGuard)
