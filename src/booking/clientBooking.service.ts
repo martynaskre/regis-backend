@@ -12,6 +12,7 @@ import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 import { throwNotFound, throwValidationException } from '../utils';
 import { BusinessService } from 'src/business/business.service';
 import { BookingEntry } from '../types';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ClientBookingService {
@@ -38,10 +39,8 @@ export class ClientBookingService {
     const bookings = await this.businessService.getBookings(
       service.business.id,
       client.id,
+      {startDate: dayjs(bookingData.reservedTime).isoWeekday(1).toDate()}
     );
-
-    //    get schedule of business
-    //    filter by data
 
     for (let x = 0; x < bookings.length; x++) {
       if (
