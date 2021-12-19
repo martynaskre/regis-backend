@@ -6,7 +6,7 @@ import { MailService } from '../../mail/mail.service';
 import { FrontEndpoint } from '../../types';
 import { formatFrontUrl } from '../../utils';
 import { Repository } from 'typeorm';
-
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class RateBusiness {
@@ -19,7 +19,7 @@ export class RateBusiness {
 
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async run() {
     this.logger.log('Running rate business email cron job.');
 
@@ -33,6 +33,7 @@ export class RateBusiness {
 
     for(let x = 0; x < clientBookings.length; x++)
     {
+        clientBookings[x].uuid = uuidv4();
         // await this.mailService.sendMail(clientBookings[x].client.email,
         //     'Sveikiname prisijungus!',
         //     'bussines-rating',
@@ -41,8 +42,12 @@ export class RateBusiness {
         //       actionUrl: formatFrontUrl(FrontEndpoint.CLIENT_LOGIN),
         //     },
         // )
-        //clientBookings[x].isNotified = true;
+        clientBookings[x].isNotified = true;
+        // update clientBookings
+        await this.clientBookingsRepository.update(clientBookings[x].id, clientBookings[x])
     }
+    console.log(clientBookings)
+
 }   
 }
 
