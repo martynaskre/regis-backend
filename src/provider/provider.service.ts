@@ -16,6 +16,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PasswordResetService } from '../auth/passwor-resets/password-reset.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { Business } from '../business/business.entity';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class ProviderService {
@@ -28,6 +29,7 @@ export class ProviderService {
     private readonly businessRepository: Repository<Business>,
     private readonly mailService: MailService,
     private readonly passwordResetService: PasswordResetService,
+    private readonly storageService: StorageService,
   ) {}
 
   async create(providerData: CreateProviderDto) {
@@ -117,11 +119,22 @@ export class ProviderService {
   }
 
   async getBusiness(provider: ProviderEntity) {
-    return await this.businessRepository
+    const business = await this.businessRepository
       .createQueryBuilder('business')
       .where('business.provider = :providerId', {
         providerId: provider.id,
       })
+      .leftJoinAndSelect('business.category', 'category')
       .getOne();
+
+    business.logo = this.storageService
+      .disk('public')
+      .url(`${Business.STORAGE_PATH}/${business.logo}`);
+
+    business.cover = this.storageService
+      .disk('public')
+      .url(`${Business.STORAGE_PATH}/${business.cover}`);
+
+    return business;
   }
 }

@@ -91,4 +91,11 @@ export class BusinessController {
   async deleteBusinessById(@Param('id') id: string, @Request() request) {
     return this.bussinesService.deleteBusinessById(Number(id), request.user);
   }
+
+  @Get(':id/services')
+  async getServices(@Param('id') id: number) {
+    const services = await this.bussinesService.getServices(id);
+
+    return formatResponse('Services list.', services);
+  }
 }

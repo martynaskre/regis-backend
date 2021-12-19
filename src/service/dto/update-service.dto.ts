@@ -1,11 +1,14 @@
 import {
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
   Min,
   MinLength,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpadateServiceDto {
   @IsString()
@@ -19,12 +22,21 @@ export class UpadateServiceDto {
   @MinLength(1)
   readonly description: string;
 
+  @Type(() => Number)
   @IsOptional()
   @IsNumber()
   @Min(0)
-  readonly minPirce: number;
+  readonly minPrice: number;
 
+  @Type(() => Number)
   @IsOptional()
   @IsNumber()
   readonly maxPrice: number;
+
+  @Type(() => Number)
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  @Max(10)
+  readonly duration: number;
 }

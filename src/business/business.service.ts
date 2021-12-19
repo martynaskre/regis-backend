@@ -322,6 +322,7 @@ export class BusinessService {
     const {
       logo: logoFileData,
       cover: coverFileData,
+      categoryId,
       ...dataToUpdate
     } = updateBusinessDto;
 
@@ -356,6 +357,18 @@ export class BusinessService {
       ...(logoFileData && { logo: logoFile }),
       ...(coverFileData && { cover: coverFile }),
       ...dataToUpdate,
+      category: {
+        id: categoryId,
+      },
     });
+  }
+
+  async getServices(id: number) {
+    return await this.servicesRepository
+      .createQueryBuilder('service')
+      .where('service.business = :businessId', {
+        businessId: id,
+      })
+      .getMany();
   }
 }

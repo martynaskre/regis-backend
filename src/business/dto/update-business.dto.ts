@@ -1,10 +1,17 @@
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import {
   HasMimeType,
   IsFile,
   MaxFileSize,
   MemoryStoredFile,
 } from 'nestjs-form-data';
+import { Exists } from '../../shared/validation/Exists';
 
 export class UpadateBussinesDto {
   @IsString()
@@ -50,6 +57,14 @@ export class UpadateBussinesDto {
   @MaxLength(255)
   @MinLength(1)
   readonly longDescription: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @Exists({
+    table: 'categories',
+    column: 'id',
+  })
+  readonly categoryId: number;
 
   @IsOptional()
   @IsFile()

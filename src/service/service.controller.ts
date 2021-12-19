@@ -46,7 +46,9 @@ export class ServiceController {
   @UseGuards(ProviderGuard)
   @Get(':id')
   async getServicesById(@Param('id') id: string) {
-    return this.serviceService.getServicesById(Number(id));
+    const service = await this.serviceService.getServicesById(Number(id));
+
+    return formatResponse('Service data.', service);
   }
 
   @UseGuards(ProviderGuard)
