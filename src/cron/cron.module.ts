@@ -7,7 +7,7 @@ import { RateBusiness } from './jobs/rate-email.job';
 import { MailService } from 'src/mail/mail.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PasswordResetEntity,ClientBooking])],
+  imports: [TypeOrmModule.forFeature([PasswordResetEntity, ClientBooking])],
   providers: [CleanPasswordResetsJob, RateBusiness, MailService],
 })
 export class CronModule {}

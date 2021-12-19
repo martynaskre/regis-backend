@@ -38,7 +38,7 @@ export class ClientBookingService {
     const bookings = await this.businessService.getBookings(
       service.business.id,
       client.id,
-      {startDate: dayjs(bookingData.reservedTime).isoWeekday(1).toDate()}
+      { startDate: dayjs(bookingData.reservedTime).isoWeekday(1).toDate() },
     );
 
     for (let x = 0; x < bookings.length; x++) {
