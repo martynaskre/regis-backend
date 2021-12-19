@@ -41,9 +41,6 @@ export class ClientBookingService {
       {startDate: dayjs(bookingData.reservedTime).isoWeekday(1).toDate()}
     );
 
-    //    get schedule of business
-    //    filter by data
-
     for (let x = 0; x < bookings.length; x++) {
       if (
         bookings[x].reservedTime.toISOString() ===
