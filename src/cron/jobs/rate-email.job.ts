@@ -15,7 +15,7 @@ export class RateBusiness {
   constructor(
     @InjectRepository(ClientBooking)
     private readonly clientBookingsRepository: Repository<ClientBooking>,
-    private readonly mailServi,
+    private readonly mailService: MailService,
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -32,20 +32,17 @@ export class RateBusiness {
       .leftJoinAndSelect('clientBooking.client', 'client')
       .getMany();
 
-    //sukurti uuid
-
     for (let x = 0; x < clientBookings.length; x++) {
       clientBookings[x].uuid = uuidv4();
-
-      // await this.mailService.sendMail(clientBookings[x].client.email,
-      //     'Sveikiname prisijungus!',
-      //     'bussines-rating',
-      //     {
-      //       firstName: clientBookings[x].client.firstName,
-      //       actionUrl: formatFrontUrl(FrontEndpoint.CLIENT_LOGIN),
-      //     },
-      // )
-
+      await this.mailService.sendMail(
+        clientBookings[x].client.email,
+        'Ivertinikite savo patirti!',
+        'bussines-rating',
+        {
+          service: clientBookings[x].service.title,
+          actionUrl: formatFrontUrl(FrontEndpoint.CLIENT_LOGIN),
+        },
+      );
       clientBookings[x].isNotified = true;
       await this.clientBookingsRepository.update(
         clientBookings[x].id,
@@ -54,12 +51,3 @@ export class RateBusiness {
     }
   }
 }
-
-// SEND EMAILS TO THEM
-//      loop through all users
-//      get user by its id
-//      send email with user.email
-//          create tamplate
-//          put link to create business endpoint
-//          uuid
-// SET isNotified TO true
