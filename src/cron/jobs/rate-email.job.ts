@@ -18,7 +18,7 @@ export class RateBusiness {
     private readonly mailService: MailService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_HOUR)
   async run() {
     this.logger.log('Running rate business email cron job.');
 
@@ -28,7 +28,7 @@ export class RateBusiness {
         'DATE_ADD(clientBooking.reservedTime, INTERVAL clientBooking.duration HOUR) < :time',
         { time: new Date() },
       )
-      .andWhere('clientBooking.isNotified = :isNotified', { isNotified: true })
+      .andWhere('clientBooking.isNotified = :isNotified', { isNotified: false })
       .leftJoinAndSelect('clientBooking.client', 'client')
       .leftJoinAndSelect('clientBooking.service', 'service')
       .getMany();
