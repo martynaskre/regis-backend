@@ -18,7 +18,7 @@ export class RateBusiness {
     private readonly mailService: MailService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async run() {
     this.logger.log('Running rate business email cron job.');
 
@@ -28,8 +28,9 @@ export class RateBusiness {
         'DATE_ADD(clientBooking.reservedTime, INTERVAL clientBooking.duration HOUR) < :time',
         { time: new Date() },
       )
-      .andWhere('clientBooking.isNotified = :isNotified', { isNotified: false })
+      .andWhere('clientBooking.isNotified = :isNotified', { isNotified: true })
       .leftJoinAndSelect('clientBooking.client', 'client')
+      .leftJoinAndSelect('clientBooking.service', 'service')
       .getMany();
 
     for (let x = 0; x < clientBookings.length; x++) {
@@ -39,6 +40,7 @@ export class RateBusiness {
         'Ivertinikite savo patirti!',
         'bussines-rating',
         {
+          firstName: clientBookings[x].client.firstName,
           service: clientBookings[x].service.title,
           actionUrl: formatFrontUrl(FrontEndpoint.CLIENT_LOGIN),
         },
