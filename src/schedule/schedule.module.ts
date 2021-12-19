@@ -15,4 +15,4 @@ import { ClientBooking } from '../booking/clientBooking.entity';
   controllers: [ScheduleController],
   providers: [ScheduleService, BusinessService],
 })
-export class ScheduleModule {}
+export class SchedulesModule {}
