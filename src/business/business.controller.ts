@@ -20,6 +20,7 @@ import { FormDataRequest } from 'nestjs-form-data';
 import { formatResponse } from '../utils';
 import { ClientGuard } from '../auth/guards/client.guard';
 import { GetBookingsDto } from './dto/get-bookings.dto';
+import { BookingsDto } from '../utils/dto/bookings.dto';
 
 @Controller('business')
 export class BusinessController {
@@ -64,26 +65,41 @@ export class BusinessController {
     });
   }
 
-  @UseGuards(ProviderGuard)
   @Get(':id')
   async getBusinessById(@Param('id') id: string) {
-    return this.bussinesService.getBusinessById(Number(id));
+    const business = await this.bussinesService.getBusinessById(id);
+
+    return formatResponse('Business data.', business);
   }
 
   @UseGuards(ClientGuard)
-  @Get(':id/bookings')
-  async getBookings(
+  @Get(':id/calendar')
+  async getCalendar(
     @Param('id') id: string,
     @Query() bookingsData: GetBookingsDto,
     @Request() request,
   ) {
     const bookingEntries = await this.bussinesService.getBookings(
-      Number(id),
+      id,
       request.user.id,
       bookingsData,
     );
 
-    return formatResponse('Bookings list', bookingEntries);
+    return formatResponse('Booking calendar list.', bookingEntries);
+  }
+
+  @UseGuards(ProviderGuard)
+  @Get(':id/bookings')
+  async getBookings(
+    @Param('id') id: string,
+    @Query() bookingsData: BookingsDto,
+  ) {
+    const bookings = await this.bussinesService.getCalendarBookings(
+      Number(id),
+      bookingsData,
+    );
+
+    return formatResponse('Bookings list.', bookings);
   }
 
   @UseGuards(ProviderGuard)
@@ -93,7 +109,7 @@ export class BusinessController {
   }
 
   @Get(':id/services')
-  async getServices(@Param('id') id: number) {
+  async getServices(@Param('id') id: string) {
     const services = await this.bussinesService.getServices(id);
 
     return formatResponse('Services list.', services);

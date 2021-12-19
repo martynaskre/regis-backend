@@ -32,7 +32,9 @@ export class ScheduleController {
   @UseGuards(ProviderGuard)
   @Get(':businessId')
   async getProviderSchedule(@Param('businessId') id: string) {
-    return this.scheduleService.getProviderSchedule(Number(id));
+    const schedule = await this.scheduleService.getProviderSchedule(Number(id));
+
+    return formatResponse('Business schedule', schedule);
   }
 
   @UseGuards(ProviderGuard)

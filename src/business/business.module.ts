@@ -6,6 +6,7 @@ import { BusinessService } from './business.service';
 import { Service } from '../service/service.entity';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { ClientBooking } from '../booking/clientBooking.entity';
+import { BusinessSubscriber } from './business.subscriber';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { ClientBooking } from '../booking/clientBooking.entity';
     NestjsFormDataModule,
   ],
   controllers: [BusinessController],
-  providers: [BusinessService],
+  providers: [BusinessService, BusinessSubscriber],
 })
 export class BusinessModule {}

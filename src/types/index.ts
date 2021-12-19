@@ -28,4 +28,5 @@ export interface BookingEntry {
   duration: number;
   title?: string;
   description?: string;
+  id?: number;
 }

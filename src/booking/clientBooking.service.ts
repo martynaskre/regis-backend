@@ -11,6 +11,7 @@ import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 import { throwNotFound, throwValidationException } from '../utils';
 import { BusinessService } from 'src/business/business.service';
+import { BookingEntry } from '../types';
 
 @Injectable()
 export class ClientBookingService {
@@ -73,37 +74,31 @@ export class ClientBookingService {
     return booking;
   }
 
-  async getClientBookings(
-    clientId: number,
-    paginationDto: PaginationDto,
-  ): Promise<PaginatedClientBookingsResultDto> {
+  async getClientBookings(clientId: number) {
     this.logger.log('Getting client bookings');
 
-    const totalCount = await this.clientBookingRepository.count({
-      where: { client: clientId },
-    });
-
-    const bookings = await this.clientBookingRepository
+    const rawClientBookings = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
-      .where('clientBooking.client = :id', { id: clientId })
-      .orderBy('clientBooking.id')
+      .where('clientBooking.clientId = :clientId', {
+        clientId,
+      })
+      .leftJoinAndSelect('clientBooking.service', 'service')
       .getMany();
 
-    if (!bookings) {
-      throw new HttpException(
-        {
-          message: 'Bookings were not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+    const clientBookings: BookingEntry[] = [];
+
+    for (const rawClientBooking of rawClientBookings) {
+      clientBookings.push({
+        type: 'default',
+        reservedTime: rawClientBooking.reservedTime,
+        duration: rawClientBooking.duration,
+        title: rawClientBooking.service.title,
+        description: rawClientBooking.service.description,
+        id: rawClientBooking.id,
+      });
     }
 
-    return {
-      totalCount,
-      page: paginationDto.page,
-      limit: paginationDto.limit,
-      data: bookings,
-    };
+    return clientBookings;
   }
 
   async getBookingById(id: number) {

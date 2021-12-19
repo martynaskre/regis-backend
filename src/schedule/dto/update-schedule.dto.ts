@@ -3,8 +3,10 @@ import { Days } from '../../types';
 import { HigherThan } from '../../shared/validation/HigherThan';
 import { LowerThan } from '../../shared/validation/LowerThan';
 import { Unique } from '../../shared/validation/Unique';
+import { Type } from 'class-transformer';
 
 export class UpdateScheduleDto {
+  @Type(() => Number)
   @IsNotEmpty()
   @IsEnum(Days)
   @Unique({
@@ -18,6 +20,7 @@ export class UpdateScheduleDto {
   })
   weekDay: number;
 
+  @Type(() => Number)
   @IsNotEmpty()
   @Min(0)
   @Max(24)
@@ -25,6 +28,7 @@ export class UpdateScheduleDto {
   @LowerThan('finishHours')
   startHours: number;
 
+  @Type(() => Number)
   @IsNotEmpty()
   @Min(0)
   @Max(24)

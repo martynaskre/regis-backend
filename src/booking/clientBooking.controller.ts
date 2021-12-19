@@ -16,6 +16,8 @@ import {
 import { ClientGuard } from '../auth/guards/client.guard';
 import { ClientBookingService } from './clientBooking.service';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
+import { formatResponse } from '../utils';
+import { ProviderGuard } from '../auth/guards/provider.guard';
 
 @Controller('clientBooking')
 export class ClientBookingController {
@@ -31,21 +33,22 @@ export class ClientBookingController {
   }
 
   @UseGuards(ClientGuard)
-  @Get('client/:clientId')
-  async getProviderBookings(
-    @Param('clientId') clientId: string,
-    @Query() paginationDto: PaginationDto,
-  ): Promise<PaginatedClientBookingsResultDto> {
-    return this.clientBookingService.getClientBookings(Number(clientId), {
-      ...paginationDto,
-      limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
-    });
+  @Get('client')
+  async getClientBookings(@Request() request) {
+    const clientBookings = await this.clientBookingService.getClientBookings(
+      request.user.id,
+    );
+
+    return formatResponse('Client bookings.', clientBookings);
   }
 
-  @UseGuards(ClientGuard)
+  // TODO surasti approacha dviem guardam
+  //@UseGuards(ClientGuard, ProviderGuard)
   @Get(':id')
   async getBookingById(@Param('id') id: string) {
-    return this.clientBookingService.getBookingById(Number(id));
+    const booking = await this.clientBookingService.getBookingById(Number(id));
+
+    return formatResponse('Client booking.', booking);
   }
 
   @UseGuards(ClientGuard)

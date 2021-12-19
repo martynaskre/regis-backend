@@ -119,22 +119,12 @@ export class ProviderService {
   }
 
   async getBusiness(provider: ProviderEntity) {
-    const business = await this.businessRepository
+    return await this.businessRepository
       .createQueryBuilder('business')
       .where('business.provider = :providerId', {
         providerId: provider.id,
       })
       .leftJoinAndSelect('business.category', 'category')
       .getOne();
-
-    business.logo = this.storageService
-      .disk('public')
-      .url(`${Business.STORAGE_PATH}/${business.logo}`);
-
-    business.cover = this.storageService
-      .disk('public')
-      .url(`${Business.STORAGE_PATH}/${business.cover}`);
-
-    return business;
   }
 }

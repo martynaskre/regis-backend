@@ -35,7 +35,7 @@ export class BusinessService {
    * bookingsData.startDate must be start of the week
    * */
   async getBookings(
-    businessId: number,
+    businessIdOrSlug: number | string,
     clientId?: number,
     bookingsData: BookingsDto = new BookingsDto(),
   ): Promise<BookingEntry[]> {
@@ -59,9 +59,8 @@ export class BusinessService {
           .leftJoinAndSelect('clientBooking.service', 'service')
           .getMany();
 
-    const business = await this.businessRepository
+    let businessQuery = this.businessRepository
       .createQueryBuilder('business')
-      .where({ id: businessId })
       .leftJoinAndSelect(
         'business.providerBookings',
         'providerBookings',
@@ -84,8 +83,15 @@ export class BusinessService {
           ),
         },
       )
-      .leftJoinAndSelect('business.schedules', 'schedule')
-      .getOne();
+      .leftJoinAndSelect('business.schedules', 'schedule');
+
+    if (isNaN(<number>businessIdOrSlug)) {
+      businessQuery = businessQuery.where({ slug: businessIdOrSlug });
+    } else {
+      businessQuery = businessQuery.where({ id: Number(businessIdOrSlug) });
+    }
+
+    const business = await businessQuery.getOne();
 
     const providerBookings = business.providerBookings;
     const clientBookings = [];
@@ -170,6 +176,60 @@ export class BusinessService {
     return bookingEntries;
   }
 
+  async getCalendarBookings(
+    businessId: number,
+    bookingsData: BookingsDto = new BookingsDto(),
+  ): Promise<BookingEntry[]> {
+    const startDate = dayjs(bookingsData.startDate); // will always be monday
+
+    const business = await this.businessRepository
+      .createQueryBuilder('business')
+      .where({ id: businessId })
+      .leftJoinAndSelect(
+        'business.providerBookings',
+        'providerBookings',
+        'DATE(providerBookings.reservedTime) BETWEEN :startDate AND :finishDate',
+        {
+          startDate: startDate.format('YYYY-MM-DD'),
+          finishDate: startDate.isoWeekday(Days.SUNDAY).format('YYYY-MM-DD'),
+        },
+      )
+      .leftJoinAndSelect('business.services', 'services')
+      .leftJoinAndSelect(
+        'services.clientBookings',
+        'clientBookings',
+        'DATE(clientBookings.reservedTime) BETWEEN :startDate AND :finishDate',
+        {
+          startDate: startDate.format('YYYY-MM-DD'),
+          finishDate: startDate.isoWeekday(Days.SUNDAY).format('YYYY-MM-DD'),
+        },
+      )
+      .leftJoinAndSelect('clientBookings.client', 'client')
+      .getOne();
+
+    const providerBookings = business.providerBookings;
+    const clientBookings = [];
+
+    for (let x = 0; x < business.services.length; x++) {
+      for (let y = 0; y < business.services[x].clientBookings.length; y++) {
+        clientBookings.push(business.services[x].clientBookings[y]);
+      }
+    }
+
+    return [...providerBookings, ...clientBookings].map((bookingEntry) => {
+      return {
+        type: 'default',
+        reservedTime: bookingEntry.reservedTime,
+        duration: bookingEntry.duration,
+        title:
+          bookingEntry instanceof ClientBooking
+            ? `${bookingEntry.client.firstName} ${bookingEntry.client.lastName} apsilankymas`
+            : 'Užimtas laikas',
+        id: bookingEntry instanceof ClientBooking ? bookingEntry.id : null,
+      };
+    });
+  }
+
   async createBusiness(
     businessData: CreateBussinesDto,
     provider: ProviderEntity,
@@ -244,19 +304,7 @@ export class BusinessService {
     }
 
     const totalCount = await query.getCount();
-    let businesses = await query.orderBy('business.id').getMany();
-
-    businesses = businesses.map((business) => {
-      return {
-        ...business,
-        logo: this.storageService
-          .disk('public')
-          .url(`${Business.STORAGE_PATH}/${business.logo}`),
-        cover: this.storageService
-          .disk('public')
-          .url(`${Business.STORAGE_PATH}/${business.cover}`),
-      };
-    });
+    const businesses = await query.orderBy('business.id').getMany();
 
     return {
       totalCount,
@@ -266,12 +314,18 @@ export class BusinessService {
     };
   }
 
-  async getBusinessById(id: number) {
+  async getBusinessById(idOrSlug: number | string) {
     this.logger.log('Getting business by its id');
 
-    return await this.businessRepository
-      .createQueryBuilder('business')
-      .where({ id: id })
+    let query = this.businessRepository.createQueryBuilder('business');
+
+    if (isNaN(<number>idOrSlug)) {
+      query = query.where({ slug: idOrSlug });
+    } else {
+      query = query.where({ id: Number(idOrSlug) });
+    }
+
+    return await query
       .leftJoinAndSelect('business.provider', 'provider')
       .getOne();
   }
@@ -363,12 +417,22 @@ export class BusinessService {
     });
   }
 
-  async getServices(id: number) {
-    return await this.servicesRepository
-      .createQueryBuilder('service')
-      .where('service.business = :businessId', {
-        businessId: id,
-      })
-      .getMany();
+  async getServices(idOrSlug: number | string) {
+    let query = this.servicesRepository.createQueryBuilder('service');
+
+    if (isNaN(<number>idOrSlug)) {
+      query = query.whereExists(
+        this.businessRepository
+          .createQueryBuilder('business')
+          .where({ slug: idOrSlug })
+          .where('service.business = business.id'),
+      );
+    } else {
+      query = query.where('service.business = :businessId', {
+        businessId: Number(idOrSlug),
+      });
+    }
+
+    return await query.getMany();
   }
 }

@@ -1,4 +1,5 @@
 import {
+  Connection,
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
@@ -10,6 +11,10 @@ import { generateSlug } from '../utils';
 export class CategorySubscriber
   implements EntitySubscriberInterface<CategoryEntity>
 {
+  constructor(private readonly connection: Connection) {
+    connection.subscribers.push(this);
+  }
+
   listenTo() {
     return CategoryEntity;
   }
