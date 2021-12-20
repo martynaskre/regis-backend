@@ -44,33 +44,11 @@ export class RatingService {
   }
 
   async getBussinesAndServiceWithUuid(uuid: string) {
-    const data = await this.businessRepository
-      .createQueryBuilder('business')
-      .whereExists(
-        this.servicesRepository
-          .createQueryBuilder('service')
-          .where('service.business = business.id')
-          .andWhereExists(
-            this.clientBookingsRepository
-              .createQueryBuilder('clientBooking')
-              .where('clientBooking.uuid = :uuid', {
-                uuid,
-              })
-              .andWhere('clientBooking.service = service.id'),
-          ),
-      )
-      .leftJoinAndSelect('business.services', 'service')
-      .andWhereExists(
-        this.clientBookingsRepository
-          .createQueryBuilder('clientBooking')
-          .where('clientBooking.uuid = :uuid', {
-            uuid,
-          })
-          .andWhere('clientBooking.service = service.id'),
-      )
-      .getOne();
 
-    console.log(data);
+    const data = await this.clientBookingsRepository.createQueryBuilder('clientBooking')
+    .leftJoinAndSelect('clientBooking.service', 'service')
+    .leftJoinAndSelect('service.business', 'business')
+    .getOne();
   }
 
   async rateBusiness(uuid: string, ratingData: CreateRatingDto) {
