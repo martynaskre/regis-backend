@@ -43,6 +43,14 @@ export class RatingService {
       .getOne();
   }
 
+  async getBussinesAndServiceWithUuid(uuid: string) {
+
+    const data = await this.clientBookingsRepository.createQueryBuilder('clientBooking')
+    .leftJoinAndSelect('clientBooking.service', 'service')
+    .leftJoinAndSelect('service.business', 'business')
+    .getOne();
+  }
+
   async rateBusiness(uuid: string, ratingData: CreateRatingDto) {
     this.logger.log('Rating business');
 

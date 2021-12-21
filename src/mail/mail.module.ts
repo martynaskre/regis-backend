@@ -19,6 +19,10 @@ import * as path from 'path';
             user: configService.get('MAIL_USERNAME'),
             pass: configService.get('MAIL_PASSWORD'),
           },
+          pool: true,
+          maxConnections: 1,
+          rateDelta: 20000,
+          rateLimit: 5,
         },
         defaults: {
           from: configService.get('MAIL_FROM'),

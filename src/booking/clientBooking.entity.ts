@@ -32,6 +32,11 @@ export class ClientBooking {
   public duration: number;
 
   @Column({
+    default: false,
+  })
+  isNotified: boolean;
+
+  @Column({
     nullable: true,
   })
   uuid: string;
