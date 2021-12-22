@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { formatResponse } from 'src/utils';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { RatingService } from './rating.service';
@@ -15,5 +15,12 @@ export class RatingController {
     await this.ratingService.rateBusiness(uuid, rating);
 
     return formatResponse('Business rated.');
+  }
+
+  @Get(':uuid')
+  async getBussinesAndServiceWithUuid(@Param('uuid') uuid: string) {
+    await this.ratingService.getBussinesAndServiceWithUuid(uuid);
+
+    return formatResponse('Business and service returned.');
   }
 }

@@ -13,10 +13,11 @@ import * as path from 'path';
 import { BookingModule } from './booking/booking.module';
 import { CronModule } from './cron/cron.module';
 import { CategoryModule } from './category/category.module';
-import { ScheduleModule } from './schedule/schedule.module';
+import { SchedulesModule } from './schedule/schedule.module';
 import { RatingModule } from './rating/rating.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { StorageModule } from './storage/storage.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -41,6 +42,8 @@ import { StorageModule } from './storage/storage.module';
         },
       },
     }),
+    ScheduleModule.forRoot(),
+    CronModule,
     NestjsFormDataModule,
     AuthModule,
     ClientModule,
@@ -49,9 +52,8 @@ import { StorageModule } from './storage/storage.module';
     BusinessModule,
     BookingModule,
     ServiceModule,
-    CronModule,
     CategoryModule,
-    ScheduleModule,
+    SchedulesModule,
     RatingModule,
   ],
   controllers: [AppController],
