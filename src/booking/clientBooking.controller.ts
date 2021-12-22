@@ -17,7 +17,7 @@ import { ClientGuard } from '../auth/guards/client.guard';
 import { ClientBookingService } from './clientBooking.service';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 import { formatResponse } from '../utils';
-import { ProviderGuard } from '../auth/guards/provider.guard';
+import { BookingsDto } from '../utils/dto/bookings.dto';
 
 @Controller('clientBooking')
 export class ClientBookingController {
@@ -34,9 +34,13 @@ export class ClientBookingController {
 
   @UseGuards(ClientGuard)
   @Get('client')
-  async getClientBookings(@Request() request) {
+  async getClientBookings(
+    @Request() request,
+    @Query() bookingsData: BookingsDto,
+  ) {
     const clientBookings = await this.clientBookingService.getClientBookings(
       request.user.id,
+      bookingsData,
     );
 
     return formatResponse('Client bookings.', clientBookings);

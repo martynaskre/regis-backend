@@ -327,6 +327,7 @@ export class BusinessService {
 
     return await query
       .leftJoinAndSelect('business.provider', 'provider')
+      .leftJoinAndSelect('business.category', 'category')
       .getOne();
   }
 
