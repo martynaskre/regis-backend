@@ -18,9 +18,11 @@ export class RatingController {
   }
 
   @Get(':uuid')
-  async getBussinesAndServiceWithUuid(@Param('uuid') uuid: string) {
-    await this.ratingService.getBussinesAndServiceWithUuid(uuid);
+  async getBusinessAndServiceWithUuid(@Param('uuid') uuid: string) {
+    const response = await this.ratingService.getBusinessAndServiceWithUuid(
+      uuid,
+    );
 
-    return formatResponse('Business and service returned.');
+    return formatResponse('Business and service returned.', response);
   }
 }
