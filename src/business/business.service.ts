@@ -426,7 +426,7 @@ export class BusinessService {
         this.businessRepository
           .createQueryBuilder('business')
           .where({ slug: idOrSlug })
-          .where('service.business = business.id'),
+          .andWhere('service.business = business.id'),
       );
     } else {
       query = query.where('service.business = :businessId', {

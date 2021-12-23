@@ -21,30 +21,30 @@ export class UpadateBussinesDto {
   readonly title: string;
 
   @IsString()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   @IsOptional()
   readonly addressCountry: string;
 
   @IsString()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   @IsOptional()
   readonly addressCity: string;
 
   @IsString()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   @IsOptional()
   readonly addressStreet: string;
 
   @IsOptional()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   readonly addressHouseNumber: string;
 
   @IsOptional()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   readonly addressPostCode: string;
 
@@ -54,7 +54,7 @@ export class UpadateBussinesDto {
   readonly shortDescription: string;
 
   @IsOptional()
-  @MaxLength(255)
+  @MaxLength(1000)
   @MinLength(1)
   readonly longDescription: string;
 

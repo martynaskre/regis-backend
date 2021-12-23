@@ -26,6 +26,9 @@ export class CreateClientDto {
   @IsPhoneNumber()
   @MaxLength(255)
   @MinLength(1)
+  @Unique({
+    table: 'clients',
+  })
   readonly phoneNumber: string;
 
   @IsString()

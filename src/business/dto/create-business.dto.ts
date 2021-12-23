@@ -15,30 +15,30 @@ export class CreateBussinesDto {
   readonly title: string;
 
   @IsString()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   @IsNotEmpty()
   readonly addressCountry: string;
 
   @IsString()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   @IsNotEmpty()
   readonly addressCity: string;
 
   @IsString()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   @IsNotEmpty()
   readonly addressStreet: string;
 
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   readonly addressHouseNumber: string;
 
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(50)
   @MinLength(1)
   readonly addressPostCode: string;
 
@@ -48,7 +48,7 @@ export class CreateBussinesDto {
   readonly shortDescription: string;
 
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(1000)
   @MinLength(1)
   readonly longDescription: string;
 

@@ -38,6 +38,9 @@ export class CreateProviderDto {
   @IsPhoneNumber()
   @MaxLength(255)
   @MinLength(1)
+  @Unique({
+    table: 'providers',
+  })
   readonly phoneNumber: string;
 
   @IsString()

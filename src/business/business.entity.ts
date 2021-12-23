@@ -71,7 +71,9 @@ export class Business {
   @Column()
   shortDescription: string;
 
-  @Column()
+  @Column({
+    type: 'longtext',
+  })
   longDescription: string;
 
   @ManyToOne(() => CategoryEntity)
