@@ -11,8 +11,9 @@ import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 import { throwNotFound, throwValidationException } from '../utils';
 import { BusinessService } from 'src/business/business.service';
-import { BookingEntry } from '../types';
+import { BookingEntry, Days } from '../types';
 import * as dayjs from 'dayjs';
+import { BookingsDto } from '../utils/dto/bookings.dto';
 
 @Injectable()
 export class ClientBookingService {
@@ -78,14 +79,26 @@ export class ClientBookingService {
     return booking;
   }
 
-  async getClientBookings(clientId: number) {
+  async getClientBookings(
+    clientId: number,
+    bookingsData: BookingsDto = new BookingsDto(),
+  ) {
     this.logger.log('Getting client bookings');
+
+    const startDate = dayjs(bookingsData.startDate);
 
     const rawClientBookings = await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
       .where('clientBooking.clientId = :clientId', {
         clientId,
       })
+      .andWhere(
+        'DATE(clientBooking.reservedTime) BETWEEN :startDate AND :finishDate',
+        {
+          startDate: startDate.format('YYYY-MM-DD'),
+          finishDate: startDate.isoWeekday(Days.SUNDAY).format('YYYY-MM-DD'),
+        },
+      )
       .leftJoinAndSelect('clientBooking.service', 'service')
       .getMany();
 

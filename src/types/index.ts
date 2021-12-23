@@ -10,7 +10,7 @@ export enum FrontEndpoint {
   CLIENT_PASSWORD_RESET = 'auth/reset-password/client',
   PROVIDER_PASSWORD_RESET = 'auth/reset-password/provider',
   CATEGORY_ILLUSTRATIONS = 'assets/img/categories/',
-  RATE_BUSINESS = '',
+  RATE_BUSINESS = 'business/rate/',
 }
 
 export enum Days {

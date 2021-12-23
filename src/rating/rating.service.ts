@@ -43,12 +43,12 @@ export class RatingService {
       .getOne();
   }
 
-  async getBussinesAndServiceWithUuid(uuid: string) {
-
-    const data = await this.clientBookingsRepository.createQueryBuilder('clientBooking')
-    .leftJoinAndSelect('clientBooking.service', 'service')
-    .leftJoinAndSelect('service.business', 'business')
-    .getOne();
+  async getBusinessAndServiceWithUuid(uuid: string) {
+    return await this.clientBookingsRepository.createQueryBuilder('clientBooking')
+      .where('clientBooking.uuid = :uuid', { uuid })
+      .leftJoinAndSelect('clientBooking.service', 'service')
+      .leftJoinAndSelect('service.business', 'business')
+      .getOne();
   }
 
   async rateBusiness(uuid: string, ratingData: CreateRatingDto) {

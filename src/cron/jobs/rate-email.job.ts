@@ -18,7 +18,7 @@ export class RateBusiness {
     private readonly mailService: MailService,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async run() {
     this.logger.log('Running rate business email cron job.');
 
@@ -37,12 +37,14 @@ export class RateBusiness {
       clientBookings[x].uuid = uuidv4();
       await this.mailService.sendMail(
         clientBookings[x].client.email,
-        'Ivertinikite savo patirti!',
+        'Įvertinikite savo patirtį!',
         'bussines-rating',
         {
           firstName: clientBookings[x].client.firstName,
           service: clientBookings[x].service.title,
-          actionUrl: formatFrontUrl(FrontEndpoint.CLIENT_LOGIN),
+          actionUrl:
+            formatFrontUrl(FrontEndpoint.RATE_BUSINESS) +
+            clientBookings[x].uuid,
         },
       );
       clientBookings[x].isNotified = true;
