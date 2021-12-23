@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { createProviderBooking } from './dto/create-provider-booking.dto';
 import { ProviderBooking } from './providerBooking.entity';
 import { throwNotFound, throwValidationException } from '../utils';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ProviderBookingService {
@@ -27,11 +28,17 @@ export class ProviderBookingService {
   ) {
     this.logger.log('Creating new provider booking');
 
+    //Patikrinti ar nera bookinama i praeiti
     const business = await this.businessService.getBusinessById(
       bookingData.businessId,
     );
 
-    const bookings = await this.businessService.getBookings(business.id);
+    //reikia paduoti data
+    const bookings = await this.businessService.getBookings(
+      business.id,
+      null,
+      { startDate: dayjs(bookingData.reservedTime).isoWeekday(1).toDate() },
+    );
 
     if (!business || business.provider.id !== provider.id) {
       throwNotFound({ business: 'The business was not found.' });

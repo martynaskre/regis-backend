@@ -28,6 +28,8 @@ export class ClientBookingService {
   async createBooking(bookingData: CreateClientBookingDto, client: Client) {
     this.logger.log('Creating new client booking');
 
+    //Patikrinti ar nera bookinama i praeiti
+
     const service = await this.serviceService.getServicesById(
       bookingData.serviceId,
     );
@@ -43,6 +45,9 @@ export class ClientBookingService {
     );
 
     for (let x = 0; x < bookings.length; x++) {
+      console.log(bookings[x]);
+      console.log(bookingData);
+
       if (
         bookings[x].reservedTime.toISOString() ===
           bookingData.reservedTime.toISOString() ||
