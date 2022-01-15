@@ -41,8 +41,6 @@ export class ClientBookingService {
   async createBooking(bookingData: CreateClientBookingDto, client: Client) {
     this.logger.log('Creating new client booking');
 
-    //Patikrinti ar nera bookinama i praeiti
-
     const currentTime = new Date();
 
     if(bookingData.reservedTime.getTime() < currentTime.getTime())
@@ -248,6 +246,20 @@ export class ClientBookingService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    const currentTime  = new Date();
+
+    if(currentTime.getTime() - booking.reservedTime.getTime() < 86400000)
+    {
+      throwValidationException({
+        reservedTime: 'Can not cancel booking later than 24 hours before the appointment',
+      });
+    }
+
+    //gauti client id
+    //gauti provider id
+    //sukurti naujus tamplate
+
 
     await this.clientBookingRepository
       .createQueryBuilder('clientBooking')

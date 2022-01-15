@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -46,8 +47,6 @@ export class ClientBookingController {
     return formatResponse('Client bookings.', clientBookings);
   }
 
-  // TODO surasti approacha dviem guardam
-  //@UseGuards(ClientGuard, ProviderGuard)
   @Get(':id')
   async getBookingById(@Param('id') id: string) {
     const booking = await this.clientBookingService.getBookingById(Number(id));
