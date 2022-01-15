@@ -10,6 +10,8 @@ import { ClientBookingService } from './clientBooking.service';
 import { ProviderBookingController } from './provicerBooking.controller';
 import { ProviderBooking } from './providerBooking.entity';
 import { ProviderBookingService } from './providerBooking.service';
+import { MailModule } from '../mail/mail.module';
+import { ProviderEntity } from '../provider/provider.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { ProviderBookingService } from './providerBooking.service';
       Service,
       Business,
       ProviderBooking,
+      ProviderEntity,
     ]),
+    MailModule,
   ],
   controllers: [ClientBookingController, ProviderBookingController],
   providers: [

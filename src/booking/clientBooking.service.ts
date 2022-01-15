@@ -11,9 +11,13 @@ import { ClientBooking } from './clientBooking.entity';
 import { CreateClientBookingDto } from './dto/create-client-booking.dto';
 import { throwNotFound, throwValidationException } from '../utils';
 import { BusinessService } from 'src/business/business.service';
-import { BookingEntry, Days } from '../types';
+import { BookingEntry, Days} from '../types';
 import * as dayjs from 'dayjs';
 import { BookingsDto } from '../utils/dto/bookings.dto';
+import { MailService } from '../mail/mail.service';
+import { ProviderEntity } from '../provider/provider.entity';
+import { Business } from '../business/business.entity';
+import { Service } from '../service/service.entity';
 
 @Injectable()
 export class ClientBookingService {
@@ -22,8 +26,15 @@ export class ClientBookingService {
   constructor(
     @InjectRepository(ClientBooking)
     private readonly clientBookingRepository: Repository<ClientBooking>,
+    @InjectRepository(ProviderEntity)
+    private readonly providerRepository: Repository<ProviderEntity>,
+    @InjectRepository(Business)
+    private readonly businessRepository: Repository<Business>,
+    @InjectRepository(Service)
+    private readonly serviceRepository: Repository<Service>,
     private readonly serviceService: ServiceService,
     private readonly businessService: BusinessService,
+    private readonly mailService: MailService,
   ) {}
 
   async createBooking(bookingData: CreateClientBookingDto, client: Client) {
@@ -75,6 +86,45 @@ export class ClientBookingService {
     });
 
     await this.clientBookingRepository.save(booking);
+
+    await this.mailService.sendMail(
+      client.email,
+      'Paslaugos rezervacija sėkminga!',
+      'client-new-booking',
+      {
+        firstName: client.firstName,
+        service: service.title,
+        time: dayjs(bookingData.reservedTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    );
+
+    const provider = await this.providerRepository
+      .createQueryBuilder('provider')
+      .whereExists(
+        this.businessRepository
+          .createQueryBuilder('business')
+          .where('provider.id = business.providerId')
+          .whereExists(
+            this.serviceRepository
+              .createQueryBuilder('service')
+              .where('service.business = business.id')
+              .where('service.id = :serviceId', {
+                serviceId: bookingData.serviceId,
+              }),
+          ),
+      )
+      .getOne();
+
+    await this.mailService.sendMail(
+      provider.email,
+      'Gauta nauja rezervacija!',
+      'provider-new-booking',
+      {
+        firstName: provider.firstName,
+        service: service.title,
+        time: dayjs(bookingData.reservedTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    );
 
     return booking;
   }
