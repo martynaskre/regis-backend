@@ -6,8 +6,10 @@ import {
 } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 import { generateSlug } from '../utils';
+import { Injectable } from '@nestjs/common';
 
 @EventSubscriber()
+@Injectable()
 export class CategorySubscriber
   implements EntitySubscriberInterface<CategoryEntity>
 {

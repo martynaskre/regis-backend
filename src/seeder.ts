@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
 import { CategoryEntity } from './category/category.entity';
 import { ConfigModule } from '@nestjs/config';
+import { CategoryModule } from './category/category.module';
 
 seeder({
   imports: [
@@ -20,5 +21,6 @@ seeder({
       entities: [path.join(__dirname, '**/*.entity{.ts,.js}')],
     }),
     TypeOrmModule.forFeature([CategoryEntity]),
+    CategoryModule,
   ],
 }).run([CategorySeeder]);
