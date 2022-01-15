@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/client/client.entity';
@@ -41,6 +42,15 @@ export class ClientBookingService {
     this.logger.log('Creating new client booking');
 
     //Patikrinti ar nera bookinama i praeiti
+
+    const currentTime = new Date();
+
+    if(bookingData.reservedTime.getTime() < currentTime.getTime())
+    {
+      throwValidationException({
+        reservedTime: 'Booking date invalid',
+      });
+    }
 
     const service = await this.serviceService.getServicesById(
       bookingData.serviceId,
