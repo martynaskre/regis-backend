@@ -249,17 +249,52 @@ export class ClientBookingService {
 
     const currentTime  = new Date();
 
-    if(currentTime.getTime() - booking.reservedTime.getTime() < 86400000)
+    if(booking.reservedTime.getTime()  - currentTime.getTime() < 86400000)
     {
       throwValidationException({
         reservedTime: 'Can not cancel booking later than 24 hours before the appointment',
       });
     }
 
-    //gauti client id
-    //gauti provider id
-    //sukurti naujus tamplate
 
+    await this.mailService.sendMail(
+      client.email,
+      'Paslaugos rezervacija atšaukimas sėkmingas!',
+      'client-cancel-booking',
+      {
+        firstName: client.firstName,
+        service: booking.service.title,
+        time: dayjs(booking.reservedTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    );
+
+    const provider = await this.providerRepository
+    .createQueryBuilder('provider')
+    .whereExists(
+      this.businessRepository
+        .createQueryBuilder('business')
+        .where('provider.id = business.providerId')
+        .whereExists(
+          this.serviceRepository
+            .createQueryBuilder('service')
+            .where('service.business = business.id')
+            .where('service.id = :serviceId', {
+              serviceId: booking.service.id,
+            }),
+        ),
+    )
+    .getOne();
+
+    await this.mailService.sendMail(
+      provider.email,
+      'Rezervacija atsaukta',
+      'provider-canceled-booking',
+      {
+        firstName: provider.firstName,
+        service: booking.service.title,
+        time: dayjs(booking.reservedTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    );
 
     await this.clientBookingRepository
       .createQueryBuilder('clientBooking')
