@@ -1,14 +1,14 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
-import * as path from 'path';
-import { ConfigService } from '@nestjs/config';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
+
   constructor(
-    private readonly mailer: MailerService,
-    private readonly configService: ConfigService,
+    @InjectQueue('mail')
+    private readonly mailQueue: Queue,
   ) {}
 
   async sendMail(
@@ -17,20 +17,13 @@ export class MailService {
     template: string,
     data: any = {},
   ) {
-    try {
-      template = path.resolve(__dirname, 'templates', ...template.split('.'));
+    this.logger.log('Adding email sending to queue...');
 
-      return await this.mailer.sendMail({
-        to,
-        subject,
-        template,
-        context: {
-          frontUrl: this.configService.get('FRONT_URL'),
-          ...data,
-        },
-      });
-    } catch (e) {
-      this.logger.warn('Error while sending mail.', e);
-    }
+    await this.mailQueue.add('send', {
+      to,
+      subject,
+      template,
+      data,
+    });
   }
 }

@@ -18,6 +18,7 @@ import { RatingModule } from './rating/rating.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { StorageModule } from './storage/storage.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -40,6 +41,12 @@ import { ScheduleModule } from '@nestjs/schedule';
           path: path.join(process.cwd(), 'storage', 'public'),
           baseUrl: process.env.STORAGE_URL,
         },
+      },
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
       },
     }),
     ScheduleModule.forRoot(),
