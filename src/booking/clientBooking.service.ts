@@ -287,7 +287,7 @@ export class ClientBookingService {
 
     await this.mailService.sendMail(
       provider.email,
-      'Rezervacija atsaukta',
+      'Rezervacija atšaukta',
       'provider-canceled-booking',
       {
         firstName: provider.firstName,
