@@ -65,9 +65,6 @@ export class ClientBookingService {
     );
 
     for (let x = 0; x < bookings.length; x++) {
-      console.log(bookings[x]);
-      console.log(bookingData);
-
       if (
         bookings[x].reservedTime.toISOString() ===
           bookingData.reservedTime.toISOString() ||
