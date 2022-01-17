@@ -1,4 +1,4 @@
-Project Title
+Regis
 =============
 
 Regis is a web application that helps customers make appointments with
