@@ -24,7 +24,7 @@ data.
 Getting Started
 ---------------
 
-### Dependencies
+### Technologies required
 
 - NodeJS
 - MySQL (MariaDB)
@@ -36,7 +36,13 @@ Getting Started
 $ npm install
 ```
 
-### Executing program
+### Building for development
+
+```bash
+$ npm run start:dev
+```
+
+### Building for production
 
 ```bash
 $ npm run build
