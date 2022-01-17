@@ -26,22 +26,32 @@ Getting Started
 
 ### Dependencies
 
+- NodeJS
+- MySQL (MariaDB)
+- Redis
+
 ### Installing
+
+```bash
+$ npm install
+```
 
 ### Executing program
 
-Help
-----
+```bash
+$ npm run build
+$ npm run start
+```
 
 Authors
 -------
 
 Contributors names and role info
 
-Tomas Jonauskas Team Lead, Back-end dev Valdas Ginkus Tester, Back-end
-dev Almantas Kukalevskij Back-end, Documentation Martynas Skrebė
-Back-end and front-end dev Nojus Burdaitis Front-end dev, deployment
-Ugnė Meškuotytė Documentation, design
-
-Version History
----------------
+| Name                                                           | Roles                            |
+|----------------------------------------------------------------|----------------------------------|
+| [Tomas Jonauskas](https://github.com/tomasjon1)                | Team Lead, Back-end              |
+| [Almantas Kukalevskij](https://github.com/AlmantasKukalevskij) | Back-end, documentation, testing |
+| Ugnė Meškuotytė                                                | Documentation, design            |
+| [Nojus Burdaitis](https://github.com/Nojus15)                  | Front-end                        |
+| [Martynas Skrebė](https://github.com/martynaskre)              | Back-end, Front-end, deployment  |
